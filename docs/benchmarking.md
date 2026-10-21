@@ -91,6 +91,8 @@ The [QPC24 V9 full-book rebaseline aggregate](https://github.com/HaileyStorm/Cre
 
 The [stopped Sol/TTCW development comparison](../evaluation-results/hbq-sol-ttcw-stopped-development-20261020/README.md) reports actual method coverage and existing expert-reference agreement. Its unequal, incomplete subsets cannot select a winning method. The [retained LAMP applicability diagnostic](../evaluation-results/hbq-lamp-applicability-development-20261020/README.md) separates complete response membership from binary assessment, inapplicability and unassessability; persistent NA alone does not establish a rubric defect.
 
+The [retained LAMP ordinal development comparison](../evaluation-results/hbq-lamp-stopped-development-20261020/README.md) uses human preferences within passage triplets. It reports the lack of shared HBQ/comparator pairs and distinguishes order consistency from agreement with humans.
+
 ## Bias controls
 
 Hide author and model identity. Shuffle candidate order. Do not reward length or rhetorical confidence unless a leaf asks for it. Keep user-taste overlays out of the craft total.

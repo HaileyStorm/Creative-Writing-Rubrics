@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "analysis_id": "lamp-retained-prefix-ordinal-development-20261020",
+  "state": "RETROSPECTIVE_DEVELOPMENT_DESCENDANT_FROZEN_BEFORE_LOCAL_TARGET_DECODE",
+  "utc": "2026-10-21T00:06:39.229439+00:00",
+  "inputs": {
+    "manifest": "480aa86df271078e322ac85cf8cfe5fe6ed02344138e218900cfe03c069b6ab6",
+    "profiles": "aa6a9e809f53e6640497e7fa3d5efe6f583426b794a90f031832562cb7354a69",
+    "records": "72ad3b80421137f29e36f85efab1d8b8314bc2d1a67dd550959befb0cb052325",
+    "parent_report": "f7e9601fd69ba0d2df534e4cef904599661abf37eb5c73cafb0f4c2dae10ad5e",
+    "human_profile": "cd90bc17ae1ea1e0f2113f7c2b497eb47c59962a8891a91c1883bb3865b121e5",
+    "original_analysis": "de4e20855e346232a0de7f7fbbc83b6f85b9982fc992821cfe962344e6c4d856"
+  },
+  "analysis_source_sha256": "237afc5e79c624bd516bdf12ba05bd3c358523e36e363840eb0bdd106608138e",
+  "decision": "Use fixed032 saved predictions for a separately named retrospective descriptive analysis under the authorized existing-human-reference program. Preserve the original study entrypoint and all17808-terminal release gate; do not claim to satisfy or alter it.",
+  "selection": "All admitted032 Sol initial records and finite initial numeric profiles; HBQ requires savedSCORED/full170leaf membership. No output-dependent story or pair selection. Six human reference strata already exposed as development by pinnedhuman_profile.",
+  "metrics": {
+    "rank_scope": "Only282 canonical pairs within94 source triplets; no global scalar human score or global rank correlation.",
+    "model_direction": "Higher saved scalar score preferred; exact scalar tie gets half credit. Exclude missing scalar. Pairwise maps nativeA/B to canonical source IDs; include consensus only when bothAB/BA orders are assessed; ties and order conflicts remain separate.",
+    "agreement": "For each method, compare model direction to majority of3 existing source orders and separately to all3 correlated ballots. Native tie or scalar tie earns0.5,agreement1,disagreement0.",
+    "denominators": "Show actualmatchedpairs/282,allmissingpairs,representedandcomplete triplets/94;perordersecondaryuses observedorders/564 and repeated existing ballots explicitly. Do not compare unmatchedmethodfractions as a winner.",
+    "paired_contrasts": "Only exactsharedHBQ/comparator pairIDs; reportnull whenempty.",
+    "uncertainty": "Zero bootstrap resamples or confidence intervals on this incomplete dependent cohort. Arithmetic full-denominator bounds impute missing outcomes as allfailure/allsuccess; they are not statistical intervals."
+  },
+  "target_opening": "Createimmutable localtarget-openingintent boundtofreeze andpredictionpins before decoding6 pinned historicaldevelopmentrankingfiles. NoMFA/P5/poetryunusedtargets.",
+  "limitations": [
+    "Availability-selected small and unequal method subsets; no winning method or alignment improvement established.",
+    "Existing human orders and their derived pair ballots are correlated;11 source assessor IDs are not verified independent people.",
+    "Retrospective already-development data,not unused confirmation or blinded prospective testing.",
+    "Historical tool controls and effective backend/account/sampler equivalence remain unqualified;no pooling with contemporary tools-disabled Sol.",
+    "Fixed saved prediction prefix does not prove collection terminal state,remote quiescence or reservation release.",
+    "No new human labels,provider contacts,scorer execution,semantic/native replay,judge training or canonical/candidate promotion."
+  ],
+  "original_all17808_gate_pass_claim": false,
+  "local_target_values_decoded_before_freeze": false,
+  "provider_calls": 0
+}

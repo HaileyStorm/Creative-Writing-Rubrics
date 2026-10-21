@@ -1,0 +1,268 @@
+{
+  "AB_BA_order_conflicts": 0,
+  "accepted_initial_pair_orders": 93,
+  "all_strata_already_development": true,
+  "analysis_freeze_sha256": "1217cd75efc2ce2dd6eab1aa9559e4bda78982654e99988eafb5a1d632ef779d",
+  "analysis_source_sha256": "237afc5e79c624bd516bdf12ba05bd3c358523e36e363840eb0bdd106608138e",
+  "bootstrap_resamples": 0,
+  "candidate_promoted": false,
+  "complete_AB_BA_pairs": 4,
+  "correlated_pair_ballots": 846,
+  "full_goal_complete": false,
+  "global_rank_correlation": null,
+  "historical_tools_off_eligible_records": 0,
+  "human_scalar_scale": null,
+  "human_targets_decoded_this_execution": true,
+  "input_sha256": {
+    "human_profile": "cd90bc17ae1ea1e0f2113f7c2b497eb47c59962a8891a91c1883bb3865b121e5",
+    "manifest": "480aa86df271078e322ac85cf8cfe5fe6ed02344138e218900cfe03c069b6ab6",
+    "original_analysis": "de4e20855e346232a0de7f7fbbc83b6f85b9982fc992821cfe962344e6c4d856",
+    "parent_report": "f7e9601fd69ba0d2df534e4cef904599661abf37eb5c73cafb0f4c2dae10ad5e",
+    "profiles": "aa6a9e809f53e6640497e7fa3d5efe6f583426b794a90f031832562cb7354a69",
+    "records": "72ad3b80421137f29e36f85efab1d8b8314bc2d1a67dd550959befb0cb052325"
+  },
+  "limitations": [
+    "Availability-selected small and unequal method subsets; no winning method or alignment improvement established.",
+    "Existing human orders and their derived pair ballots are correlated;11 source assessor IDs are not verified independent people.",
+    "Retrospective already-development data,not unused confirmation or blinded prospective testing.",
+    "Historical tool controls and effective backend/account/sampler equivalence remain unqualified;no pooling with contemporary tools-disabled Sol.",
+    "Fixed saved prediction prefix does not prove collection terminal state,remote quiescence or reservation release.",
+    "No new human labels,provider contacts,scorer execution,semantic/native replay,judge training or canonical/candidate promotion."
+  ],
+  "methods": {
+    "compact": {
+      "complete_triplets": 0,
+      "expected_paragraphs": 282,
+      "individual_agreement": 0.6851851851851852,
+      "individual_arithmetic_full_denominator_bounds": [
+        0.02186761229314421,
+        0.9899527186761229
+      ],
+      "individual_correlated_ballots": 27,
+      "individual_half_credit_total": 18.5,
+      "majority_agreement": 0.7222222222222222,
+      "majority_arithmetic_full_denominator_bounds": [
+        0.02304964539007092,
+        0.9911347517730497
+      ],
+      "majority_half_credit_total": 6.5,
+      "missing_pairs": 273,
+      "model_ties": 5,
+      "numeric_paragraphs": 43,
+      "observed_pairs": 9,
+      "observed_pairs_with_unanimous_humans": 7,
+      "planned_pairs": 282,
+      "planned_triplets": 94,
+      "represented_triplets": 9,
+      "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT",
+      "tie_credit": 0.5
+    },
+    "hbq": {
+      "complete_triplets": 0,
+      "expected_paragraphs": 282,
+      "individual_agreement": 0.8,
+      "individual_arithmetic_full_denominator_bounds": [
+        0.014184397163120567,
+        0.9964539007092199
+      ],
+      "individual_correlated_ballots": 15,
+      "individual_half_credit_total": 12.0,
+      "majority_agreement": 0.8,
+      "majority_arithmetic_full_denominator_bounds": [
+        0.014184397163120567,
+        0.9964539007092199
+      ],
+      "majority_half_credit_total": 4.0,
+      "missing_pairs": 277,
+      "model_ties": 0,
+      "numeric_paragraphs": 38,
+      "observed_pairs": 5,
+      "observed_pairs_with_unanimous_humans": 3,
+      "planned_pairs": 282,
+      "planned_triplets": 94,
+      "represented_triplets": 5,
+      "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT",
+      "tie_credit": 0.5
+    },
+    "holistic": {
+      "complete_triplets": 0,
+      "expected_paragraphs": 282,
+      "individual_agreement": 0.4166666666666667,
+      "individual_arithmetic_full_denominator_bounds": [
+        0.008865248226950355,
+        0.9875886524822695
+      ],
+      "individual_correlated_ballots": 18,
+      "individual_half_credit_total": 7.5,
+      "majority_agreement": 0.4166666666666667,
+      "majority_arithmetic_full_denominator_bounds": [
+        0.008865248226950355,
+        0.9875886524822695
+      ],
+      "majority_half_credit_total": 2.5,
+      "missing_pairs": 276,
+      "model_ties": 5,
+      "numeric_paragraphs": 37,
+      "observed_pairs": 6,
+      "observed_pairs_with_unanimous_humans": 5,
+      "planned_pairs": 282,
+      "planned_triplets": 94,
+      "represented_triplets": 6,
+      "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT",
+      "tie_credit": 0.5
+    },
+    "oregon": {
+      "complete_triplets": 0,
+      "expected_paragraphs": 282,
+      "individual_agreement": 1.0,
+      "individual_arithmetic_full_denominator_bounds": [
+        0.0070921985815602835,
+        1.0
+      ],
+      "individual_correlated_ballots": 6,
+      "individual_half_credit_total": 6.0,
+      "majority_agreement": 1.0,
+      "majority_arithmetic_full_denominator_bounds": [
+        0.0070921985815602835,
+        1.0
+      ],
+      "majority_half_credit_total": 2.0,
+      "missing_pairs": 280,
+      "model_ties": 0,
+      "numeric_paragraphs": 40,
+      "observed_pairs": 2,
+      "observed_pairs_with_unanimous_humans": 2,
+      "planned_pairs": 282,
+      "planned_triplets": 94,
+      "represented_triplets": 2,
+      "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT",
+      "tie_credit": 0.5
+    },
+    "pairwise_consensus": {
+      "complete_triplets": 0,
+      "expected_paragraphs": null,
+      "individual_agreement": 0.25,
+      "individual_arithmetic_full_denominator_bounds": [
+        0.0035460992907801418,
+        0.9893617021276596
+      ],
+      "individual_correlated_ballots": 12,
+      "individual_half_credit_total": 3.0,
+      "majority_agreement": 0.25,
+      "majority_arithmetic_full_denominator_bounds": [
+        0.0035460992907801418,
+        0.9893617021276596
+      ],
+      "majority_half_credit_total": 1.0,
+      "missing_pairs": 278,
+      "model_ties": 0,
+      "numeric_paragraphs": null,
+      "observed_pairs": 4,
+      "observed_pairs_with_unanimous_humans": 4,
+      "planned_pairs": 282,
+      "planned_triplets": 94,
+      "represented_triplets": 3,
+      "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT",
+      "tie_credit": 0.5
+    },
+    "pairwise_each_order": {
+      "individual_agreement": 0.460573476702509,
+      "individual_arithmetic_full_denominator_bounds": [
+        0.07594562647754137,
+        0.9110520094562647
+      ],
+      "individual_correlated_ballots": 279,
+      "individual_half_credit_total": 128.5,
+      "majority_agreement": 0.478494623655914,
+      "majority_arithmetic_full_denominator_bounds": [
+        0.07890070921985816,
+        0.9140070921985816
+      ],
+      "majority_half_credit_total": 44.5,
+      "missing_pairs": 471,
+      "model_ties": 1,
+      "observed_pairs": 93,
+      "observed_pairs_with_unanimous_humans": 70,
+      "orders_repeat_existing_pair_ballots": true,
+      "planned_pairs": 564,
+      "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT",
+      "tie_credit": 0.5
+    },
+    "ttcw14": {
+      "complete_triplets": 0,
+      "expected_paragraphs": 282,
+      "individual_agreement": 0.5,
+      "individual_arithmetic_full_denominator_bounds": [
+        0.01773049645390071,
+        0.9822695035460993
+      ],
+      "individual_correlated_ballots": 30,
+      "individual_half_credit_total": 15.0,
+      "majority_agreement": 0.5,
+      "majority_arithmetic_full_denominator_bounds": [
+        0.01773049645390071,
+        0.9822695035460993
+      ],
+      "majority_half_credit_total": 5.0,
+      "missing_pairs": 272,
+      "model_ties": 4,
+      "numeric_paragraphs": 52,
+      "observed_pairs": 10,
+      "observed_pairs_with_unanimous_humans": 7,
+      "planned_pairs": 282,
+      "planned_triplets": 94,
+      "represented_triplets": 10,
+      "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT",
+      "tie_credit": 0.5
+    }
+  },
+  "native_or_semantic_replays": 0,
+  "native_order_states": {
+    "A": 55,
+    "B": 37,
+    "TIE": 1
+  },
+  "new_human_labels": 0,
+  "original_all17808_gate_met": false,
+  "original_gate_changed": false,
+  "paired_contrasts": {
+    "compact_minus_hbq": {
+      "confidence_interval": null,
+      "mean_half_credit_agreement_difference": null,
+      "shared_pairs": 0,
+      "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT"
+    },
+    "holistic_minus_hbq": {
+      "confidence_interval": null,
+      "mean_half_credit_agreement_difference": null,
+      "shared_pairs": 0,
+      "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT"
+    },
+    "oregon_minus_hbq": {
+      "confidence_interval": null,
+      "mean_half_credit_agreement_difference": null,
+      "shared_pairs": 0,
+      "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT"
+    },
+    "pairwise_consensus_minus_hbq": {
+      "confidence_interval": null,
+      "mean_half_credit_agreement_difference": null,
+      "shared_pairs": 0,
+      "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT"
+    },
+    "ttcw14_minus_hbq": {
+      "confidence_interval": null,
+      "mean_half_credit_agreement_difference": null,
+      "shared_pairs": 0,
+      "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT"
+    }
+  },
+  "provider_calls": 0,
+  "rank_orders": 282,
+  "schema_version": 1,
+  "scorer_calls": 0,
+  "source_assessor_ids": 11,
+  "state": "INCONCLUSIVE_PARTIAL_RETROSPECTIVE_DEVELOPMENT",
+  "study": "lamp-retained-prefix-ordinal-development-20261020",
+  "verified_independent_people": false
+}
