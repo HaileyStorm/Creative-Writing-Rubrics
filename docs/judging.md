@@ -113,6 +113,16 @@ Keep private run directories outside a public source checkout. The chosen output
 
 The directory can contain quoted source excerpts. Treat it with the same privacy as the artifact. Nothing is uploaded by the runner except the declared artifact, declared context files, question batch, and judge instructions. When a task contract is active, the model-facing evaluation data also includes its artifact kind, declared scope, completion status, background, constraints, audience, preferences, priorities, applicable weighted goals, and binding requirements; those fields are part of the outbound disclosure and prompt commitment.
 
+For authorization-sensitive tasks, use existing `context.background` and
+`context.constraints` to state the requested operation, permission to invent or
+alter, and reference basis when the supplied brief establishes them. Retain the
+source reference or exact instruction alongside each statement; leave unsupported
+facts unknown or unspecified. Fictional genre alone does not establish permission
+or a source-fidelity obligation. An empty `binding_requirements` list does not
+remove constraints expressed in the brief. Visible brief compliance and fidelity
+to an unavailable source are different evidence questions; see the
+[saved-context diagnostic](../evaluation-results/hbq-lamp-applicability-development-20261020/README.md#authorization-and-conditional-applicability-follow-up).
+
 Complete score and verdict reports can be published independently of their source text. Before publishing a private evaluation, remove embedded quotes, local paths, and private run metadata while retaining verdicts, notes, references, coverage, confidence, and every score breakdown.
 
 ## Long-form work

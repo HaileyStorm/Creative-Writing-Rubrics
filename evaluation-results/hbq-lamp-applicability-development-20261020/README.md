@@ -55,7 +55,17 @@ The useful unscored diagnostic is: **Passage scope and unknown whole-work comple
 
 The retained private review packet has SHA-256 `b013e44225a3e0f3b4de19c35f0000c4e583bcb86fe92e2274a9071a61369e14` (23,470 bytes). It binds original context, contracts, response notes and bounded frozen-prompt slices. Source prose, private identities and response excerpts are excluded here. No provider contact, scorer call or human-target read occurred in this diagnostic. Frozen outbound bytes do not establish backend or wire attestation. The selection supports this narrow ambiguity diagnosis, not a defect rate or a claim that either verdict is wrong.
 
-Authorization and digression remain separate follow-ups requiring their actual context and relevant passages. Any prompt change would define a separate future condition. The canonical rubric and existing predictions remain unchanged.
+### Authorization and conditional applicability follow-up
+
+A separate authorization review selected up to two lexicographically lowest private paragraph IDs per saved state: two CANNOT_ASSESS, two YES and the sole NO among the 38 banks. Selection used verdict and identity before opening the response notes. All five frozen prompts contained the exact source writing question. The private packet has SHA-256 `f2f5cbb14f64417b7cf14bd9441b160eb21c863f8726eeb4055de75bdd3af09c` (29,756 bytes).
+
+The abstention notes interpret recounting or explaining named events as dependent on a source account that was not supplied. The passes interpret description or an open fictional brief as permitting elaboration. The failure alleges an alteration of an explicit prompt detail, rather than treating all invention as unauthorized. These different cases do not demonstrate inconsistency or establish any individual verdict's correctness. Fictional genre does not settle the originating operation or reference-fidelity obligation; empty binding requirements do not erase constraints in the writing question.
+
+Independent agent review identifies a distinction worth preserving: visible compliance with a brief can be assessed even when verification against an originating source or permission remains unresolved. A future context condition could separately state the requested operation, invention allowance, reference basis and explicit brief constraints, each from supplied evidence and otherwise unknown or unspecified. That is an unscored diagnostic proposal, not a validated criterion replacement. The existing context fields can carry such information; no new schema or gate is needed. Historical inputs and verdicts stay unchanged.
+
+For digression, all 38 original notes state that no distinct or substantive digression is present or needs assessment. The conditional question asks whether a digression creates a structural, tonal or thematic benefit. This provides a stated rationale for NA, rather than evidence of a blanket exclusion of fiction. The retained original-note projection has SHA-256 `17038ffd75b06a210fb048c1bdd0fe39e31889325bd9d91a96d9be7709d82794`. No source passages were reviewed in this extraction, so the accuracy of digression detection remains unverified.
+
+These follow-ups establish no rendering defect, human correctness result or supported canonical rubric change. No provider contact, scorer execution or human-target read occurred. Further uncertainty should be resolved by new, separately named evidence when feasible; it should not turn these historical states into automatic passes or failures.
 
 ## Selection and limitations
 
