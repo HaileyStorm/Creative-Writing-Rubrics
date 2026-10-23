@@ -68,6 +68,24 @@ The proposal is `PREPARED_UNBOUND_NO_CONTACT`. The old collector's ascending-ran
 
 Independent source and metadata review verified the complete permutation, frozen row identities, retained packet order, phase counts and all 32 milestones. It found no actionable issue. This review does not establish live eligibility, execution or scientific success.
 
+### Explicit-ID progress adapter
+
+`ordered_progress.py` provides provider-free `init`, `status` and `reserve` entry points for the private plan. The owning caller must serialize its run directory, reconcile other attempt roots and retain the existing endpoint reservation and provider guards. A sample reservation marks one identity occupied; it does not reserve endpoint capacity or authorize a model request.
+
+```text
+python ordered_progress.py init --plan PRIVATE_PLAN --manifest MANIFEST216 --census CENSUS290 --run-dir NEW_PRIVATE_REHEARSAL
+python ordered_progress.py reserve --plan PRIVATE_PLAN --manifest MANIFEST216 --census CENSUS290 --run-dir NEW_PRIVATE_REHEARSAL
+python ordered_progress.py status --plan PRIVATE_PLAN --manifest MANIFEST216 --census CENSUS290 --run-dir NEW_PRIVATE_REHEARSAL
+```
+
+The default purpose is `offline_rehearsal`. That purpose is bound into the run and attempt records; a future caller using `--purpose collector_progress` cannot reuse the rehearsal directory. Neither purpose grants provider authority. Keep rehearsals outside scientific admission and production attempt inventories.
+
+The adapter binds the exact plan, parent manifest, census, execution condition and frozen row identities. Each journal also receives a persistent unique run ID. It creates and flushes an exclusive attempt marker before returning the selected request to its caller. An occupied directory or unfinished, missing or malformed marker cannot silently become untouched work. An unfinished attempt holds selection for reconciliation; it is never automatically resent. Progress uses explicit attempted and accepted sets rather than the greatest source ordinal.
+
+The producer terminal must commit to the exact entry, run ID, purpose, execution condition and attempt-marker hash, as well as the saved native-result, response and admission hashes. `reserve_next()` returns that `terminal_binding` for the producer to retain. This prevents a self-consistent receipt bundle copied from another request or run from being counted under the reserved identity. Inspection does not revalidate native controls, quotations or semantic correctness.
+
+The recorded local CLI exercise initialized a private rehearsal, marked only source ordinal 701, read it back in a fresh process and rejected a second reservation. All 710 other requests, including ordinals 334–700, remained unattempted; the 328 parent admissions and five no-resend exclusions were retained. A clearly synthetic local receipt fixture tracked a correctly bound terminal, while copying the whole self-consistent bundle to a second reserved rehearsal run was rejected. These fixtures are excluded from scientific admission. No native call, new prediction, human-reference read or shared queue/ledger mutation occurred. This establishes local selection, interruption and receipt-identity behavior, not a qualified live collector. A guarded native callback and the existing admission pipeline still need to be bound before eligible collection can use this order.
+
 ## Provenance and limits
 
 Collection requested `gpt-6.1-sol` at high with every collection-model tool disabled. Saved execution receipts and local tool-catalog evidence support the observed route and zero tool activity; they do not establish full backend, auxiliary-path or production-wire attestation. Cached records lacking native CLI version fields remain unknown. The independent review reproduced associations and paired deltas from saved intersections; it did not independently revalidate ordinal 1's historical join because that record lacks an embedded condition descriptor.
