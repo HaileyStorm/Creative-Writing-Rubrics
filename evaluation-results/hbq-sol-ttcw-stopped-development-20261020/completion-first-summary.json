@@ -1,0 +1,228 @@
+{
+  "execution_condition_sha256": "fd96c337d3b7de5aebd6253f01e4002a944a899dafe5a19d85f68126e632e462",
+  "human_targets_read": false,
+  "limits": [
+    "Prospective request membership only; all new contacts assumed accepted, not guaranteed numeric scores or valid judgments.",
+    "Fewest requests is not a claim of minimum tokens, spend or time. Availability-based early subsets need not represent the cohort.",
+    "All711untouched requests retained; no failed or ambiguous resend. Original study and historical inputs remain unchanged.",
+    "Prepared only. No collector, live order, reservation, held queue or provider stop changed."
+  ],
+  "pair_order_completion_after_contacts": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    655,
+    656,
+    657,
+    658,
+    659,
+    660,
+    661,
+    662,
+    663,
+    664,
+    665,
+    666,
+    667,
+    668,
+    669,
+    670,
+    671,
+    672,
+    673,
+    674,
+    676,
+    678,
+    680,
+    682,
+    684,
+    686,
+    688,
+    690,
+    692,
+    694,
+    696
+  ],
+  "phase_counts": {
+    "blocked_bank_remainders": 15,
+    "complete_pair_orders": 42,
+    "complete_scalar_banks": 654
+  },
+  "plan_sha256": "bd5ed49971f12538f8cbc691f8abd972847774be1fb95b948c2b902e7621e62d",
+  "planned_contacts": 711,
+  "policy": "complete_scalar_banks_then_pair_orders_then_blocked_remainders_v1",
+  "provider_calls": 0,
+  "retained_no_resend_requests": 5,
+  "scalar_completion_comparison": [
+    {
+      "ascending_contacts": 85,
+      "complete_request_banks": 1,
+      "completion_first_contacts": 1
+    },
+    {
+      "ascending_contacts": 147,
+      "complete_request_banks": 2,
+      "completion_first_contacts": 3
+    },
+    {
+      "ascending_contacts": 234,
+      "complete_request_banks": 3,
+      "completion_first_contacts": 5
+    },
+    {
+      "ascending_contacts": 260,
+      "complete_request_banks": 4,
+      "completion_first_contacts": 8
+    },
+    {
+      "ascending_contacts": 288,
+      "complete_request_banks": 5,
+      "completion_first_contacts": 11
+    },
+    {
+      "ascending_contacts": 368,
+      "complete_request_banks": 6,
+      "completion_first_contacts": 15
+    },
+    {
+      "ascending_contacts": 402,
+      "complete_request_banks": 7,
+      "completion_first_contacts": 19
+    },
+    {
+      "ascending_contacts": 403,
+      "complete_request_banks": 8,
+      "completion_first_contacts": 42
+    },
+    {
+      "ascending_contacts": 455,
+      "complete_request_banks": 9,
+      "completion_first_contacts": 66
+    },
+    {
+      "ascending_contacts": 457,
+      "complete_request_banks": 10,
+      "completion_first_contacts": 90
+    },
+    {
+      "ascending_contacts": 460,
+      "complete_request_banks": 11,
+      "completion_first_contacts": 114
+    },
+    {
+      "ascending_contacts": 462,
+      "complete_request_banks": 12,
+      "completion_first_contacts": 139
+    },
+    {
+      "ascending_contacts": 485,
+      "complete_request_banks": 13,
+      "completion_first_contacts": 164
+    },
+    {
+      "ascending_contacts": 511,
+      "complete_request_banks": 14,
+      "completion_first_contacts": 189
+    },
+    {
+      "ascending_contacts": 513,
+      "complete_request_banks": 15,
+      "completion_first_contacts": 214
+    },
+    {
+      "ascending_contacts": 563,
+      "complete_request_banks": 16,
+      "completion_first_contacts": 239
+    },
+    {
+      "ascending_contacts": 564,
+      "complete_request_banks": 17,
+      "completion_first_contacts": 264
+    },
+    {
+      "ascending_contacts": 589,
+      "complete_request_banks": 18,
+      "completion_first_contacts": 289
+    },
+    {
+      "ascending_contacts": 593,
+      "complete_request_banks": 19,
+      "completion_first_contacts": 314
+    },
+    {
+      "ascending_contacts": 616,
+      "complete_request_banks": 20,
+      "completion_first_contacts": 339
+    },
+    {
+      "ascending_contacts": 639,
+      "complete_request_banks": 21,
+      "completion_first_contacts": 364
+    },
+    {
+      "ascending_contacts": 642,
+      "complete_request_banks": 22,
+      "completion_first_contacts": 390
+    },
+    {
+      "ascending_contacts": 648,
+      "complete_request_banks": 23,
+      "completion_first_contacts": 416
+    },
+    {
+      "ascending_contacts": 651,
+      "complete_request_banks": 24,
+      "completion_first_contacts": 442
+    },
+    {
+      "ascending_contacts": 675,
+      "complete_request_banks": 25,
+      "completion_first_contacts": 468
+    },
+    {
+      "ascending_contacts": 677,
+      "complete_request_banks": 26,
+      "completion_first_contacts": 494
+    },
+    {
+      "ascending_contacts": 680,
+      "complete_request_banks": 27,
+      "completion_first_contacts": 520
+    },
+    {
+      "ascending_contacts": 706,
+      "complete_request_banks": 28,
+      "completion_first_contacts": 546
+    },
+    {
+      "ascending_contacts": 707,
+      "complete_request_banks": 29,
+      "completion_first_contacts": 573
+    },
+    {
+      "ascending_contacts": 708,
+      "complete_request_banks": 30,
+      "completion_first_contacts": 600
+    },
+    {
+      "ascending_contacts": 709,
+      "complete_request_banks": 31,
+      "completion_first_contacts": 627
+    },
+    {
+      "ascending_contacts": 711,
+      "complete_request_banks": 32,
+      "completion_first_contacts": 654
+    }
+  ],
+  "schema_version": 1,
+  "scorer_calls": 0,
+  "source_pins": {
+    "census": "f3449263b753175f788e7b266fca69985021db0c6e65cd54a79164b1b64b7aad",
+    "frontier": "8a4ea8723bfec8b0c5e8a54d382cd282ee8a8195585f6f7fbce3e8664a30e2ce",
+    "manifest": "00b4e3cd33a8d9ed3cc24e6e3e8d07ec20511a6dd87c6507f888d43eb59391bc"
+  },
+  "state": "PREPARED_UNBOUND_NO_CONTACT"
+}

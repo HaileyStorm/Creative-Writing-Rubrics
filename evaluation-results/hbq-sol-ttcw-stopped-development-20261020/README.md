@@ -42,6 +42,32 @@ In the current ascending execution order, the first possible all-five request ba
 
 The [aggregate feasibility record](remaining-request-feasibility.json) retains input and source commitments. Independent arithmetic review matched all request groups and 32 ascending-order milestones. The private reconstruction uses request identities and admission states only; it reads no response values, scores or human references. No original statistical result was recomputed.
 
+### Prepared completion-first order
+
+The [metadata-only compiler](completion_order.py) prepares a separate, unbound execution-order proposal. It sorts reachable scalar banks by the number of untouched requests needed to complete them, with stable metadata tie breaks. It then completes the remaining pair orders and retains the unfinished-bank remainders. No accepted or occupied request is included. All 711 untouched requests remain scheduled once; within-bank HBQ packet order and each pair request's frozen payload identity are preserved.
+
+| Possible complete all-five request banks | Current ascending order: new requests | Proposed order: new requests |
+|---|---:|---:|
+| 1 | 85 | 1 |
+| 4 | 260 | 8 |
+| 8 | 403 | 42 |
+| 16 | 563 | 239 |
+| 32 | 711 | 654 |
+
+The [aggregate plan summary](completion-first-summary.json) records all 32 milestones. The proposal allocates 654 requests to reachable scalar banks, 42 to remaining pair orders and 15 to incomplete-bank remainders. These counts assume every new request is accepted. Request count does not establish latency, token cost, numeric-score availability or judgment quality; early availability-selected subsets need not represent the cohort.
+
+Reconstruct the proposal into a new **private** directory using the retained frozen inputs:
+
+```text
+python completion_order.py --manifest PATH_TO_MANIFEST216 --census PATH_TO_CENSUS290 --frontier PATH_TO_FRONTIER296 --output NEW_PRIVATE_DIRECTORY
+```
+
+The command pins all three inputs and writes a private sequence with frozen row hashes, an aggregate summary and an executed-source copy. It does not read response values, scores or human references, and does not contact a provider. The public package excludes the sequence's private request identities.
+
+The proposal is `PREPARED_UNBOUND_NO_CONTACT`. The old collector's ascending-range selection and the old cache's prefix assumptions cannot consume this permutation unchanged: a new consumer must bind the order and track attempted and accepted request sets explicitly. Each request uses a separate native `exec`, but that does not establish backend cache or temporal equivalence. A separate execution-condition digest records the changed order without rewriting the parent scientific condition. Current account eligibility, tools-off, resource, ownership, no-resend and concurrency controls remain applicable. No live order or provider stop has changed.
+
+Independent source and metadata review verified the complete permutation, frozen row identities, retained packet order, phase counts and all 32 milestones. It found no actionable issue. This review does not establish live eligibility, execution or scientific success.
+
 ## Provenance and limits
 
 Collection requested `gpt-6.1-sol` at high with every collection-model tool disabled. Saved execution receipts and local tool-catalog evidence support the observed route and zero tool activity; they do not establish full backend, auxiliary-path or production-wire attestation. Cached records lacking native CLI version fields remain unknown. The independent review reproduced associations and paired deltas from saved intersections; it did not independently revalidate ordinal 1's historical join because that record lacks an embedded condition descriptor.
