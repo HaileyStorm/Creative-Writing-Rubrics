@@ -98,7 +98,7 @@ Omit `--output` to print only the local summary. The optional output contains re
 
 For each new accepted result, it checks the frozen request descriptor, producer identity, run/entry/attempt-marker binding and stored admission commitments. It replays the saved raw native receipt against the exact prompt and expected model/effort, compares the native final with the admitted response, and rejects reused native thread/turn identities. The existing semantic validator is not rerun. The parent records retain their original qualification limits; the changed execution condition stays separate from the parent scientific condition. The owning caller still reconciles other attempt roots and serializes reads with its producer.
 
-The actual parent-only CLI returned all 328 records unchanged, five occupied no-resend identities and 711 untouched requests. Request-complete banks remained HBQ 7, TTCW14 15, holistic 11, compact 15 and Oregon 13, with no all-five shared bank. A second CLI call rejected the retained offline rehearsal. No new native receipt, prediction, score or human-reference value was produced. The future accepted-continuation branch has source review, but no runtime proof using a real continuation result yet. The numeric-profile adapter below uses the returned explicit identities; later human-reference analysis must do the same instead of using the historical cutoff scripts.
+The actual parent-only CLI returned all 328 records unchanged, five occupied no-resend identities and 711 untouched requests. Request-complete banks remained HBQ 7, TTCW14 15, holistic 11, compact 15 and Oregon 13, with no all-five shared bank. A second CLI call rejected the retained offline rehearsal. No new native receipt, prediction, score or human-reference value was produced. The future accepted-continuation branch has source review, but no runtime proof using a real continuation result yet. The numeric-profile and development-analysis adapters below use the returned explicit identities instead of the historical cutoff scripts.
 
 ### Numeric profiles from saved request IDs
 
@@ -113,6 +113,20 @@ Add `--run-dir COLLECTOR_PROGRESS_DIRECTORY` only when consuming actual continua
 The local saved-data CLI reproduced the existing 151 profile entries exactly on score, status, packet membership and their recorded coverage. Seven complete HBQ banks passed through the frozen scorer; all 29 incomplete HBQ banks remained unscored, including four with some accepted packets. Numeric-work counts remain HBQ 7, TTCW14 15, holistic 11, compact 15 and Oregon 13, with no all-five shared numeric work. The additional 29 profile rows make missing HBQ banks explicit; they add no predictions or scores.
 
 Independent review found and resolved an effective-schema-root gap before publication: `HBQRS_ROOT` could otherwise redirect admission reads away from the hashed schemas. The corrected CLI produced the same current-root output and rejected a separate alternate-book fixture before writing profiles. The original source and both local receipts remain retained. These checks establish saved-data compatibility and source binding; scoring a genuine out-of-order continuation remains unverified until such results exist.
+
+### Development analysis from explicit profiles
+
+The [development-analysis adapter](ordered_analysis.py) joins the same saved-result view to a hash-bound numeric-profile file. Before decoding the already-open TTCW development reference, it checks all 180 profiles against the frozen work/arm grid, exact accepted and missing request IDs, source-record commitments, assessed states and native score ranges. It consumes saved numeric producer results without rerunning the scorer.
+
+```text
+python ordered_analysis.py --parent-cache CACHE332_MANIFEST --manifest MANIFEST216 --census CENSUS290 --plan PRIVATE_PLAN --condition SCIENTIFIC_CONDITION216 --repo CWR_CHECKOUT --profiles PRIVATE_PROFILES_JSON --profiles-sha256 EXACT_PROFILE_FILE_SHA256 --freeze ANALYSIS_FREEZE258 --labels OPEN_TTCW_DEVELOPMENT_REFERENCE --output NEW_PRIVATE_ANALYSIS_JSON
+```
+
+For an actual continuation, add the same `--run-dir COLLECTOR_PROGRESS_DIRECTORY` used to build its profiles. The profile's saved-result summary and per-bank input commitments must match the current view; the caller serializes those inputs. The report contains private method and paired-work intersections and must stay private. Console output includes method counts and correlations, without those identity lists. No unused confirmation reference is read.
+
+The adapter reuses the frozen average-rank Spearman, test-agreement and pair-order functions. Each paired delta uses the same work/target intersection for both methods. Constant vectors remain undefined, missing scores remain absent, and the original 33-work and 12-plot uncertainty requirements remain in force. Eligible resampling delegates to the original 2,000-draw, fixed-seed plot bootstrap with undefined draws retained. Expert-derived preferences remain distinct from direct human preference ballots; candidate promotion is always false.
+
+The actual 328-result CLI reproduced the retained stopped report exactly for all method results, paired contrasts, all-five numeric count, TTCW14 test agreement, pairwise expert-derived agreement and primary coverage status. Its exact private method, paired and all-five intersections also matched. No scorer, provider call, bootstrap resampling or new human label was involved. Independent source/specification review found no material issue. This establishes saved-report compatibility; it adds no new empirical outcome, and analysis of genuine continuation results remains unverified.
 
 ## Provenance and limits
 
