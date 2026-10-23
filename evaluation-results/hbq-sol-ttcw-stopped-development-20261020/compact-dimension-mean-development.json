@@ -1,0 +1,137 @@
+{
+  "accepted_view_records": 338,
+  "all_dimension_means_round_to_native_overall": true,
+  "baseline_unchanged": true,
+  "candidate_promoted": false,
+  "constant_dimensions": [
+    "character_relationships",
+    "prose_voice",
+    "emotional_reader_effect",
+    "thematic_complexity"
+  ],
+  "diagnostic": "compact_equal_dimension_mean_v1",
+  "dimension_frequencies": {
+    "character_relationships": {
+      "2": 17
+    },
+    "emotional_reader_effect": {
+      "2": 17
+    },
+    "narrative_architecture": {
+      "1": 3,
+      "2": 14
+    },
+    "prose_voice": {
+      "2": 17
+    },
+    "thematic_complexity": {
+      "2": 17
+    },
+    "worldbuilding_integration": {
+      "1": 1,
+      "2": 8,
+      "3": 8
+    }
+  },
+  "expected_works": 36,
+  "full_goal_complete": false,
+  "limits": [
+    "Post-hoc after score-distribution inspection and access to already-open development references; no prospective confirmation.",
+    "Availability-selected17of36works in10plots; estimates do not establish generalized improvement.",
+    "The original constant rank vector has undefined correlation, not zero correlation.",
+    "All derived means round to2, so integer quantization can explain the native overall category.",
+    "Four dimensions are constant; this ordering comes only from narrative architecture and worldbuilding.",
+    "Equal weighting and spacing of ordinal ratings are operational assumptions, not proven measurement properties.",
+    "Different available subsets cannot support a direct comparison with HBQ or another comparator.",
+    "Raw stories, native responses, work identities, reference ballots and account details are excluded from this aggregate output."
+  ],
+  "matched_works": 17,
+  "methods": {
+    "equal_dimension_mean": {
+      "association": {
+        "bootstrap": {
+          "reason": "Incomplete cohort; missing over ten percent",
+          "state": "not_estimated"
+        },
+        "expected_works": 36,
+        "missing_works": 19,
+        "rho": 0.6388901469926708,
+        "state": "inconclusive_missing_over_10_percent",
+        "undefined_reason": null,
+        "unobserved_outcome_bounds": [
+          -1,
+          1
+        ],
+        "works": 17
+      },
+      "distribution": {
+        "ceiling_count": 0,
+        "distinct_scores": 4,
+        "floor_count": 0,
+        "items_in_ties": 16,
+        "maximum": 2.1666666666666665,
+        "mean": 2.0392156862745097,
+        "minimum": 1.6666666666666667,
+        "n": 17,
+        "native_range": [
+          1,
+          5
+        ],
+        "tied_score_groups": 3,
+        "tied_unordered_pairs": 44
+      }
+    },
+    "original_overall": {
+      "association": {
+        "bootstrap": {
+          "reason": "Incomplete cohort; missing over ten percent",
+          "state": "not_estimated"
+        },
+        "expected_works": 36,
+        "missing_works": 19,
+        "rho": null,
+        "state": "inconclusive_missing_over_10_percent",
+        "undefined_reason": "Too few paired works or a constant rank vector",
+        "unobserved_outcome_bounds": [
+          -1,
+          1
+        ],
+        "works": 17
+      },
+      "distribution": {
+        "ceiling_count": 0,
+        "distinct_scores": 1,
+        "floor_count": 0,
+        "items_in_ties": 17,
+        "maximum": 2,
+        "mean": 2,
+        "minimum": 2,
+        "n": 17,
+        "native_range": [
+          1,
+          5
+        ],
+        "tied_score_groups": 1,
+        "tied_unordered_pairs": 136
+      }
+    }
+  },
+  "new_human_labels": 0,
+  "provider_calls": 0,
+  "ranking_equivalent_to_architecture_plus_worldbuilding": true,
+  "represented_plot_clusters": 10,
+  "resampling": {
+    "executed_calls": 0,
+    "suppressed_calls": 0
+  },
+  "rule": "Unweighted arithmetic mean of exactly six native integer dimension scores; no fitting or imputation.",
+  "schema_version": 1,
+  "source_commitments": {
+    "freeze_sha256": "d7395eeca3bb513b68418589a9496074cce2b093cf96db614451fd7c06dfe035",
+    "joined_sha256": "387a39c7c4bf7c11276853fd32fa10b9c7adacb7c6c5c67b9c740f7e9fd13e86",
+    "labels_sha256": "1916ec27eaa8810a8427ed7000e2aefa3535fd2a33b2ae1d372cccdab3fc6516",
+    "manifest_sha256": "00b4e3cd33a8d9ed3cc24e6e3e8d07ec20511a6dd87c6507f888d43eb59391bc"
+  },
+  "state": "POST_HOC_DEVELOPMENT_DIAGNOSTIC",
+  "unused_confirmation": false
+}
