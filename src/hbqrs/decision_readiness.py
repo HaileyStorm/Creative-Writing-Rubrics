@@ -40,6 +40,7 @@ def _rows(value: Any, name: str) -> list[Mapping[str, Any]]:
 def _assessment(groups: Sequence[Mapping[str, Any]], name: str) -> dict[str, Any]:
     applicable = assessed = 0.0
     unassessed_count = 0
+    unassessed_items = []
     for group in groups:
         for question in _rows(group.get("questions"), f"{name}.questions"):
             weight = _number(question.get("weight"), f"{name}.question.weight")
@@ -51,12 +52,18 @@ def _assessment(groups: Sequence[Mapping[str, Any]], name: str) -> dict[str, Any
             applicable += weight
             if state == "CANNOT_ASSESS":
                 unassessed_count += 1
+                unassessed_items.append({
+                    "question_id": question.get("question_id"),
+                    "module_id": question.get("module_id"),
+                    "weight": weight,
+                })
             else:
                 assessed += weight
     return {
         "applicable_weight": applicable,
         "assessed_weight": assessed,
         "unassessed_questions": unassessed_count,
+        "unassessed_items": unassessed_items,
         "complete": unassessed_count == 0,
     }
 

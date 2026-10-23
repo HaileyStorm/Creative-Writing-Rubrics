@@ -68,6 +68,13 @@ unassessed penalties; `SCORED` alone does not mean every applicable leaf was
 assessed. `fully_assessed_point_score` requires valid hard gates, complete
 positive and penalty assessment, `SCORED` status, and equal lower/upper bounds.
 
+Each assessment section also lists `unassessed_items`: the saved question ID,
+module ID and saved assessment weight for each `CANNOT_ASSESS` criterion, in report
+order. Older reports without those IDs retain null identifiers. Use this trace
+to locate the original criterion and evidence before deciding what information
+is missing. It does not diagnose the cause, recommend an edit or change a verdict.
+The listed weights are local assessment weights, not estimated score effects.
+
 The threshold convention is inclusive (`score >= threshold`). `ROBUSTLY_MEETS`
 means the lower bound meets it; `ROBUSTLY_BELOW` means the upper bound is below
 it. An interval spanning the threshold is `UNRESOLVED`. This is a scalar-bounds

@@ -45,7 +45,17 @@ Audience, preferences, priorities, weighted goals and binding requirements are e
 
 Persistent inapplicability can correctly reflect that contract. Absent supplied character sheets or neighboring scenes can also explain unassessability. These counts do not justify deleting criteria or treating NA as NO. Conversely, unknown completion status should not hide a visible local defect.
 
-The useful follow-up is a bounded contextual review of the recurring metadata and local-scope cases. In particular, investigate why excerpt-status and authorization questions receive differing assessment states under the shared passage contract, and whether the all-NA digression criterion correctly reflects the supplied paragraphs. That requires checking the actual supplied context and relevant passages; the aggregate alone cannot diagnose a prompt, judge or rubric failure. Any prompt change would define a separate future condition. The canonical rubric and existing predictions remain unchanged.
+### Status-disclosure follow-up
+
+A subsequent saved-context review selected the two lexicographically lowest private paragraph IDs in each of the YES and CANNOT_ASSESS groups for `penalty.unflagged_incomplete.status`. All four frozen outbound prompts contained the shared writing instruction and the metadata declaring passage scope and unknown completion. This selected sample establishes no rendering omission.
+
+The criterion asks whether excerpt, fragment, sample, partial-draft or unfinished status is supplied to the judge. The two CANNOT_ASSESS notes treat actual excerpt or unfinished status as unresolved despite disclosed passage scope. The two YES notes treat passage scope and explicit uncertainty as sufficient disclosure. The wording does not resolve those interpretations: evaluation scope does not establish the underlying work's completion status, while explicit uncertainty still communicates an evaluation limit.
+
+The useful unscored diagnostic is: **Passage scope and unknown whole-work completion were supplied; the criterion does not specify whether explicit uncertainty satisfies its disclosure requirement. Preserve the original verdict.** No replacement question or score change is validated by these four cases. Their different passages and writing instructions also prevent treating them as identical-input repeats. Model notes are explanations, not verified causal accounts; independent agent review is not human validation.
+
+The retained private review packet has SHA-256 `b013e44225a3e0f3b4de19c35f0000c4e583bcb86fe92e2274a9071a61369e14` (23,470 bytes). It binds original context, contracts, response notes and bounded frozen-prompt slices. Source prose, private identities and response excerpts are excluded here. No provider contact, scorer call or human-target read occurred in this diagnostic. Frozen outbound bytes do not establish backend or wire attestation. The selection supports this narrow ambiguity diagnosis, not a defect rate or a claim that either verdict is wrong.
+
+Authorization and digression remain separate follow-ups requiring their actual context and relevant passages. Any prompt change would define a separate future condition. The canonical rubric and existing predictions remain unchanged.
 
 ## Selection and limitations
 
