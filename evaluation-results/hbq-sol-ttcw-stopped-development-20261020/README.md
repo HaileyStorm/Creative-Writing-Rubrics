@@ -98,7 +98,21 @@ Omit `--output` to print only the local summary. The optional output contains re
 
 For each new accepted result, it checks the frozen request descriptor, producer identity, run/entry/attempt-marker binding and stored admission commitments. It replays the saved raw native receipt against the exact prompt and expected model/effort, compares the native final with the admitted response, and rejects reused native thread/turn identities. The existing semantic validator is not rerun. The parent records retain their original qualification limits; the changed execution condition stays separate from the parent scientific condition. The owning caller still reconciles other attempt roots and serializes reads with its producer.
 
-The actual parent-only CLI returned all 328 records unchanged, five occupied no-resend identities and 711 untouched requests. Request-complete banks remained HBQ 7, TTCW14 15, holistic 11, compact 15 and Oregon 13, with no all-five shared bank. A second CLI call rejected the retained offline rehearsal. No new native receipt, prediction, score or human-reference value was produced. The future accepted-continuation branch has source review, but no runtime proof using a real continuation result yet. Subsequent numeric-profile and analysis consumers must use the returned explicit identities rather than the historical cutoff scripts.
+The actual parent-only CLI returned all 328 records unchanged, five occupied no-resend identities and 711 untouched requests. Request-complete banks remained HBQ 7, TTCW14 15, holistic 11, compact 15 and Oregon 13, with no all-five shared bank. A second CLI call rejected the retained offline rehearsal. No new native receipt, prediction, score or human-reference value was produced. The future accepted-continuation branch has source review, but no runtime proof using a real continuation result yet. The numeric-profile adapter below uses the returned explicit identities; later human-reference analysis must do the same instead of using the historical cutoff scripts.
+
+### Numeric profiles from saved request IDs
+
+The [numeric-profile adapter](ordered_profiles.py) calls the saved-result reader, then groups accepted records by the frozen story and arm identities. An HBQ story needs its exact 23 packets and 178 questions before entering the original full-bank scoring path. Missing packets stay missing even when a larger source ordinal is present elsewhere. The adapter retains the original strict import, source/context quotation checks, canonical scorer and comparator transforms. It pins the implementation, schemas, registry and bundles, verifies the compiled bundle and question payload, and requires both effective schema directories to resolve to the pinned checkout.
+
+```text
+python ordered_profiles.py --parent-cache CACHE332_MANIFEST --manifest MANIFEST216 --census CENSUS290 --plan PRIVATE_PLAN --condition SCIENTIFIC_CONDITION216 --repo CWR_CHECKOUT --output NEW_PRIVATE_PROFILES_JSON
+```
+
+Add `--run-dir COLLECTOR_PROGRESS_DIRECTORY` only when consuming actual continuation results. The create-only output contains all 180 story/arm profiles, received and missing request IDs, coverage, native-scale scores, ties, floor/ceiling counts and shared numeric denominators. Keep it private. A request-complete bank can still have no numeric score; incomplete HBQ banks have no primary scalar score. This command does not read human references, compute human agreement, dispatch work or change the canonical rubric.
+
+The local saved-data CLI reproduced the existing 151 profile entries exactly on score, status, packet membership and their recorded coverage. Seven complete HBQ banks passed through the frozen scorer; all 29 incomplete HBQ banks remained unscored, including four with some accepted packets. Numeric-work counts remain HBQ 7, TTCW14 15, holistic 11, compact 15 and Oregon 13, with no all-five shared numeric work. The additional 29 profile rows make missing HBQ banks explicit; they add no predictions or scores.
+
+Independent review found and resolved an effective-schema-root gap before publication: `HBQRS_ROOT` could otherwise redirect admission reads away from the hashed schemas. The corrected CLI produced the same current-root output and rejected a separate alternate-book fixture before writing profiles. The original source and both local receipts remain retained. These checks establish saved-data compatibility and source binding; scoring a genuine out-of-order continuation remains unverified until such results exist.
 
 ## Provenance and limits
 
