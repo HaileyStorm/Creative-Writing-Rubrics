@@ -1,0 +1,45 @@
+{
+  "adapter_sha256": {
+    "ordered_analysis.py": "9654f9068ba3fbf9fb87b84c420dcd6736154e016be834054bd2edb12ca0dbc5",
+    "ordered_profiles.py": "5ae09f4bac5eac1fbcdc1a996c37f984a7ede8b60995add450d387ab95d1fb17",
+    "ordered_results.py": "9155bb6f7a4886863413f03c596191b9c4029e22219a0f21d3f9b0c60b6ac0d3"
+  },
+  "all_five_shared_numeric_works": 8,
+  "already_opened_development_reference_read": true,
+  "analysis_canonical_scorer_calls": 0,
+  "bootstrap_draws_executed": 0,
+  "candidate_promoted": false,
+  "capture_receipt_sha256": "be75bc5792396ff0798824f5c398ef6af537190954cd6bd3112591deaa5a5be4",
+  "capture_source_sha256": "481d73f97e4d74eeb71d40983d5a6a4e7dbf3807bf03e92627753882ce2d1643",
+  "complete_hbq_banks_scored": 8,
+  "evidence_class": "retained_real_continuation_local_runtime",
+  "full_goal_complete": false,
+  "inflight_identity_excluded_from_accepted_view": true,
+  "journal_rejoined_for_profiles_or_analysis": false,
+  "limits": [
+    "Private records are required to reproduce these source joins; hashes alone are custody commitments.",
+    "Saved execution evidence supports requested native model/effort and zero observed tool activity, not full backend, auxiliary, production-wire, account or sampler equivalence.",
+    "Incomplete and in-flight identities remain separate; this snapshot does not establish final collection state.",
+    "Initial report statistics above retain their original 328-result cohort.",
+    "These eight shared works do not meet the original 33-work primary coverage requirement or establish a method winner."
+  ],
+  "live_collector_stopped_for_snapshot": false,
+  "new_accepted": 42,
+  "new_human_labels": 0,
+  "new_native_receipts_replayed_locally": 42,
+  "new_provider_calls_to_build_snapshot": 0,
+  "parent_accepted": 328,
+  "parent_record_objects_unchanged": true,
+  "private_snapshot_sha256": {
+    "analysis.json": "b129fbd1a97dc87aaa1b2a36b9449462ae1f49ebcc7531626a1f6603f14c5158",
+    "joined.json": "671b830495735c6754fbef4b6f1f5f404bd34ab590e5886172960131fe1757f9",
+    "profiles.json": "995888b5228679fdbb8385a6c758fe4425c7973da535dd9905f4cfe72d3ba0c2"
+  },
+  "profile_grid_rows": 180,
+  "registered_primary_coverage_met": false,
+  "schema_version": 1,
+  "scope": "One fixed saved view; this is execution evidence, not a new completed method comparison.",
+  "snapshot_utc": "2026-10-23T20:22:51.380006+00:00",
+  "total_accepted": 370,
+  "unused_confirmation_references_opened": false
+}
