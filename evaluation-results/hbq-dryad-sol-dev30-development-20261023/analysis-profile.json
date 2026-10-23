@@ -1,0 +1,54 @@
+{
+  "Grok_selection_required_for_original_study": true,
+  "candidate_promoted": false,
+  "exploratory_axes": [
+    "novel",
+    "original",
+    "rare",
+    "appropriate",
+    "feasible",
+    "publishable",
+    "well_written",
+    "enjoyed",
+    "boring",
+    "funny",
+    "twist",
+    "future"
+  ],
+  "frozen_private_profile_sha256": "0559fd0b537cdfbbfe18f1fd662557808b3e02cba1c6425f61b3bb94e7944a7d",
+  "frozen_private_source_sha256": "8b5e51eee19a014a9c55e1c7b01b50266a4a51d34718c746090f96561a328cdb",
+  "frozen_utc": "2026-10-23T20:43:04.640555+00:00",
+  "input_sha256": {
+    "replay": "fc70eb43be0608e787eeb877b0d42bb81cc08efe47646c8759f69c5f3c57613f",
+    "schedule": "2836a81d26836274440318338b395a04dad51a80f7d339ca0612f8135dc0e82f",
+    "target_provenance": "499735faeeb24219dacbc32c4bbedb588aec30eb5ea72730028d5e3a8e10941b",
+    "targets": "d9071d48465faf7beb37b249b5120e33645a3bc0925aec7856402d75fc2d35b5"
+  },
+  "new_human_labels": 0,
+  "new_primary_axes": [
+    "well_written",
+    "enjoyed"
+  ],
+  "original_full_study_admitted": false,
+  "original_two_TRAIN_coverage_failures_retained": true,
+  "primary_change": "This descendant focuses well_written/enjoyed; original study co-primary novelty/usefulness and Grok selection gates remain unchanged.",
+  "provider_calls": 0,
+  "publication_note": "Public input paths are caller supplied. Portable consumer was constructed after the first analysis from the unchanged frozen calculation; original pre-association profile and source commitments retained.",
+  "score": "Saved canonical score only; no verdict or canonical scoring replay, fitting, rescaling or imputation.",
+  "selection": "Exact existing selected_dev_ids30 in frozen selected100 schedule; all30 retained, no selection by new target association. Original100 reduction followed partial model observation.",
+  "state": "RETROSPECTIVE_DEVELOPMENT_DESCENDANT_BEFORE_NEW_TARGET_ASSOCIATION",
+  "statistic": "Equal-story average-tie Spearman. Original pooled human story means preserved as exact rational values. Model scores use their saved decimal values.",
+  "study_id": "dryad_sol_dev30_retrospective_baseline_20261023",
+  "targets": "Original12 raw1-9 axes. DEV60packet may be decoded; exact30opaqueID matches used. TRAIN and57confirmation targets not read.",
+  "uncertainty": {
+    "axes": [
+      "well_written",
+      "enjoyed"
+    ],
+    "conditional_on": "Observed selected30stories and their pooled human means; no shared-evaluator/topic/condition/selection uncertainty or multiplicity correction.",
+    "interval": "pointwise95percent percentile, linear quantiles; undefined draws retained; no interval if any draw undefined",
+    "replicates": 2000,
+    "seed": 20261023,
+    "unit": "paired selected story; same resample indices for both axes"
+  }
+}
