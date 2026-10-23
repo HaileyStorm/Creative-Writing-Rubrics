@@ -34,6 +34,14 @@ Predictions and the complete request census were sealed before opening this deve
 
 The practical next step is to retain this report, finish the untouched frozen suffix when the designated account is eligible, then run the small preselected repeatability check. The compact score collapse warrants examination on additional already-planned stories before changing its prompt or interpreting it as a general model limitation. Existing strict-import and readiness improvements can ship on their engineering evidence independently of an alignment gain.
 
+### Remaining-request feasibility
+
+An offline join of the frozen request manifest and sealed stopped census shows that the five occupied no-resend requests belong to four distinct HBQ story banks. Even if all 711 untouched requests succeed, at most **32 of 36 HBQ banks**, and therefore **32 all-five-method banks**, can become request-complete. The original 33-story complete-bank coverage rule cannot be reached through this suffix alone. It remains unchanged; a later development report must retain the shortfall rather than resend failed samples.
+
+In the current ascending execution order, the first possible all-five request bank completes at ordinal 418, after 85 suffix requests. A targeted order could complete one such bank with just one untouched request. These are metadata-based planning counts, not guarantees of numeric scores or useful judgments. Execution order has not been changed, and no provider or collector was contacted. Reviewing a separately recorded completion-first order is a practical next step before eligible collection resumes.
+
+The [aggregate feasibility record](remaining-request-feasibility.json) retains input and source commitments. Independent arithmetic review matched all request groups and 32 ascending-order milestones. The private reconstruction uses request identities and admission states only; it reads no response values, scores or human references. No original statistical result was recomputed.
+
 ## Provenance and limits
 
 Collection requested `gpt-6.1-sol` at high with every collection-model tool disabled. Saved execution receipts and local tool-catalog evidence support the observed route and zero tool activity; they do not establish full backend, auxiliary-path or production-wire attestation. Cached records lacking native CLI version fields remain unknown. The independent review reproduced associations and paired deltas from saved intersections; it did not independently revalidate ordinal 1's historical join because that record lacks an embedded condition descriptor.

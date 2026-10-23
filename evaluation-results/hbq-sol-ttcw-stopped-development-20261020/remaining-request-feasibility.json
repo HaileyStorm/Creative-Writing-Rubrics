@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "analysis": "Frozen TTCW request-completion feasibility after the stopped prefix",
+  "source_commitments": {
+    "ttcw-contemporary-sol-condition-216/manifest.json": "00b4e3cd33a8d9ed3cc24e6e3e8d07ec20511a6dd87c6507f888d43eb59391bc",
+    "stopped-sol-prefix290/manifest.json": "01822fd3df6b57dcb7e0093cb4f1ba3a5cb515eb5581abd46d72c6dbcf1c02c8",
+    "stopped-sol-prefix290/census.json": "f3449263b753175f788e7b266fca69985021db0c6e65cd54a79164b1b64b7aad"
+  },
+  "private_analysis_report_sha256": "8a4ea8723bfec8b0c5e8a54d382cd282ee8a8195585f6f7fbce3e8664a30e2ce",
+  "analysis_source_sha256": "ea0257cce5acc8cca3593c23357cd74bed62dcd4e4b146de2ad2a4ca907c6ca1",
+  "summary": {
+    "current_request_complete_by_method": {
+      "hbq": 7,
+      "ttcw14": 15,
+      "holistic": 11,
+      "compact": 15,
+      "oregon": 13
+    },
+    "current_all_five_request_complete": 0,
+    "permanently_incomplete_five_method_works": 4,
+    "maximum_all_five_request_complete_from_untouched_suffix": 32,
+    "maximum_hbq_request_complete_from_untouched_suffix": 32,
+    "current_complete_pairwise_order_pairs": 5,
+    "maximum_complete_pairwise_order_pairs": 36,
+    "registered_33_work_complete_bank_coverage_reachable": false
+  },
+  "untouched_requests": 711,
+  "occupied_no_resend_requests": 5,
+  "first_unchanged_ascending_order_completion": {
+    "through_ordinal": 418,
+    "suffix_requests_attempted": 85,
+    "possible_request_complete_five_method_works": 1
+  },
+  "last_unchanged_ascending_order_completion": {
+    "through_ordinal": 1044,
+    "suffix_requests_attempted": 711,
+    "possible_request_complete_five_method_works": 32
+  },
+  "minimum_untouched_requests_for_one_allfive_request_bank": 1,
+  "independent_arithmetic_review": "Matched all pinned inputs, grouping and32frontier milestones; no findings.",
+  "execution_order_changed": false,
+  "provider_calls": 0,
+  "scorer_calls": 0,
+  "human_targets_read": false,
+  "limits": [
+    "Request membership only; accepted is not proof of numeric score, correctness or human agreement.",
+    "All prospective counts assume every untouched request becomes accepted under unchanged conditions.",
+    "No failed or ambiguous request may be resent; no launch, reservation or stop marker is changed.",
+    "Original registered study remains unchanged; current named development analysis is separate.",
+    "Changing execution order has not been adopted or evaluated. No live reservation, queue or collector was changed.",
+    "Private request identities and operational paths are excluded; authorized retained inputs and analysis source are required for independent reconstruction."
+  ]
+}
