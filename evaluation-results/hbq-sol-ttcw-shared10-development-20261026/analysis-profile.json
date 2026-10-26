@@ -1,0 +1,73 @@
+{
+  "aggregate_sha256": "b175c68c5c1208db74cc78fc2a8a60d0abc2439232587515203a818738c47f55",
+  "analysis_freeze_sha256": "d7395eeca3bb513b68418589a9496074cce2b093cf96db614451fd7c06dfe035",
+  "analysis_source_sha256": "c843cb8bfb54a3cc27955c911c1a8e5aa053d6a2f25a9f4dd3b67479fa22ae19",
+  "compiled_bundle_sha256": "f11f55e8263e3fcc8a2d4b9a00021cf34f0ba2acac843e530999d1ed845fe2f8",
+  "export_source_sha256": "854da63fd22380886ba73b339b8cc3b837d26ca55e77d4b6107d3a1fa77745ad",
+  "fixed_view_consumer_receipt_sha256": "721f6bad2d3e3f78c5f6260a5345f64c254276d50b611ab6197389ff653f3ce0",
+  "frozen_condition_sha256": "219d1388e13bd796d13b93a7511ed7ee55d0cf120479783debf022a622d83dde",
+  "limits": [
+    "Availability-selected partial development cohort; no winning method, improvement or population inference.",
+    "Exporter and profile were constructed after inspecting the saved analysis; they are not a prospective preregistration.",
+    "Private saved records are needed to reproduce joins and original statistics.",
+    "Failed and unknown attempts, source restrictions and inherited parent/native qualification limits remain preserved.",
+    "Current collection continues independently; this package reports only the fixed 438-result view."
+  ],
+  "method": {
+    "association": "Saved Spearman rho with average tied ranks",
+    "export_statistics": "Existing correlations copied; score ranges, distinct values, tied pairs and endpoint counts computed from saved matched scores",
+    "original_primary_minimum_shared_works": 33,
+    "planned_plot_groups": 12,
+    "planned_works": 36,
+    "reference": "Existing mean of fourteen binary tests assessed by three experts per story",
+    "selection": "Intersection of all five numeric method profiles at a fixed availability snapshot",
+    "shared_plot_groups": 6,
+    "shared_works": 10,
+    "uncertainty": "No bootstrap or interval below original shared coverage threshold"
+  },
+  "prepared_utc": "2026-10-26T16:15:35.634418+00:00",
+  "private_input_sha256": {
+    "analysis": "abda32178a6892f504f16e61bce132c591b4b289edd71f92f836475dedf46842",
+    "joined": "7df8ef05b2592eca5438eea1318eaa125b971b49106ee7a47aa00d24648d80d2",
+    "profiles": "972b5745ca0267d73bb414b30559d3c999520d4a951dd86bf5826ff3193acf97"
+  },
+  "qualification": {
+    "backend_auxiliary_production_wire_sampler_equivalence_established": false,
+    "collection_model_tools_disabled": true,
+    "missing_version_fields": "unknown",
+    "observed_tool_activity": 0,
+    "requested_effort": "high",
+    "requested_model": "gpt-6.1-sol",
+    "retained_native_client_versions": [
+      "0.163",
+      "0.164"
+    ]
+  },
+  "question_payload_sha256": "d66c9a9e8471bb57d9ad80c4780349126464c177663b8dca012f44ff2ce52c11",
+  "reference_file_sha256": "1916ec27eaa8810a8427ed7000e2aefa3535fd2a33b2ae1d372cccdab3fc6516",
+  "same_attempt_recovery_receipt_sha256": "d330282ddcdaac7774688dc5b79d057140de7ab5f946c6e40304d251b372d410",
+  "schema_version": 1,
+  "scope": {
+    "candidate_promoted": false,
+    "export_native_or_semantic_replay": false,
+    "export_scorer_calls": 0,
+    "full_goal_complete": false,
+    "new_human_labels": 0,
+    "new_provider_calls": 0,
+    "original_registration_changed": false,
+    "prospective_confirmation": false
+  },
+  "scoring_source_sha256": {
+    "bundles/all_bundles.json": "012af060e8630b8980661465b368e129ddeec82dfa7b48e13e7a35a473eb95a8",
+    "registry/all_modules.json": "43a33ee015310097f79c8a04bb7c3a8782813e758d523b1db08ae2b14d51f66f",
+    "schema/hbq_judge_response.schema.json": "8896aabcd8f8a503f171d95d70117535da22ceff90400ff8698ee8b3f607edd8",
+    "schema/hbq_verdict.schema.json": "2d176506edab164c71d42a73661bcd526e4331dbdce659dfae56168b708a4f19",
+    "src/hbqrs/__init__.py": "bd80d26dfe93422ca407f3692a227f3070954115df61eeea9b7efd4ec22617ac",
+    "src/hbqrs/core.py": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb",
+    "src/hbqrs/paths.py": "dedadb6d9f8e3cf700c16012b29e1a590a2b1175c8ead0cf17c44aa6417b8266",
+    "src/hbqrs/runner.py": "04a87edb728701afa6a43233a775c032473c82d0f189f209713051025d86f1f7",
+    "src/hbqrs/scoring_v2.py": "1305f444aaa45a0f47cc38cab207e847ae2ca04142637e6ee765edc3f06960d6",
+    "src/hbqrs/weights.py": "6893e8cdbb7ae5de1bb732f6004df558c73838c80bb75d1b2cadb651cc37f139"
+  },
+  "state": "RETROSPECTIVE_AGGREGATE_EXPORT_OF_FIXED_DEVELOPMENT_VIEW"
+}
