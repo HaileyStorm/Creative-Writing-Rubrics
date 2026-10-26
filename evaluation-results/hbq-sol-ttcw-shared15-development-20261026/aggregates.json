@@ -1,0 +1,137 @@
+{
+  "coverage": {
+    "all_five_shared_numeric_works": 15,
+    "numeric_works_by_method": {
+      "compact": 21,
+      "hbq": 15,
+      "holistic": 20,
+      "oregon": 22,
+      "ttcw14": 25
+    },
+    "original_required_shared_numeric_works": 33,
+    "planned_plot_groups": 12,
+    "planned_works": 36,
+    "registered_primary_coverage_met": false,
+    "shared_plot_groups": 10,
+    "works_without_all_five_numeric_scores": 21
+  },
+  "fixed_snapshot": {
+    "collector_stopped_for_snapshot": false,
+    "complete_hbq_banks_scored": 15,
+    "continuation_attempted": 242,
+    "continuation_unattempted": 469,
+    "continuation_unresolved": 1,
+    "original_failed_no_resend_record_preserved": true,
+    "producer_accepted": 567,
+    "profile_grid_rows": 180,
+    "separate_same_attempt_saved_recovery": 1,
+    "total_distinct_accepted": 568,
+    "unchanged_parent_records": 328
+  },
+  "hbq_minus_comparator_rho_same_fifteen_works": {
+    "compact": null,
+    "holistic": null,
+    "oregon": 0.67187383678008,
+    "ttcw14": 0.4174237740452051
+  },
+  "private_input_sha256": {
+    "analysis": "6e43a8b0b22c43a2fdf3cc58a38d74b442c8d66089e7d5dfe8c9bea304cff795",
+    "joined": "c249ff84ef4debfd40052daa9a21e851f1324023268276d2140e5a32698bd50f",
+    "profiles": "2d9fe47ce2acfae924bef63134e894b1654dc3de779bf3b6c20b5ffc000c32d2"
+  },
+  "same_fifteen_works": {
+    "compact": {
+      "distinct_scores": 1,
+      "exact_ceiling_count": 0,
+      "exact_floor_count": 0,
+      "maximum": 2,
+      "minimum": 2,
+      "native_range": [
+        1,
+        5
+      ],
+      "rho_vs_expert_reference": null,
+      "tied_unordered_pairs": 105,
+      "undefined_reason": "Constant score vector on the matched works",
+      "works": 15
+    },
+    "hbq": {
+      "distinct_scores": 15,
+      "exact_ceiling_count": 0,
+      "exact_floor_count": 0,
+      "maximum": 56.6891,
+      "minimum": 35.5683,
+      "native_range": [
+        0,
+        100
+      ],
+      "rho_vs_expert_reference": 0.7612318672042315,
+      "tied_unordered_pairs": 0,
+      "undefined_reason": null,
+      "works": 15
+    },
+    "holistic": {
+      "distinct_scores": 1,
+      "exact_ceiling_count": 0,
+      "exact_floor_count": 0,
+      "maximum": 2,
+      "minimum": 2,
+      "native_range": [
+        1,
+        7
+      ],
+      "rho_vs_expert_reference": null,
+      "tied_unordered_pairs": 105,
+      "undefined_reason": "Constant score vector on the matched works",
+      "works": 15
+    },
+    "oregon": {
+      "distinct_scores": 3,
+      "exact_ceiling_count": 0,
+      "exact_floor_count": 0,
+      "maximum": 21,
+      "minimum": 19,
+      "native_range": [
+        6,
+        36
+      ],
+      "rho_vs_expert_reference": 0.08935803042415155,
+      "tied_unordered_pairs": 37,
+      "undefined_reason": null,
+      "works": 15
+    },
+    "ttcw14": {
+      "distinct_scores": 7,
+      "exact_ceiling_count": 0,
+      "exact_floor_count": 0,
+      "maximum": 0.5714285714285714,
+      "minimum": 0.14285714285714285,
+      "native_range": [
+        0,
+        1
+      ],
+      "rho_vs_expert_reference": 0.34380809315902644,
+      "tied_unordered_pairs": 15,
+      "undefined_reason": null,
+      "works": 15
+    }
+  },
+  "schema_version": 1,
+  "scope": {
+    "already_opened_development_reference_used": true,
+    "candidate_promoted": false,
+    "export_correlations_recomputed": false,
+    "export_provider_calls": 0,
+    "export_scorer_calls": 0,
+    "full_goal_complete": false,
+    "new_human_labels": 0,
+    "unused_confirmation_used": false
+  },
+  "state": "INCOMPLETE_AVAILABILITY_SELECTED_DEVELOPMENT",
+  "uncertainty": {
+    "bootstrap_draws": 0,
+    "confidence_intervals_estimated": false,
+    "population_or_method_superiority_inference_supported": false,
+    "state": "INCONCLUSIVE_UNDER_MISSINGNESS"
+  }
+}
