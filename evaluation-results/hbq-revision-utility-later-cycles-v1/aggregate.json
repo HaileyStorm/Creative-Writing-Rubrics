@@ -1,0 +1,1578 @@
+{
+  "CI_or_pvalues": false,
+  "HBQ_packets": 342,
+  "all_registered_three_cycle_roots_qualified": false,
+  "assessed_scalar_requests": 54,
+  "candidate_promoted": false,
+  "canonical_compiler_or_scorer_calls": 0,
+  "cycles": [
+    1,
+    2
+  ],
+  "cycles_are_repeated_measures_not_independent_roots": true,
+  "distinct_roots": 3,
+  "fitted_weights": false,
+  "form_separate_matched_summaries": [
+    {
+      "assessed_orders": 4,
+      "comparison": "cwr_generic",
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "form": "story",
+      "instruments": {
+        "compact": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "both_tied": 2
+          }
+        },
+        "hbq": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "both_tied": 2
+          }
+        },
+        "holistic": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "both_tied": 2
+          }
+        },
+        "preservation": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "both_tied": 2
+          }
+        }
+      },
+      "order_disagreement_cycles": 2,
+      "order_pattern_counts": {
+        "opposite_direction": 2
+      },
+      "planned_orders": 4,
+      "root_mean_preference": {
+        "denominator": 2,
+        "numerator": 1,
+        "value": 0.5
+      },
+      "stratum": "clean",
+      "strict_order_opposition_cycles": 2
+    },
+    {
+      "assessed_orders": 4,
+      "comparison": "cwr_original",
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "form": "story",
+      "instruments": {
+        "compact": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "hbq": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "holistic": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "preservation": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        }
+      },
+      "order_disagreement_cycles": 0,
+      "order_pattern_counts": {
+        "consistent_left": 2
+      },
+      "planned_orders": 4,
+      "root_mean_preference": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "stratum": "clean",
+      "strict_order_opposition_cycles": 0
+    },
+    {
+      "assessed_orders": 4,
+      "comparison": "generic_original",
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "form": "story",
+      "instruments": {
+        "compact": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "hbq": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "holistic": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "preservation": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        }
+      },
+      "order_disagreement_cycles": 0,
+      "order_pattern_counts": {
+        "consistent_left": 2
+      },
+      "planned_orders": 4,
+      "root_mean_preference": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "stratum": "clean",
+      "strict_order_opposition_cycles": 0
+    },
+    {
+      "assessed_orders": 4,
+      "comparison": "cwr_generic",
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "form": "excerpt",
+      "instruments": {
+        "compact": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "hbq": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "holistic": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "preservation": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        }
+      },
+      "order_disagreement_cycles": 0,
+      "order_pattern_counts": {
+        "consistent_left": 2
+      },
+      "planned_orders": 4,
+      "root_mean_preference": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "stratum": "disclosed_exception",
+      "strict_order_opposition_cycles": 0
+    },
+    {
+      "assessed_orders": 4,
+      "comparison": "cwr_original",
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "form": "excerpt",
+      "instruments": {
+        "compact": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "hbq": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "holistic": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "preservation": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        }
+      },
+      "order_disagreement_cycles": 0,
+      "order_pattern_counts": {
+        "consistent_left": 2
+      },
+      "planned_orders": 4,
+      "root_mean_preference": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "stratum": "disclosed_exception",
+      "strict_order_opposition_cycles": 0
+    },
+    {
+      "assessed_orders": 4,
+      "comparison": "generic_original",
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "form": "excerpt",
+      "instruments": {
+        "compact": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "hbq": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "holistic": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "preservation": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        }
+      },
+      "order_disagreement_cycles": 0,
+      "order_pattern_counts": {
+        "consistent_left": 2
+      },
+      "planned_orders": 4,
+      "root_mean_preference": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "stratum": "disclosed_exception",
+      "strict_order_opposition_cycles": 0
+    },
+    {
+      "assessed_orders": 4,
+      "comparison": "cwr_generic",
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "form": "poem",
+      "instruments": {
+        "compact": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "both_tied": 2
+          }
+        },
+        "hbq": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "both_tied": 2
+          }
+        },
+        "holistic": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "both_tied": 2
+          }
+        },
+        "preservation": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "-1": 1,
+            "0": 1
+          },
+          "mean_native_delta": {
+            "denominator": 2,
+            "numerator": -1,
+            "value": -0.5
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "both_tied": 1,
+            "scalar_decisive_pair_tie": 1
+          }
+        }
+      },
+      "order_disagreement_cycles": 2,
+      "order_pattern_counts": {
+        "opposite_direction": 2
+      },
+      "planned_orders": 4,
+      "root_mean_preference": {
+        "denominator": 2,
+        "numerator": 1,
+        "value": 0.5
+      },
+      "stratum": "clean",
+      "strict_order_opposition_cycles": 2
+    },
+    {
+      "assessed_orders": 4,
+      "comparison": "cwr_original",
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "form": "poem",
+      "instruments": {
+        "compact": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "both_tied": 2
+          }
+        },
+        "hbq": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "-1": 1,
+            "0": 1
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": -2,
+            "value": -2.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "both_tied": 1,
+            "scalar_decisive_pair_tie": 1
+          }
+        },
+        "holistic": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "both_tied": 2
+          }
+        },
+        "preservation": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "-1": 1,
+            "0": 1
+          },
+          "mean_native_delta": {
+            "denominator": 2,
+            "numerator": -1,
+            "value": -0.5
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "both_tied": 1,
+            "scalar_decisive_pair_tie": 1
+          }
+        }
+      },
+      "order_disagreement_cycles": 2,
+      "order_pattern_counts": {
+        "opposite_direction": 2
+      },
+      "planned_orders": 4,
+      "root_mean_preference": {
+        "denominator": 2,
+        "numerator": 1,
+        "value": 0.5
+      },
+      "stratum": "clean",
+      "strict_order_opposition_cycles": 2
+    },
+    {
+      "assessed_orders": 4,
+      "comparison": "generic_original",
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "form": "poem",
+      "instruments": {
+        "compact": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "hbq": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "-1": 1,
+            "0": 1
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": -2,
+            "value": -2.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "opposite_direction": 1,
+            "scalar_tie_pair_decisive": 1
+          }
+        },
+        "holistic": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        },
+        "preservation": {
+          "assessed_root_cycles": 2,
+          "cycle_delta_sign_counts": {
+            "0": 2
+          },
+          "mean_native_delta": {
+            "denominator": 1,
+            "numerator": 0,
+            "value": 0.0
+          },
+          "missing": 0,
+          "planned_root_cycles": 2,
+          "scalar_pair_direction_counts": {
+            "scalar_tie_pair_decisive": 2
+          }
+        }
+      },
+      "order_disagreement_cycles": 0,
+      "order_pattern_counts": {
+        "consistent_left": 2
+      },
+      "planned_orders": 4,
+      "root_mean_preference": {
+        "denominator": 1,
+        "numerator": 1,
+        "value": 1.0
+      },
+      "stratum": "clean",
+      "strict_order_opposition_cycles": 0
+    }
+  ],
+  "full_DEV_release": false,
+  "full_cached_HBQ_banks": 18,
+  "full_goal_complete": false,
+  "human_targets_read": false,
+  "native_admission_replays": 0,
+  "native_scale_distributions": [
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "story",
+      "instrument": "hbq",
+      "intervention": "unchanged_original",
+      "missing": 0,
+      "native_range": [
+        0,
+        100
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "story",
+      "instrument": "holistic",
+      "intervention": "unchanged_original",
+      "missing": 0,
+      "native_range": [
+        1,
+        7
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "story",
+      "instrument": "compact",
+      "intervention": "unchanged_original",
+      "missing": 0,
+      "native_range": [
+        1,
+        5
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 2,
+      "exact_minimum": 0,
+      "form": "story",
+      "instrument": "preservation",
+      "intervention": "unchanged_original",
+      "missing": 0,
+      "native_range": [
+        0,
+        4
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "story",
+      "instrument": "hbq",
+      "intervention": "strong_generic_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        0,
+        100
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "story",
+      "instrument": "holistic",
+      "intervention": "strong_generic_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        1,
+        7
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "story",
+      "instrument": "compact",
+      "intervention": "strong_generic_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        1,
+        5
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 2,
+      "exact_minimum": 0,
+      "form": "story",
+      "instrument": "preservation",
+      "intervention": "strong_generic_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        0,
+        4
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "story",
+      "instrument": "hbq",
+      "intervention": "cwr_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        0,
+        100
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "story",
+      "instrument": "holistic",
+      "intervention": "cwr_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        1,
+        7
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "story",
+      "instrument": "compact",
+      "intervention": "cwr_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        1,
+        5
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 2,
+      "exact_minimum": 0,
+      "form": "story",
+      "instrument": "preservation",
+      "intervention": "cwr_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        0,
+        4
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "excerpt",
+      "instrument": "hbq",
+      "intervention": "unchanged_original",
+      "missing": 0,
+      "native_range": [
+        0,
+        100
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "disclosed_exception"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "excerpt",
+      "instrument": "holistic",
+      "intervention": "unchanged_original",
+      "missing": 0,
+      "native_range": [
+        1,
+        7
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "disclosed_exception"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "excerpt",
+      "instrument": "compact",
+      "intervention": "unchanged_original",
+      "missing": 0,
+      "native_range": [
+        1,
+        5
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "disclosed_exception"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 2,
+      "exact_minimum": 0,
+      "form": "excerpt",
+      "instrument": "preservation",
+      "intervention": "unchanged_original",
+      "missing": 0,
+      "native_range": [
+        0,
+        4
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "disclosed_exception"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "excerpt",
+      "instrument": "hbq",
+      "intervention": "strong_generic_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        0,
+        100
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "disclosed_exception"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "excerpt",
+      "instrument": "holistic",
+      "intervention": "strong_generic_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        1,
+        7
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "disclosed_exception"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "excerpt",
+      "instrument": "compact",
+      "intervention": "strong_generic_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        1,
+        5
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "disclosed_exception"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 2,
+      "exact_minimum": 0,
+      "form": "excerpt",
+      "instrument": "preservation",
+      "intervention": "strong_generic_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        0,
+        4
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "disclosed_exception"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "excerpt",
+      "instrument": "hbq",
+      "intervention": "cwr_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        0,
+        100
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "disclosed_exception"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "excerpt",
+      "instrument": "holistic",
+      "intervention": "cwr_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        1,
+        7
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "disclosed_exception"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "excerpt",
+      "instrument": "compact",
+      "intervention": "cwr_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        1,
+        5
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "disclosed_exception"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 2,
+      "exact_minimum": 0,
+      "form": "excerpt",
+      "instrument": "preservation",
+      "intervention": "cwr_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        0,
+        4
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "disclosed_exception"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 2,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "poem",
+      "instrument": "hbq",
+      "intervention": "unchanged_original",
+      "missing": 0,
+      "native_range": [
+        0,
+        100
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": false,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "poem",
+      "instrument": "holistic",
+      "intervention": "unchanged_original",
+      "missing": 0,
+      "native_range": [
+        1,
+        7
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "poem",
+      "instrument": "compact",
+      "intervention": "unchanged_original",
+      "missing": 0,
+      "native_range": [
+        1,
+        5
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 2,
+      "exact_minimum": 0,
+      "form": "poem",
+      "instrument": "preservation",
+      "intervention": "unchanged_original",
+      "missing": 0,
+      "native_range": [
+        0,
+        4
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "poem",
+      "instrument": "hbq",
+      "intervention": "strong_generic_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        0,
+        100
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "poem",
+      "instrument": "holistic",
+      "intervention": "strong_generic_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        1,
+        7
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "poem",
+      "instrument": "compact",
+      "intervention": "strong_generic_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        1,
+        5
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 2,
+      "exact_minimum": 0,
+      "form": "poem",
+      "instrument": "preservation",
+      "intervention": "strong_generic_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        0,
+        4
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "poem",
+      "instrument": "hbq",
+      "intervention": "cwr_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        0,
+        100
+      ],
+      "near_affine_maximum_ge90": 2,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "poem",
+      "instrument": "holistic",
+      "intervention": "cwr_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        1,
+        7
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 1,
+      "exact_maximum": 0,
+      "exact_minimum": 0,
+      "form": "poem",
+      "instrument": "compact",
+      "intervention": "cwr_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        1,
+        5
+      ],
+      "near_affine_maximum_ge90": 0,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": true,
+      "stratum": "clean"
+    },
+    {
+      "assessed": 2,
+      "cycles_per_root": 2,
+      "distinct_roots": 1,
+      "distinct_scores": 2,
+      "exact_maximum": 1,
+      "exact_minimum": 0,
+      "form": "poem",
+      "instrument": "preservation",
+      "intervention": "cwr_feedback_revision",
+      "missing": 0,
+      "native_range": [
+        0,
+        4
+      ],
+      "near_affine_maximum_ge90": 1,
+      "near_affine_minimum_le10": 0,
+      "planned": 2,
+      "same_score_across_two_cycles": false,
+      "stratum": "clean"
+    }
+  ],
+  "new_votes": 0,
+  "provider_calls": 0,
+  "selected_requests": 432,
+  "selection_sha256": "485003577f923f57df0f4c11ec95e9020a84bdf8a59c10b5ebf6036c9f33d67f",
+  "state": "CACHED_LATER_CYCLE_DESCRIPTIVE_UTILITY_COMPLETE",
+  "strata": {
+    "clean": {
+      "banks": 12,
+      "distinct_roots": 2,
+      "forms": [
+        "story",
+        "poem"
+      ],
+      "requests": 270
+    },
+    "disclosed_exception": {
+      "banks": 6,
+      "distinct_roots": 1,
+      "forms": [
+        "excerpt"
+      ],
+      "requests": 162
+    }
+  },
+  "tools_qualified_pair_orders": 36
+}
