@@ -1,0 +1,227 @@
+{
+  "bootstrap_calls": 0,
+  "calculation_counts": {
+    "HBQ_control_rho": 4,
+    "cached_method_points_reused": 6,
+    "control_expert_rho": 4,
+    "new_matched_method_expert_rho": 2
+  },
+  "candidate_promoted": false,
+  "canonical_scorer_calls": 0,
+  "cohorts": {
+    "HBQ_numeric_29": {
+      "bounds_note": "Unsharpened universal ranges, not confidence intervals; no missing outcomes imputed.",
+      "cached_HBQ_expert_rho": 0.6862598695958416,
+      "cached_HBQ_pointer": "methods/hbq/association/rho",
+      "confidence_intervals_estimated": false,
+      "controls": {
+        "constant_zero": {
+          "HBQ_minus_control_rho_point": null,
+          "distinct_feature_values": 1,
+          "feature_available": 29,
+          "feature_maximum": 0.0,
+          "feature_minimum": 0.0,
+          "rho_with_HBQ_score": null,
+          "rho_with_expert_mean": null,
+          "undefined_reason": "constant_vector",
+          "works": 29
+        },
+        "lexical_token_count": {
+          "HBQ_minus_control_rho_point": 1.2715192761961096,
+          "distinct_feature_values": 29,
+          "feature_available": 29,
+          "feature_maximum": 2464.0,
+          "feature_minimum": 831.0,
+          "rho_with_HBQ_score": -0.5467980295566502,
+          "rho_with_expert_mean": -0.585259406600268,
+          "undefined_reason": null,
+          "works": 29
+        },
+        "raw_type_token_ratio": {
+          "HBQ_minus_control_rho_point": -0.09704934463877868,
+          "distinct_feature_values": 29,
+          "feature_available": 29,
+          "feature_maximum": 0.5435656836461126,
+          "feature_minimum": 0.2930194805194805,
+          "rho_with_HBQ_score": 0.483743842364532,
+          "rho_with_expert_mean": 0.7833092142346203,
+          "undefined_reason": null,
+          "works": 29
+        }
+      },
+      "method_points": {
+        "compact": {
+          "available": 29,
+          "calculation": "exact_membership_cached401",
+          "planned_cohort": 29,
+          "rho": null,
+          "saved_statistic_pointer": "paired_method_comparisons/hbq__compact/right_rho_same_works"
+        },
+        "hbq": {
+          "available": 29,
+          "calculation": "exact_membership_cached401",
+          "planned_cohort": 29,
+          "rho": 0.6862598695958416,
+          "saved_statistic_pointer": "methods/hbq/association/rho"
+        },
+        "holistic": {
+          "available": 29,
+          "calculation": "exact_membership_cached401",
+          "planned_cohort": 29,
+          "rho": 0.181170733029426,
+          "saved_statistic_pointer": "paired_method_comparisons/hbq__holistic/right_rho_same_works"
+        },
+        "oregon": {
+          "available": 29,
+          "calculation": "exact_membership_cached401",
+          "planned_cohort": 29,
+          "rho": 0.13665007468473944,
+          "saved_statistic_pointer": "paired_method_comparisons/hbq__oregon/right_rho_same_works"
+        },
+        "ttcw14": {
+          "available": 28,
+          "calculation": "not_computed_fixed_cohort_has_missing_method_score",
+          "planned_cohort": 29,
+          "rho": null
+        }
+      },
+      "missing_original_works": 7,
+      "planned_original_works": 36,
+      "represented_plot_groups": 12,
+      "state": "INCONCLUSIVE_REGISTERED_SHARED33_RULE_UNMET",
+      "unobserved_full36_HBQ_minus_control_bounds": [
+        -2,
+        2
+      ],
+      "unobserved_full36_correlation_bounds": [
+        -1,
+        1
+      ],
+      "works": 29
+    },
+    "all_five_28": {
+      "bounds_note": "Unsharpened universal ranges, not confidence intervals; no missing outcomes imputed.",
+      "cached_HBQ_expert_rho": 0.7119170412541377,
+      "cached_HBQ_pointer": "paired_method_comparisons/hbq__ttcw14/left_rho_same_works",
+      "confidence_intervals_estimated": false,
+      "controls": {
+        "constant_zero": {
+          "HBQ_minus_control_rho_point": null,
+          "distinct_feature_values": 1,
+          "feature_available": 28,
+          "feature_maximum": 0.0,
+          "feature_minimum": 0.0,
+          "rho_with_HBQ_score": null,
+          "rho_with_expert_mean": null,
+          "undefined_reason": "constant_vector",
+          "works": 28
+        },
+        "lexical_token_count": {
+          "HBQ_minus_control_rho_point": 1.3064610109917996,
+          "distinct_feature_values": 28,
+          "feature_available": 28,
+          "feature_maximum": 2464.0,
+          "feature_minimum": 831.0,
+          "rho_with_HBQ_score": -0.6310892172961139,
+          "rho_with_expert_mean": -0.594543969737662,
+          "undefined_reason": null,
+          "works": 28
+        },
+        "raw_type_token_ratio": {
+          "HBQ_minus_control_rho_point": -0.06883327324914812,
+          "distinct_feature_values": 28,
+          "feature_available": 28,
+          "feature_maximum": 0.5435656836461126,
+          "feature_minimum": 0.2930194805194805,
+          "rho_with_HBQ_score": 0.5128626163108921,
+          "rho_with_expert_mean": 0.7807503145032858,
+          "undefined_reason": null,
+          "works": 28
+        }
+      },
+      "method_points": {
+        "compact": {
+          "available": 28,
+          "calculation": "undefined_constant_native_score_vector",
+          "planned_cohort": 28,
+          "rho": null,
+          "saved_statistic_pointer": null
+        },
+        "hbq": {
+          "available": 28,
+          "calculation": "exact_membership_cached401",
+          "planned_cohort": 28,
+          "rho": 0.7119170412541377,
+          "saved_statistic_pointer": "paired_method_comparisons/hbq__ttcw14/left_rho_same_works"
+        },
+        "holistic": {
+          "available": 28,
+          "calculation": "new_fixed_cohort_control_table_point",
+          "planned_cohort": 28,
+          "rho": 0.17905331543496017,
+          "saved_statistic_pointer": null
+        },
+        "oregon": {
+          "available": 28,
+          "calculation": "new_fixed_cohort_control_table_point",
+          "planned_cohort": 28,
+          "rho": 0.11911182203193353,
+          "saved_statistic_pointer": null
+        },
+        "ttcw14": {
+          "available": 28,
+          "calculation": "exact_membership_cached401",
+          "planned_cohort": 28,
+          "rho": 0.4225446019940552,
+          "saved_statistic_pointer": "paired_method_comparisons/hbq__ttcw14/right_rho_same_works"
+        }
+      },
+      "missing_original_works": 8,
+      "planned_original_works": 36,
+      "represented_plot_groups": 12,
+      "state": "INCONCLUSIVE_REGISTERED_SHARED33_RULE_UNMET",
+      "unobserved_full36_HBQ_minus_control_bounds": [
+        -2,
+        2
+      ],
+      "unobserved_full36_correlation_bounds": [
+        -1,
+        1
+      ],
+      "works": 28
+    }
+  },
+  "control_definitions": {
+    "constant_zero": "Every text maps to0; average-tie Spearman undefined because no rank variance, not zero.",
+    "lexical_token_count": "Unicode regex [^\\W_]+(?:['’][^\\W_]+)* on exact UTF8 source text; default Unicode semantics, no trimming, stemming or stopword removal.",
+    "raw_type_token_ratio": "Unique casefolded exact lexical tokens / total lexical tokens, exact Fraction for ranks; no Unicode normalization; undefined for zero tokens. Raw direction unchanged, no length adjustment."
+  },
+  "freeze_sha256": "d9863bb5d3677b2091a46fcf2e3ac2072bf3dcbe0ab8a744ffd1c231afa5c78d",
+  "full_goal_complete": false,
+  "limits": [
+    "Post-result development hypothesis check motivated by observed HBQ association; definitions frozen now, not an original-study preregistration.",
+    "Exact available all-five28 and HBQ29 selected memberships; missing8/7 of planned36 and original33-work rule unmet; no bootstrap/new CI.",
+    "Within12 plots dependence and availability selection remain; no population, causal verbosity explanation, method superiority, human-alignment gain or candidate promotion.",
+    "Lexical regex includes digits, splits underscores/hyphens/combining sequences; not a linguistic word count. Casefold is not normalization/stemming.",
+    "Raw type/token ratio is length-dependent. No abs-rho maximization, direction flipping, feature transforms, fitting or retuning.",
+    "Expert mean uses existing42 binary ballots per story, not42 independent experts or direct pair-preference ground truth.",
+    "Weak or strong control association does not establish whether HBQ is caused by superficial features or measures quality."
+  ],
+  "native_replays": 0,
+  "new_confidence_intervals": 0,
+  "new_human_labels": 0,
+  "provider_calls": 0,
+  "schema_version": 1,
+  "source_commitments": {
+    "analysis": "230b9391bc060d375b529cd715f5442424d70f46ba3e27d3ff5292690366f903",
+    "condition": "219d1388e13bd796d13b93a7511ed7ee55d0cf120479783debf022a622d83dde",
+    "helper_source": "c843cb8bfb54a3cc27955c911c1a8e5aa053d6a2f25a9f4dd3b67479fa22ae19",
+    "manifest": "00b4e3cd33a8d9ed3cc24e6e3e8d07ec20511a6dd87c6507f888d43eb59391bc",
+    "original_manifest": "b1868f8b6dee6daba3125b73628e6276b34f7049fad049f17262cbe3c859b7b7",
+    "profiles": "f1ac953b99bbddd96272eb9555e60eb80c9de6d5d30861e2ad7dd2e6fbecd388"
+  },
+  "source_sha256": "7acc2955d058fd08bbbffe1f909d909da4b914e7a93a73a4bec22626f4f2223e",
+  "state": "DESCRIPTIVE_TTCW_SOURCE_CONTROLS_ON_FIXED401",
+  "statistic": "Equal-story average-tie Spearman, raw predeclared feature directions; no fitted weights, residualization or retuning.",
+  "unused_confirmation_opened": false
+}
