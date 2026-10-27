@@ -1,0 +1,103 @@
+{
+  "actual_calls": {
+    "core.compile_bundle": 174,
+    "core.score_bundle": 58,
+    "ladder.score_bundle": 29,
+    "runner._normalize_batch": 667,
+    "scoring_v2.score_bundle": 58
+  },
+  "all_five_fixed_works": 28,
+  "banks_coverage_changed": 0,
+  "banks_score_or_bounds_changed": 0,
+  "banks_status_changed": 0,
+  "banks_with_projection_changes": 0,
+  "bootstrap_calls": 0,
+  "candidate_numeric_works": 29,
+  "candidate_promoted": false,
+  "effective_projection_reasons": {},
+  "freeze_sha256": "79c7cc0e7da6e46fefe95720e0e084580346d151c19c77b5a56eb4c657c2bb4c",
+  "full_goal_complete": false,
+  "genuine_historical_NO_to_candidate_CA": 0,
+  "historical_exact_baseline_matches": 29,
+  "intrinsic_compiled_canonical_sha256": "8eb052b6a86f7566f80954061f736fdfbc1ea3b3e8c4b99626970d9ed0de5eab",
+  "limits": [
+    "POST-RESULT previously opened DEVELOPMENT contrast selected after published401/437 results; this freeze is not preregistration or unused confirmation.",
+    "Fixed29 complete numeric HBQ banks and secondary fixed28 all-five subset of planned36; seven missing banks remain missing, never synthesized as CANNOT_ASSESS. Original33-shared-work rule unmet;12 plot groups imply dependence.",
+    "Historical observed score/status/weighted coverage/bounds/issues must exactly reproduce saved401 for every scored bank. No outcome-driven reselection; nonnumeric candidate makes its fixed-cohort contrast unavailable.",
+    "Point average-tie Spearman only. No bootstrap, confidence interval, multiplicity adjustment, winner, causal explanation, human-improvement or candidate-promotion claim. Universal full36 missing-outcome bounds remain unsharpened.",
+    "Expert mean is existing14 tests x3 binary ballots divided by42, not42 independent experts or a direct preference label. Previously opened TTCW reference only; no Kyoto/Dryad/CONF targets or new human labels.",
+    "Projection changes effective scoring states only. Original strict structural admission is inherited/copied, not new native/semantic admission or another vote. Native provenance is inherited from immutable401, without receipt replay.",
+    "The unchanged ladder calls two v2 wrappers and underlying canonical scorers plus intrinsic compilations per bank; actual function counts recorded. Canonical aggregation is unchanged; readiness bounds are rubric sensitivity, not statistical confidence.",
+    "No MFA170/13 quality-ballot decision/interval contract transfers to this178-bank contrast. Current readiness trace-only drift is explicitly pinned; no R391/R396 equivalence,874-pointer proof, backend equivalence or fullGoal completion."
+  ],
+  "native_replays": 0,
+  "new_human_labels": 0,
+  "new_semantic_admissions": 0,
+  "new_votes": 0,
+  "original_complete_banks": 29,
+  "planned_works": 36,
+  "provider_calls": 0,
+  "raw_blocking_states_occurrences": {},
+  "raw_native_leaves": 5162,
+  "runtime_imports": {
+    "src/hbqrs/__init__.py": "bd80d26dfe93422ca407f3692a227f3070954115df61eeea9b7efd4ec22617ac",
+    "src/hbqrs/codex_receipts.py": "d1bcadff4472c8171b3ab08b07d609b48623189814a49375bd32966a1df4e6e7",
+    "src/hbqrs/core.py": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb",
+    "src/hbqrs/decision_readiness.py": "3247a7620c9950faec156cfcaa1b1ca35cb3eb5d99cff8dcb2e0fda0ca71e39d",
+    "src/hbqrs/ladder_uncertainty.py": "a0303eb0c4acc92288dbec9561ad026573f5b1520c5005eb0f27041d8f1e4527",
+    "src/hbqrs/paths.py": "dedadb6d9f8e3cf700c16012b29e1a590a2b1175c8ead0cf17c44aa6417b8266",
+    "src/hbqrs/repeatability.py": "65f5361114ff8b1ba217b48bb1a000606d19fe2489f2a0e21f93ebcfd78fdfe2",
+    "src/hbqrs/runner.py": "04a87edb728701afa6a43233a775c032473c82d0f189f209713051025d86f1f7",
+    "src/hbqrs/scoring_v2.py": "1305f444aaa45a0f47cc38cab207e847ae2ca04142637e6ee765edc3f06960d6",
+    "src/hbqrs/weights.py": "6893e8cdbb7ae5de1bb732f6004df558c73838c80bb75d1b2cadb651cc37f139"
+  },
+  "state": "POST_RESULT_DEVELOPMENT_ONLY_INCONCLUSIVE_SHARED33_RULE_UNMET",
+  "tables": {
+    "HBQ_numeric_29": {
+      "cached_TTR_expert_rho": 0.7833092142346203,
+      "cached_historical_expert_rho": 0.6862598695958416,
+      "cached_statistics_source": "immutable437 exact same frozen membership; no baseline or TTR rho recomputed",
+      "candidate_expert_rho": 0.6862598695958416,
+      "candidate_minus_TTR_point": -0.09704934463877868,
+      "candidate_minus_historical_point": 0.0,
+      "candidate_numeric": 29,
+      "candidate_primary_contrast_available": true,
+      "diagnostic_numeric_intersection_works": 29,
+      "fixed_works": 29,
+      "full36_difference_bounds": [
+        -2,
+        2
+      ],
+      "full36_missing_correlation_bounds": [
+        -1,
+        1
+      ],
+      "intersection_diagnostic_rho": null,
+      "intervals_estimated": false
+    },
+    "all_five_28": {
+      "cached_TTR_expert_rho": 0.7807503145032858,
+      "cached_historical_expert_rho": 0.7119170412541377,
+      "cached_statistics_source": "immutable437 exact same frozen membership; no baseline or TTR rho recomputed",
+      "candidate_expert_rho": 0.7119170412541377,
+      "candidate_minus_TTR_point": -0.06883327324914812,
+      "candidate_minus_historical_point": 0.0,
+      "candidate_numeric": 28,
+      "candidate_primary_contrast_available": true,
+      "diagnostic_numeric_intersection_works": 28,
+      "fixed_works": 28,
+      "full36_difference_bounds": [
+        -2,
+        2
+      ],
+      "full36_missing_correlation_bounds": [
+        -1,
+        1
+      ],
+      "intersection_diagnostic_rho": null,
+      "intervals_estimated": false
+    }
+  },
+  "unprojected_missing_banks": 7,
+  "unused_confirmation": false
+}
