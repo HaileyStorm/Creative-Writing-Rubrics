@@ -1,0 +1,159 @@
+{
+  "actual_calls": {
+    "derived_projection": 29,
+    "new_macro_expert_rho": 2
+  },
+  "bootstrap_calls": 0,
+  "candidate_promoted": false,
+  "canonical_compiler_calls": 0,
+  "canonical_defaults_changed": false,
+  "canonical_scorer_calls": 0,
+  "component_summaries": {
+    "core.economy_and_relevance": {
+      "all_NA_banks": 0,
+      "banks": 29,
+      "effective_leaf_states": {
+        "NO": 124,
+        "NOT_APPLICABLE": 6,
+        "YES": 73
+      },
+      "leaves_per_bank": 7,
+      "macro_weight": 2.0,
+      "minimum_module_coverage": 1.0,
+      "zero_assessed_banks": 0
+    },
+    "core.freshness_and_non_genericness": {
+      "all_NA_banks": 0,
+      "banks": 29,
+      "effective_leaf_states": {
+        "NO": 174,
+        "YES": 58
+      },
+      "leaves_per_bank": 8,
+      "macro_weight": 0.5,
+      "minimum_module_coverage": 1.0,
+      "zero_assessed_banks": 0
+    },
+    "core.language_craft": {
+      "all_NA_banks": 0,
+      "banks": 29,
+      "effective_leaf_states": {
+        "NO": 210,
+        "YES": 51
+      },
+      "leaves_per_bank": 9,
+      "macro_weight": 0.5,
+      "minimum_module_coverage": 1.0,
+      "zero_assessed_banks": 0
+    },
+    "core.specificity_and_embodiment": {
+      "all_NA_banks": 0,
+      "banks": 29,
+      "effective_leaf_states": {
+        "NO": 88,
+        "YES": 115
+      },
+      "leaves_per_bank": 7,
+      "macro_weight": 0.5,
+      "minimum_module_coverage": 1.0,
+      "zero_assessed_banks": 0
+    },
+    "penalty.purple_prose": {
+      "all_NA_banks": 0,
+      "banks": 29,
+      "effective_leaf_states": {
+        "NO": 131,
+        "YES": 72
+      },
+      "leaves_per_bank": 7,
+      "macro_weight": 1.0,
+      "minimum_module_coverage": 1.0,
+      "zero_assessed_banks": 0
+    }
+  },
+  "fixed_macro_weight_denominator": 4.5,
+  "freeze_sha256": "b6ae5dd60d281b1cc23ea67412b7816c14558ad290775b296163b651734c9fd2",
+  "full_goal_complete": false,
+  "limits": [
+    "NEW five_module_report_macro_v1, not recoveredhistoricalR391 normalization, canonicalweightoverride, originalrubricreplacement orpromotion.",
+    "Post-result opened DEVELOPMENT choice informed by461zero laddertriggers and437TTRassociation. R391weights were themselves openedlabelselected; this is not preregistration, unused confirmation or an independently selected validation.",
+    "Fixed29primary and28secondary of36originalTTCWworks; sevenmissingbanks remain missing, original33shared-work ruleunmet,12plotgroups dependent. No reducednumeric subset substitutes fixedcohort.",
+    "Fourqualities andpositivepurpleavoidance form a new fixed4.5denominator macro from current effective reportleafweights/states. Original domainpoint normalization andotherquality/penalty contributions are not inherited as macroquality points; original full178admission/hardgate/globaleligibility remain.",
+    "CA remains unassessed in observeddenominators and uncertain in bounds; NA excluded; anyzeroassessed/allNAfactor makes the point unavailable withoutdropping/reweighting factors. Coverage is reported, no newthreshold beyondoriginalglobal0.88.",
+    "Sensitivitybounds are not confidenceintervals. Exactreportdecimalweighttokens used rationally; no intermediate rounding/epsilon. No bootstrap, pvalues, multiplicity adjustment, winner, humanimprovement or candidatepromotion claim.",
+    "Economy contributes44.4% andpurpleavoidance22.2%; criteria overlapconciseness/restraint. Openedselection, length/lexicalTTR confounding, sourceavailability and sharedplot dependence are strong competing explanations. Pointassociation cannot establish causalquality or predictKyotobenefit.",
+    "Existing42YES/NOballots perstory (14tests×3) define YES/42 expertmean, not42independentexperts or directpreference groundtruth. No currentDryad/Kyoto ratings/headers/targets accessed.",
+    "Reusablepureproject(report,expected_question_ids) may later support a separatelyfrozenKyotovariant, but466condition/475analysis andexistinguncertaintycandidate stayunchanged. No newnative/admission/vote from derivedstates. FullGoal incomplete."
+  ],
+  "macro_coverage_range_observed": [
+    1.0,
+    1.0
+  ],
+  "macro_numeric_banks": 29,
+  "macro_score_range_observed": [
+    14.386897194677514,
+    45.19679633867277
+  ],
+  "macro_sensitivity_width_range": [
+    0.0,
+    0.0
+  ],
+  "macro_unavailable_banks": 0,
+  "missing_original_banks_retained": 7,
+  "native_replays": 0,
+  "new_human_labels": 0,
+  "new_policy_not_historical_R391_recovery": true,
+  "new_votes": 0,
+  "normalization_calls": 0,
+  "original_complete178_banks": 29,
+  "planned_original_works": 36,
+  "policy": "five_module_report_macro_v1",
+  "provider_calls": 0,
+  "selected_module_leaves_per_bank": 38,
+  "state": "POST_RESULT_OPENED_DEVELOPMENT_ONLY_SHARED33_RULE_UNMET",
+  "tables": {
+    "HBQ_numeric_29": {
+      "all36_difference_bounds": [
+        -2,
+        2
+      ],
+      "all36_unobserved_rho_bounds": [
+        -1,
+        1
+      ],
+      "available_macro_scores": 29,
+      "cached_HBQ_rho": 0.6862598695958416,
+      "cached_TTR_rho": 0.7833092142346203,
+      "confidence_intervals_estimated": false,
+      "fixed_cohort_macro_rho": 0.5403154352917242,
+      "fixed_cohort_numeric_complete": true,
+      "macro_minus_HBQ_point": -0.1459444343041174,
+      "macro_minus_TTR_point": -0.2429937789428961,
+      "no_reduced_subset_substitution": true,
+      "planned_fixed_cohort": 29,
+      "primary_contrast_available": true
+    },
+    "all_five_28": {
+      "all36_difference_bounds": [
+        -2,
+        2
+      ],
+      "all36_unobserved_rho_bounds": [
+        -1,
+        1
+      ],
+      "available_macro_scores": 28,
+      "cached_HBQ_rho": 0.7119170412541377,
+      "cached_TTR_rho": 0.7807503145032858,
+      "confidence_intervals_estimated": false,
+      "fixed_cohort_macro_rho": 0.5388740316118569,
+      "fixed_cohort_numeric_complete": true,
+      "macro_minus_HBQ_point": -0.1730430096422808,
+      "macro_minus_TTR_point": -0.24187628289142893,
+      "no_reduced_subset_substitution": true,
+      "planned_fixed_cohort": 28,
+      "primary_contrast_available": true
+    }
+  },
+  "unused_confirmation": false
+}
