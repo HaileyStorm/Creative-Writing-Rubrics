@@ -1,0 +1,211 @@
+{
+  "HBQ_banks": [
+    {
+      "applicability_transitions": 3,
+      "bank_label": "bank-01",
+      "binary_flips": 5,
+      "cohen_kappa": 0.9245122985580999,
+      "cycle2_HBQ_score": 42.2689,
+      "exact_evidence_sets_equal": 7,
+      "initial_HBQ_score": 43.1868,
+      "leaves": 178,
+      "packets": 23,
+      "raw_agreement": 0.9550561797752809,
+      "same_raw_state": 170
+    },
+    {
+      "applicability_transitions": 0,
+      "bank_label": "bank-02",
+      "binary_flips": 10,
+      "cohen_kappa": 0.9011111111111111,
+      "cycle2_HBQ_score": 47.1479,
+      "exact_evidence_sets_equal": 2,
+      "initial_HBQ_score": 49.0286,
+      "leaves": 178,
+      "packets": 23,
+      "raw_agreement": 0.9438202247191011,
+      "same_raw_state": 168
+    }
+  ],
+  "HBQ_order_comparison": {
+    "available_bank_pairs": 1,
+    "cycle2_ties": 0,
+    "initial_ties": 0,
+    "strict_order_reversals": 0
+  },
+  "HBQ_raw_leaf_agreement": {
+    "applicability_transitions": 3,
+    "binary_flips": 15,
+    "cannot_assess_transitions": 0,
+    "cohen_kappa": 0.913515264393878,
+    "four_state_transition_matrix": {
+      "CANNOT_ASSESS": {
+        "CANNOT_ASSESS": 1,
+        "NO": 0,
+        "NOT_APPLICABLE": 0,
+        "YES": 0
+      },
+      "NO": {
+        "CANNOT_ASSESS": 0,
+        "NO": 139,
+        "NOT_APPLICABLE": 0,
+        "YES": 5
+      },
+      "NOT_APPLICABLE": {
+        "CANNOT_ASSESS": 0,
+        "NO": 0,
+        "NOT_APPLICABLE": 34,
+        "YES": 2
+      },
+      "YES": {
+        "CANNOT_ASSESS": 0,
+        "NO": 10,
+        "NOT_APPLICABLE": 1,
+        "YES": 164
+      }
+    },
+    "interpretation": "Descriptive agreement across two selected banks; leaf observations are not independent population replicates.",
+    "joint_binary_matches": 303,
+    "joint_binary_pairs": 318,
+    "matched_leaf_pairs": 356,
+    "raw_agreement": 0.949438202247191,
+    "same_raw_state": 338
+  },
+  "candidate_promoted": false,
+  "comparator_scalars": {
+    "available": 7,
+    "by_arm": [
+      {
+        "arm": "compact",
+        "available_comparisons": 2,
+        "cycle2_scores": [
+          2,
+          2
+        ],
+        "initial_scores": [
+          2,
+          2
+        ],
+        "native_scale": [
+          1,
+          5
+        ],
+        "unchanged_comparisons": 2
+      },
+      {
+        "arm": "holistic",
+        "available_comparisons": 2,
+        "cycle2_scores": [
+          2,
+          2
+        ],
+        "initial_scores": [
+          2,
+          2
+        ],
+        "native_scale": [
+          1,
+          7
+        ],
+        "unchanged_comparisons": 2
+      },
+      {
+        "arm": "oregon",
+        "available_comparisons": 2,
+        "cycle2_scores": [
+          20,
+          21
+        ],
+        "initial_scores": [
+          20,
+          21
+        ],
+        "native_scale": [
+          6,
+          36
+        ],
+        "unchanged_comparisons": 2
+      },
+      {
+        "arm": "ttcw14",
+        "available_comparisons": 1,
+        "cycle2_scores": [
+          0.21428571428571427
+        ],
+        "initial_scores": [
+          0.21428571428571427
+        ],
+        "native_scale": [
+          0,
+          1
+        ],
+        "unchanged_comparisons": 1
+      }
+    ],
+    "interpretation": "Available comparisons only; unchanged coarse-scale values do not establish greater reliability or validity.",
+    "unchanged": 7
+  },
+  "confidence_intervals_estimated": false,
+  "evidence_set_overlap": {
+    "exact_sets_equal": 9,
+    "interpretation": "Exact saved evidence-text/set equality, not semantic correctness, evidence validity or equivalent reasoning.",
+    "matched_leaf_pairs": 356
+  },
+  "full_goal_complete": false,
+  "limitations": [
+    "Two selected full HBQ banks and three stories overall; no population reliability estimate or confidence interval.",
+    "Only cycle2 of the selected-repeat plan is represented; 118 ancestry-excluded identities are not additional observations in this run.",
+    "Raw leaf states differ from ladder-effective scoring states. Exact evidence-set overlap is not semantic correctness.",
+    "No human-alignment gain, superiority, new independent works, causal order effect or candidate promotion is established.",
+    "Native identity fencing was bounded to the retained initial view and named historical metadata; historical failed-identity inventory may be incomplete.",
+    "Native model/high/tool observations do not establish backend, sampler, auxiliary-path, full-wire or historical-account equivalence."
+  ],
+  "pair_judgments": {
+    "available_pair_groups": 2,
+    "available_same_orientation_comparisons": 3,
+    "complete_assessed_reverse_orientation_pairs": 1,
+    "consistent_complete_reverse_orientation_pairs": 1,
+    "incomplete_reverse_orientation_pairs": 1,
+    "interpretation": "One complete reverse-order pair is directionally consistent; no causal order-effect or general repeatability conclusion follows.",
+    "unchanged_same_orientation_comparisons": 3
+  },
+  "provenance": {
+    "analysis_specification_frozen_before_controller_response_value_inspection": true,
+    "frozen_analysis_specification_sha256": "896138783c97e1bbd1530703c24e44c6c0891b3cfab8b68b09d3cc1c1a506858",
+    "initial_report": "../hbq-sol-ttcw-initial-development-20261026/README.md",
+    "observed_native_controls": "Sol/high and zero tool activity observed in retained native evidence; backend, auxiliary path, full wire, sampler and historical-account equivalence are not attested.",
+    "package_export_operations": {
+      "bootstrap_calls": 0,
+      "human_targets_read": false,
+      "native_replays": 0,
+      "provider_calls": 0,
+      "scoring_calls": 0
+    },
+    "saved_analysis_operations": {
+      "bootstrap_calls": 0,
+      "canonical_score_bundle_calls": 4,
+      "human_targets_read": false,
+      "native_replays": 56,
+      "new_provider_calls": 0
+    },
+    "saved_analysis_sha256": "d79df8f825a686c1f47a1f3448e0bd50f5df2b6b3c99d3cc71ad435c20fc1d51"
+  },
+  "schema_version": 1,
+  "scope": {
+    "accepted_cycle2_requests": 56,
+    "ancestry_excluded_request_identities": 118,
+    "attempted_cycle2_requests": 56,
+    "complete_HBQ_banks": 2,
+    "eligible_cycle2_requests": 56,
+    "planned_leaves_per_HBQ_bank": 178,
+    "repeat_cycles_observed_in_this_package": [
+      2
+    ],
+    "selected_request_identities": 174,
+    "selection": "Frozen selected-repeat plan; only the ancestry-eligible suffix is represented. Excluded ancestry is not filled or treated as this run.",
+    "semantic_rejections": 0,
+    "stories_with_available_scalar_comparisons": 3,
+    "unattempted_eligible_requests": 0
+  },
+  "state": "DESCRIPTIVE_SELECTED_CYCLE2_REPEATABILITY"
+}
