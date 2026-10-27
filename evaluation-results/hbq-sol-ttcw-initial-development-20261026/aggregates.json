@@ -1,0 +1,1707 @@
+{
+  "accepted_request_operations": {
+    "accepted_requests": 1035,
+    "all_accepted": {
+      "accepted_requests_in_group": 1035,
+      "metrics": {
+        "cache_write_input_tokens": {
+          "maximum": 0,
+          "mean": 0,
+          "median": 0,
+          "minimum": 0,
+          "missing": 2,
+          "observed": 1033,
+          "p90_nearest_rank": 0,
+          "sum": 0
+        },
+        "cached_input_tokens": {
+          "maximum": 15360,
+          "mean": 566.6447241045498,
+          "median": 0,
+          "minimum": 0,
+          "missing": 2,
+          "observed": 1033,
+          "p90_nearest_rank": 0,
+          "sum": 585344
+        },
+        "duration_ms": {
+          "maximum": 466151,
+          "mean": 54005.977756286266,
+          "median": 51197.5,
+          "minimum": 13429,
+          "missing": 1,
+          "observed": 1034,
+          "p90_nearest_rank": 75913,
+          "sum": 55842181
+        },
+        "input_tokens": {
+          "maximum": 16316,
+          "mean": 11424.781219748305,
+          "median": 12393,
+          "minimum": 6890,
+          "missing": 2,
+          "observed": 1033,
+          "p90_nearest_rank": 13370,
+          "sum": 11801799
+        },
+        "output_tokens": {
+          "maximum": 4436,
+          "mean": 2111.545982575024,
+          "median": 2248,
+          "minimum": 486,
+          "missing": 2,
+          "observed": 1033,
+          "p90_nearest_rank": 2932,
+          "sum": 2181227
+        },
+        "reasoning_output_tokens": {
+          "maximum": 2070,
+          "mean": 618.6602129719264,
+          "median": 516,
+          "minimum": 0,
+          "missing": 2,
+          "observed": 1033,
+          "p90_nearest_rank": 1034,
+          "sum": 639076
+        },
+        "time_to_first_token_ms": {
+          "maximum": 433387,
+          "mean": 28543.677949709865,
+          "median": 23591.5,
+          "minimum": 5623,
+          "missing": 1,
+          "observed": 1034,
+          "p90_nearest_rank": 43740,
+          "sum": 29514163
+        }
+      }
+    },
+    "by_arm": {
+      "compact": {
+        "accepted_requests_in_group": 36,
+        "metrics": {
+          "cache_write_input_tokens": {
+            "maximum": 0,
+            "mean": 0,
+            "median": 0,
+            "minimum": 0,
+            "missing": 1,
+            "observed": 35,
+            "p90_nearest_rank": 0,
+            "sum": 0
+          },
+          "cached_input_tokens": {
+            "maximum": 0,
+            "mean": 0,
+            "median": 0,
+            "minimum": 0,
+            "missing": 1,
+            "observed": 35,
+            "p90_nearest_rank": 0,
+            "sum": 0
+          },
+          "duration_ms": {
+            "maximum": 70427,
+            "mean": 49112.514285714286,
+            "median": 47809,
+            "minimum": 35881,
+            "missing": 1,
+            "observed": 35,
+            "p90_nearest_rank": 58616,
+            "sum": 1718938
+          },
+          "input_tokens": {
+            "maximum": 12240,
+            "mean": 9652.942857142858,
+            "median": 8501,
+            "minimum": 6890,
+            "missing": 1,
+            "observed": 35,
+            "p90_nearest_rank": 12023,
+            "sum": 337853
+          },
+          "output_tokens": {
+            "maximum": 2034,
+            "mean": 1680.0857142857142,
+            "median": 1681,
+            "minimum": 1347,
+            "missing": 1,
+            "observed": 35,
+            "p90_nearest_rank": 1801,
+            "sum": 58803
+          },
+          "reasoning_output_tokens": {
+            "maximum": 811,
+            "mean": 412.74285714285713,
+            "median": 392,
+            "minimum": 205,
+            "missing": 1,
+            "observed": 35,
+            "p90_nearest_rank": 516,
+            "sum": 14446
+          },
+          "time_to_first_token_ms": {
+            "maximum": 29667,
+            "mean": 17840.285714285714,
+            "median": 17383,
+            "minimum": 9431,
+            "missing": 1,
+            "observed": 35,
+            "p90_nearest_rank": 23118,
+            "sum": 624410
+          }
+        }
+      },
+      "hbq": {
+        "accepted_requests_in_group": 820,
+        "metrics": {
+          "cache_write_input_tokens": {
+            "maximum": 0,
+            "mean": 0,
+            "median": 0,
+            "minimum": 0,
+            "missing": 1,
+            "observed": 819,
+            "p90_nearest_rank": 0,
+            "sum": 0
+          },
+          "cached_input_tokens": {
+            "maximum": 13056,
+            "mean": 553.1037851037851,
+            "median": 0,
+            "minimum": 0,
+            "missing": 1,
+            "observed": 819,
+            "p90_nearest_rank": 0,
+            "sum": 452992
+          },
+          "duration_ms": {
+            "maximum": 466151,
+            "mean": 57496.82682926829,
+            "median": 53722.5,
+            "minimum": 13429,
+            "missing": 0,
+            "observed": 820,
+            "p90_nearest_rank": 75890,
+            "sum": 47147398
+          },
+          "input_tokens": {
+            "maximum": 13902,
+            "mean": 11532.420024420024,
+            "median": 12883,
+            "minimum": 7760,
+            "missing": 1,
+            "observed": 819,
+            "p90_nearest_rank": 13343,
+            "sum": 9445052
+          },
+          "output_tokens": {
+            "maximum": 3910,
+            "mean": 2311.5531135531137,
+            "median": 2347,
+            "minimum": 556,
+            "missing": 1,
+            "observed": 819,
+            "p90_nearest_rank": 2905,
+            "sum": 1893162
+          },
+          "reasoning_output_tokens": {
+            "maximum": 2070,
+            "mean": 655.981684981685,
+            "median": 516,
+            "minimum": 0,
+            "missing": 1,
+            "observed": 819,
+            "p90_nearest_rank": 1034,
+            "sum": 537249
+          },
+          "time_to_first_token_ms": {
+            "maximum": 433387,
+            "mean": 30583.346341463413,
+            "median": 25547.0,
+            "minimum": 5623,
+            "missing": 0,
+            "observed": 820,
+            "p90_nearest_rank": 45077,
+            "sum": 25078344
+          }
+        }
+      },
+      "holistic": {
+        "accepted_requests_in_group": 36,
+        "metrics": {
+          "cache_write_input_tokens": {
+            "maximum": 0,
+            "mean": 0,
+            "median": 0.0,
+            "minimum": 0,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 0,
+            "sum": 0
+          },
+          "cached_input_tokens": {
+            "maximum": 8448,
+            "mean": 704,
+            "median": 0.0,
+            "minimum": 0,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 0,
+            "sum": 25344
+          },
+          "duration_ms": {
+            "maximum": 37129,
+            "mean": 26562.527777777777,
+            "median": 27532.0,
+            "minimum": 18200,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 33163,
+            "sum": 956251
+          },
+          "input_tokens": {
+            "maximum": 12318,
+            "mean": 9920.805555555555,
+            "median": 11299.0,
+            "minimum": 7212,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 11922,
+            "sum": 357149
+          },
+          "output_tokens": {
+            "maximum": 973,
+            "mean": 731.4444444444445,
+            "median": 715.0,
+            "minimum": 595,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 908,
+            "sum": 26332
+          },
+          "reasoning_output_tokens": {
+            "maximum": 489,
+            "mean": 262.6111111111111,
+            "median": 240.0,
+            "minimum": 150,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 360,
+            "sum": 9454
+          },
+          "time_to_first_token_ms": {
+            "maximum": 20088,
+            "mean": 13230.027777777777,
+            "median": 13116.0,
+            "minimum": 7252,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 16610,
+            "sum": 476281
+          }
+        }
+      },
+      "oregon": {
+        "accepted_requests_in_group": 36,
+        "metrics": {
+          "cache_write_input_tokens": {
+            "maximum": 0,
+            "mean": 0,
+            "median": 0.0,
+            "minimum": 0,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 0,
+            "sum": 0
+          },
+          "cached_input_tokens": {
+            "maximum": 4224,
+            "mean": 117.33333333333333,
+            "median": 0.0,
+            "minimum": 0,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 0,
+            "sum": 4224
+          },
+          "duration_ms": {
+            "maximum": 52721,
+            "mean": 29463.694444444445,
+            "median": 30369.5,
+            "minimum": 17367,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 36976,
+            "sum": 1060693
+          },
+          "input_tokens": {
+            "maximum": 12395,
+            "mean": 9762.694444444445,
+            "median": 9862.0,
+            "minimum": 7114,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 11951,
+            "sum": 351457
+          },
+          "output_tokens": {
+            "maximum": 1392,
+            "mean": 941.0833333333334,
+            "median": 913.0,
+            "minimum": 737,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 1084,
+            "sum": 33879
+          },
+          "reasoning_output_tokens": {
+            "maximum": 869,
+            "mean": 424.55555555555554,
+            "median": 415.0,
+            "minimum": 230,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 516,
+            "sum": 15284
+          },
+          "time_to_first_token_ms": {
+            "maximum": 37453,
+            "mean": 18688.13888888889,
+            "median": 18024.0,
+            "minimum": 8656,
+            "missing": 0,
+            "observed": 36,
+            "p90_nearest_rank": 25920,
+            "sum": 672773
+          }
+        }
+      },
+      "pairwise": {
+        "accepted_requests_in_group": 72,
+        "metrics": {
+          "cache_write_input_tokens": {
+            "maximum": 0,
+            "mean": 0,
+            "median": 0.0,
+            "minimum": 0,
+            "missing": 0,
+            "observed": 72,
+            "p90_nearest_rank": 0,
+            "sum": 0
+          },
+          "cached_input_tokens": {
+            "maximum": 8320,
+            "mean": 979.5555555555555,
+            "median": 0.0,
+            "minimum": 0,
+            "missing": 0,
+            "observed": 72,
+            "p90_nearest_rank": 4096,
+            "sum": 70528
+          },
+          "duration_ms": {
+            "maximum": 56831,
+            "mean": 28417.347222222223,
+            "median": 27839.0,
+            "minimum": 13870,
+            "missing": 0,
+            "observed": 72,
+            "p90_nearest_rank": 37331,
+            "sum": 2046049
+          },
+          "input_tokens": {
+            "maximum": 15358,
+            "mean": 11805.138888888889,
+            "median": 13046.0,
+            "minimum": 7935,
+            "missing": 0,
+            "observed": 72,
+            "p90_nearest_rank": 13774,
+            "sum": 849970
+          },
+          "output_tokens": {
+            "maximum": 1384,
+            "mean": 754.5694444444445,
+            "median": 731.5,
+            "minimum": 486,
+            "missing": 0,
+            "observed": 72,
+            "p90_nearest_rank": 896,
+            "sum": 54329
+          },
+          "reasoning_output_tokens": {
+            "maximum": 1034,
+            "mean": 393.8333333333333,
+            "median": 359.0,
+            "minimum": 146,
+            "missing": 0,
+            "observed": 72,
+            "p90_nearest_rank": 516,
+            "sum": 28356
+          },
+          "time_to_first_token_ms": {
+            "maximum": 46599,
+            "mean": 18390.902777777777,
+            "median": 17145.5,
+            "minimum": 6266,
+            "missing": 0,
+            "observed": 72,
+            "p90_nearest_rank": 25473,
+            "sum": 1324145
+          }
+        }
+      },
+      "ttcw14": {
+        "accepted_requests_in_group": 35,
+        "metrics": {
+          "cache_write_input_tokens": {
+            "maximum": 0,
+            "mean": 0,
+            "median": 0,
+            "minimum": 0,
+            "missing": 0,
+            "observed": 35,
+            "p90_nearest_rank": 0,
+            "sum": 0
+          },
+          "cached_input_tokens": {
+            "maximum": 15360,
+            "mean": 921.6,
+            "median": 0,
+            "minimum": 0,
+            "missing": 0,
+            "observed": 35,
+            "p90_nearest_rank": 4224,
+            "sum": 32256
+          },
+          "duration_ms": {
+            "maximum": 127974,
+            "mean": 83224.34285714285,
+            "median": 82178,
+            "minimum": 53244,
+            "missing": 0,
+            "observed": 35,
+            "p90_nearest_rank": 104843,
+            "sum": 2912852
+          },
+          "input_tokens": {
+            "maximum": 16316,
+            "mean": 13151.942857142858,
+            "median": 12056,
+            "minimum": 10699,
+            "missing": 0,
+            "observed": 35,
+            "p90_nearest_rank": 15866,
+            "sum": 460318
+          },
+          "output_tokens": {
+            "maximum": 4436,
+            "mean": 3277.7714285714287,
+            "median": 3244,
+            "minimum": 2679,
+            "missing": 0,
+            "observed": 35,
+            "p90_nearest_rank": 3860,
+            "sum": 114722
+          },
+          "reasoning_output_tokens": {
+            "maximum": 2070,
+            "mean": 979.6285714285714,
+            "median": 930,
+            "minimum": 408,
+            "missing": 0,
+            "observed": 35,
+            "p90_nearest_rank": 1552,
+            "sum": 34287
+          },
+          "time_to_first_token_ms": {
+            "maximum": 75986,
+            "mean": 38234.57142857143,
+            "median": 39785,
+            "minimum": 15357,
+            "missing": 0,
+            "observed": 35,
+            "p90_nearest_rank": 54665,
+            "sum": 1338210
+          }
+        }
+      }
+    },
+    "limits": [
+      "Accepted saved requests only; rejects, unknowns, unattempted work and local resource waits are excluded.",
+      "Native task duration and time-to-first-token are reported host metadata, not isolated server inference latency.",
+      "Summed request durations are not wall-clock collection duration or future throughput estimates.",
+      "Token counts are native completed-turn usage; cached and reasoning fields are subsets and are not added to input plus output.",
+      "Missing counters remain missing rather than zero. Recovery rollout-only timing does not supply events usage.",
+      "Arm contexts and answer lengths differ; these summaries do not establish method efficiency or quality.",
+      "No price, billing settlement, physical-contact count, backend equivalence or account-wide usage is inferred.",
+      "Previously admitted native metadata is projected without re-running native admission, semantic validation or scoring."
+    ]
+  },
+  "available_method_results_different_denominators": {
+    "compact": {
+      "association": {
+        "bootstrap": {
+          "defined_replicates": 0,
+          "percentile_95": [
+            null,
+            null
+          ],
+          "plot_clusters": 12,
+          "redraw_undefined": false,
+          "replicates": 2000,
+          "seed": 20261004,
+          "state": "undefined",
+          "undefined_replicates": 2000
+        },
+        "expected_works": 36,
+        "missing_works": 0,
+        "rho": null,
+        "state": "descriptive_development",
+        "undefined_reason": "Too few paired works or a constant rank vector",
+        "unobserved_outcome_bounds": null,
+        "works": 36
+      },
+      "distribution": {
+        "ceiling_count": 0,
+        "distinct_scores": 1,
+        "floor_count": 0,
+        "items_in_ties": 36,
+        "maximum": 2,
+        "mean": 2,
+        "minimum": 2,
+        "n": 36,
+        "native_range": [
+          1,
+          5
+        ],
+        "tied_score_groups": 1,
+        "tied_unordered_pairs": 630
+      },
+      "represented_plot_clusters": 12,
+      "within_plot_expert_derived_pair_agreement": {
+        "assessed_denominator": 36,
+        "bootstrap": {
+          "defined_replicates": 2000,
+          "percentile_95": [
+            0.5,
+            0.5
+          ],
+          "plot_clusters": 12,
+          "redraw_undefined": false,
+          "replicates": 2000,
+          "seed": 20261004,
+          "state": "estimated",
+          "undefined_replicates": 0
+        },
+        "expected_denominator": 36,
+        "expert_ties_excluded": 0,
+        "fraction": 0.5,
+        "full_denominator_bounds": [
+          0.5,
+          0.5
+        ],
+        "matches": 18.0,
+        "predicted_ties": 36,
+        "state": "descriptive_development",
+        "unassessed": 0,
+        "unordered_pairs": 36
+      }
+    },
+    "hbq": {
+      "association": {
+        "bootstrap": {
+          "reason": "Incomplete cohort; missing over ten percent",
+          "state": "not_estimated"
+        },
+        "expected_works": 36,
+        "missing_works": 7,
+        "rho": 0.6862598695958416,
+        "state": "inconclusive_missing_over_10_percent",
+        "undefined_reason": null,
+        "unobserved_outcome_bounds": [
+          -1,
+          1
+        ],
+        "works": 29
+      },
+      "distribution": {
+        "at_or_above_90": 0,
+        "at_or_below_10": 0,
+        "ceiling_count": 0,
+        "distinct_scores": 29,
+        "floor_count": 0,
+        "items_in_ties": 0,
+        "maximum": 56.6891,
+        "mean": 45.29579655172414,
+        "minimum": 33.6722,
+        "n": 29,
+        "native_range": [
+          0,
+          100
+        ],
+        "tied_score_groups": 0,
+        "tied_unordered_pairs": 0
+      },
+      "represented_plot_clusters": 12,
+      "within_plot_expert_derived_pair_agreement": {
+        "assessed_denominator": 23,
+        "bootstrap": {
+          "reason": "Incomplete informative pairs",
+          "state": "not_estimated"
+        },
+        "expected_denominator": 36,
+        "expert_ties_excluded": 0,
+        "fraction": 0.9130434782608695,
+        "full_denominator_bounds": [
+          0.5833333333333334,
+          0.9444444444444444
+        ],
+        "matches": 21.0,
+        "predicted_ties": 0,
+        "state": "inconclusive_missing_over_10_percent",
+        "unassessed": 13,
+        "unordered_pairs": 36
+      }
+    },
+    "holistic": {
+      "association": {
+        "bootstrap": {
+          "defined_replicates": 1981,
+          "percentile_95": [
+            -0.07410878064890046,
+            0.5862133970673518
+          ],
+          "plot_clusters": 12,
+          "redraw_undefined": false,
+          "replicates": 2000,
+          "seed": 20261004,
+          "state": "estimated",
+          "undefined_replicates": 19
+        },
+        "expected_works": 36,
+        "missing_works": 0,
+        "rho": 0.29051006699382415,
+        "state": "descriptive_development",
+        "undefined_reason": null,
+        "unobserved_outcome_bounds": null,
+        "works": 36
+      },
+      "distribution": {
+        "ceiling_count": 0,
+        "distinct_scores": 2,
+        "floor_count": 0,
+        "items_in_ties": 36,
+        "maximum": 3,
+        "mean": 2.138888888888889,
+        "minimum": 2,
+        "n": 36,
+        "native_range": [
+          1,
+          7
+        ],
+        "tied_score_groups": 2,
+        "tied_unordered_pairs": 475
+      },
+      "represented_plot_clusters": 12,
+      "within_plot_expert_derived_pair_agreement": {
+        "assessed_denominator": 36,
+        "bootstrap": {
+          "defined_replicates": 2000,
+          "percentile_95": [
+            0.4444444444444444,
+            0.6388888888888888
+          ],
+          "plot_clusters": 12,
+          "redraw_undefined": false,
+          "replicates": 2000,
+          "seed": 20261004,
+          "state": "estimated",
+          "undefined_replicates": 0
+        },
+        "expected_denominator": 36,
+        "expert_ties_excluded": 0,
+        "fraction": 0.5555555555555556,
+        "full_denominator_bounds": [
+          0.5555555555555556,
+          0.5555555555555556
+        ],
+        "matches": 20.0,
+        "predicted_ties": 28,
+        "state": "descriptive_development",
+        "unassessed": 0,
+        "unordered_pairs": 36
+      }
+    },
+    "oregon": {
+      "association": {
+        "bootstrap": {
+          "defined_replicates": 2000,
+          "percentile_95": [
+            -0.19702686543010403,
+            0.5284448593742775
+          ],
+          "plot_clusters": 12,
+          "redraw_undefined": false,
+          "replicates": 2000,
+          "seed": 20261004,
+          "state": "estimated",
+          "undefined_replicates": 0
+        },
+        "expected_works": 36,
+        "missing_works": 0,
+        "rho": 0.2031825909238848,
+        "state": "descriptive_development",
+        "undefined_reason": null,
+        "unobserved_outcome_bounds": null,
+        "works": 36
+      },
+      "distribution": {
+        "ceiling_count": 0,
+        "distinct_scores": 7,
+        "floor_count": 0,
+        "items_in_ties": 34,
+        "maximum": 24,
+        "mean": 20.555555555555557,
+        "minimum": 18,
+        "n": 36,
+        "native_range": [
+          6,
+          36
+        ],
+        "tied_score_groups": 5,
+        "tied_unordered_pairs": 156
+      },
+      "represented_plot_clusters": 12,
+      "within_plot_expert_derived_pair_agreement": {
+        "assessed_denominator": 36,
+        "bootstrap": {
+          "defined_replicates": 2000,
+          "percentile_95": [
+            0.4027777777777778,
+            0.6805555555555556
+          ],
+          "plot_clusters": 12,
+          "redraw_undefined": false,
+          "replicates": 2000,
+          "seed": 20261004,
+          "state": "estimated",
+          "undefined_replicates": 0
+        },
+        "expected_denominator": 36,
+        "expert_ties_excluded": 0,
+        "fraction": 0.5555555555555556,
+        "full_denominator_bounds": [
+          0.5555555555555556,
+          0.5555555555555556
+        ],
+        "matches": 20.0,
+        "predicted_ties": 12,
+        "state": "descriptive_development",
+        "unassessed": 0,
+        "unordered_pairs": 36
+      }
+    },
+    "ttcw14": {
+      "association": {
+        "bootstrap": {
+          "defined_replicates": 2000,
+          "percentile_95": [
+            0.09891645316645645,
+            0.6772390357136427
+          ],
+          "plot_clusters": 12,
+          "redraw_undefined": false,
+          "replicates": 2000,
+          "seed": 20261004,
+          "state": "estimated",
+          "undefined_replicates": 0
+        },
+        "expected_works": 36,
+        "missing_works": 1,
+        "rho": 0.454211133138205,
+        "state": "descriptive_development",
+        "undefined_reason": null,
+        "unobserved_outcome_bounds": [
+          -1,
+          1
+        ],
+        "works": 35
+      },
+      "distribution": {
+        "ceiling_count": 0,
+        "distinct_scores": 7,
+        "floor_count": 0,
+        "items_in_ties": 35,
+        "maximum": 0.5714285714285714,
+        "mean": 0.3183673469387755,
+        "minimum": 0.14285714285714285,
+        "n": 35,
+        "native_range": [
+          0,
+          1
+        ],
+        "tied_score_groups": 7,
+        "tied_unordered_pairs": 88
+      },
+      "represented_plot_clusters": 12,
+      "within_plot_expert_derived_pair_agreement": {
+        "assessed_denominator": 34,
+        "bootstrap": {
+          "defined_replicates": 2000,
+          "percentile_95": [
+            0.5,
+            0.7778186274509802
+          ],
+          "plot_clusters": 12,
+          "redraw_undefined": false,
+          "replicates": 2000,
+          "seed": 20261004,
+          "state": "estimated",
+          "undefined_replicates": 0
+        },
+        "expected_denominator": 36,
+        "expert_ties_excluded": 0,
+        "fraction": 0.6470588235294118,
+        "full_denominator_bounds": [
+          0.6111111111111112,
+          0.6666666666666666
+        ],
+        "matches": 22.0,
+        "predicted_ties": 2,
+        "state": "descriptive_development",
+        "unassessed": 2,
+        "unordered_pairs": 36
+      }
+    }
+  },
+  "coverage": {
+    "all_five_shared_numeric_works": 28,
+    "all_five_shared_plot_groups": 12,
+    "numeric_works_by_method": {
+      "compact": 36,
+      "hbq": 29,
+      "holistic": 36,
+      "oregon": 36,
+      "ttcw14": 35
+    },
+    "original_required_shared_numeric_works": 33,
+    "planned_plot_groups": 12,
+    "planned_works": 36,
+    "registered_primary_coverage_met": false,
+    "works_without_all_five_numeric_scores": 8
+  },
+  "fixed_snapshot": {
+    "complete_hbq_banks_scored": 29,
+    "continuation_attempted": 711,
+    "continuation_semantic_rejects_retained_no_resend": 4,
+    "continuation_unattempted": 0,
+    "continuation_unresolved": 0,
+    "original_failed_no_resend_record_preserved": true,
+    "parent_nonadmitted_retained_no_resend": 5,
+    "producer_accepted": 1034,
+    "profile_grid_rows": 180,
+    "separate_same_attempt_saved_recovery": 1,
+    "total_distinct_accepted": 1035,
+    "unchanged_parent_records": 328
+  },
+  "hbq_pair_specific_associations": {
+    "compact": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": null,
+      "expected_works": 36,
+      "left_rho_same_works": 0.6862598695958416,
+      "right_rho_same_works": null,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": "Too few paired works or constant rank vector",
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 29
+    },
+    "holistic": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": 0.5050891365664156,
+      "expected_works": 36,
+      "left_rho_same_works": 0.6862598695958416,
+      "right_rho_same_works": 0.181170733029426,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": null,
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 29
+    },
+    "oregon": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": 0.5496097949111022,
+      "expected_works": 36,
+      "left_rho_same_works": 0.6862598695958416,
+      "right_rho_same_works": 0.13665007468473944,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": null,
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 29
+    },
+    "ttcw14": {
+      "bootstrap": {
+        "reason": "Incomplete shared denominator",
+        "replicates": 0,
+        "state": "not_estimated"
+      },
+      "delta_rho": 0.2893724392600825,
+      "expected_works": 36,
+      "left_rho_same_works": 0.7119170412541377,
+      "right_rho_same_works": 0.4225446019940552,
+      "state": "inconclusive_missing_over_10_percent",
+      "undefined_reason": null,
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 28
+    }
+  },
+  "other_pair_specific_associations": {
+    "compact__oregon": {
+      "bootstrap": {
+        "defined_replicates": 0,
+        "percentile_95": [
+          null,
+          null
+        ],
+        "plot_clusters": 12,
+        "redraw_undefined": false,
+        "replicates": 2000,
+        "seed": 20261004,
+        "state": "undefined",
+        "undefined_replicates": 2000
+      },
+      "delta_rho": null,
+      "expected_works": 36,
+      "left_rho_same_works": null,
+      "right_rho_same_works": 0.2031825909238848,
+      "state": "descriptive_development",
+      "undefined_reason": "Too few paired works or constant rank vector",
+      "unobserved_outcome_bounds": null,
+      "works": 36
+    },
+    "holistic__compact": {
+      "bootstrap": {
+        "defined_replicates": 0,
+        "percentile_95": [
+          null,
+          null
+        ],
+        "plot_clusters": 12,
+        "redraw_undefined": false,
+        "replicates": 2000,
+        "seed": 20261004,
+        "state": "undefined",
+        "undefined_replicates": 2000
+      },
+      "delta_rho": null,
+      "expected_works": 36,
+      "left_rho_same_works": 0.29051006699382415,
+      "right_rho_same_works": null,
+      "state": "descriptive_development",
+      "undefined_reason": "Too few paired works or constant rank vector",
+      "unobserved_outcome_bounds": null,
+      "works": 36
+    },
+    "holistic__oregon": {
+      "bootstrap": {
+        "defined_replicates": 1981,
+        "percentile_95": [
+          -0.1712498071840991,
+          0.3359179574812159
+        ],
+        "plot_clusters": 12,
+        "redraw_undefined": false,
+        "replicates": 2000,
+        "seed": 20261004,
+        "state": "estimated",
+        "undefined_replicates": 19
+      },
+      "delta_rho": 0.08732747606993935,
+      "expected_works": 36,
+      "left_rho_same_works": 0.29051006699382415,
+      "right_rho_same_works": 0.2031825909238848,
+      "state": "descriptive_development",
+      "undefined_reason": null,
+      "unobserved_outcome_bounds": null,
+      "works": 36
+    },
+    "ttcw14__compact": {
+      "bootstrap": {
+        "defined_replicates": 0,
+        "percentile_95": [
+          null,
+          null
+        ],
+        "plot_clusters": 12,
+        "redraw_undefined": false,
+        "replicates": 2000,
+        "seed": 20261004,
+        "state": "undefined",
+        "undefined_replicates": 2000
+      },
+      "delta_rho": null,
+      "expected_works": 36,
+      "left_rho_same_works": 0.454211133138205,
+      "right_rho_same_works": null,
+      "state": "descriptive_development",
+      "undefined_reason": "Too few paired works or constant rank vector",
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 35
+    },
+    "ttcw14__holistic": {
+      "bootstrap": {
+        "defined_replicates": 1981,
+        "percentile_95": [
+          -0.18957940106912968,
+          0.5395862300650249
+        ],
+        "plot_clusters": 12,
+        "redraw_undefined": false,
+        "replicates": 2000,
+        "seed": 20261004,
+        "state": "estimated",
+        "undefined_replicates": 19
+      },
+      "delta_rho": 0.16267799900625773,
+      "expected_works": 36,
+      "left_rho_same_works": 0.454211133138205,
+      "right_rho_same_works": 0.29153313413194726,
+      "state": "descriptive_development",
+      "undefined_reason": null,
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 35
+    },
+    "ttcw14__oregon": {
+      "bootstrap": {
+        "defined_replicates": 2000,
+        "percentile_95": [
+          -0.09094177446625078,
+          0.7201016031662734
+        ],
+        "plot_clusters": 12,
+        "redraw_undefined": false,
+        "replicates": 2000,
+        "seed": 20261004,
+        "state": "estimated",
+        "undefined_replicates": 0
+      },
+      "delta_rho": 0.2596338635535951,
+      "expected_works": 36,
+      "left_rho_same_works": 0.454211133138205,
+      "right_rho_same_works": 0.19457726958460989,
+      "state": "descriptive_development",
+      "undefined_reason": null,
+      "unobserved_outcome_bounds": [
+        -2,
+        2
+      ],
+      "works": 35
+    }
+  },
+  "pairwise_expert_derived_agreement": {
+    "all_collection_explicit_abstentions": 0,
+    "each_order_against_expert": {
+      "assessed_denominator": 72,
+      "expected_denominator": 72,
+      "fraction": 0.8472222222222222,
+      "full_denominator_bounds": [
+        0.8472222222222222,
+        0.8472222222222222
+      ],
+      "matches": 61,
+      "state": "descriptive_development",
+      "unassessed": 0
+    },
+    "global_rho": null,
+    "global_rho_reason": "Twelve disconnected three-story graphs; no global rank inference",
+    "initial_assessed_orders": 72,
+    "initial_expected_orders": 72,
+    "mean_absolute_canonical_order_gap": 0.08333333333333333,
+    "order_averaged_within_plot_agreement": {
+      "assessed_denominator": 36,
+      "bootstrap": {
+        "defined_replicates": 2000,
+        "percentile_95": [
+          0.721875,
+          0.9444444444444444
+        ],
+        "plot_clusters": 12,
+        "redraw_undefined": false,
+        "replicates": 2000,
+        "seed": 20261004,
+        "state": "estimated",
+        "undefined_replicates": 0
+      },
+      "consensus_ties": 3,
+      "expected_denominator": 36,
+      "expert_ties_excluded": 0,
+      "fraction": 0.8472222222222222,
+      "full_denominator_bounds": [
+        0.8472222222222222,
+        0.8472222222222222
+      ],
+      "matches": 30.5,
+      "state": "descriptive_development",
+      "unassessed": 0
+    },
+    "paired_order_complete_pairs": 36,
+    "paired_order_disagreements": 3,
+    "paired_order_opposite_direction_pairs": 3,
+    "repeat_same_order_agreement": {
+      "assessed_denominator": 0,
+      "expected_denominator": 24,
+      "fraction": null,
+      "full_denominator_bounds": [
+        0.0,
+        1.0
+      ],
+      "matches": 0,
+      "state": "inconclusive_missing_over_10_percent",
+      "unassessed": 24
+    },
+    "state": "descriptive_development",
+    "unordered_pairs": 36
+  },
+  "private_input_sha256": {
+    "analysis": "230b9391bc060d375b529cd715f5442424d70f46ba3e27d3ff5292690366f903",
+    "condition": "219d1388e13bd796d13b93a7511ed7ee55d0cf120479783debf022a622d83dde",
+    "joined": "cbf6192a025521990b17cb3c3f4d2c56e9443eb0ac3084a85eba8fcee9be96f4",
+    "operations": "187fc5e2947470f93af8d5d242c2719e07c4d1307dc1bc39a777c5cb9dd00090",
+    "profiles": "f1ac953b99bbddd96272eb9555e60eb80c9de6d5d30861e2ad7dd2e6fbecd388"
+  },
+  "same_28_score_distributions": {
+    "compact": {
+      "distinct_scores": 1,
+      "exact_ceiling_count": 0,
+      "exact_floor_count": 0,
+      "maximum": 2,
+      "minimum": 2,
+      "native_range": [
+        1,
+        5
+      ],
+      "tied_unordered_pairs": 378,
+      "works": 28
+    },
+    "hbq": {
+      "distinct_scores": 28,
+      "exact_ceiling_count": 0,
+      "exact_floor_count": 0,
+      "maximum": 56.6891,
+      "minimum": 33.6722,
+      "native_range": [
+        0,
+        100
+      ],
+      "tied_unordered_pairs": 0,
+      "works": 28
+    },
+    "holistic": {
+      "distinct_scores": 2,
+      "exact_ceiling_count": 0,
+      "exact_floor_count": 0,
+      "maximum": 3,
+      "minimum": 2,
+      "native_range": [
+        1,
+        7
+      ],
+      "tied_unordered_pairs": 351,
+      "works": 28
+    },
+    "oregon": {
+      "distinct_scores": 4,
+      "exact_ceiling_count": 0,
+      "exact_floor_count": 0,
+      "maximum": 22,
+      "minimum": 19,
+      "native_range": [
+        6,
+        36
+      ],
+      "tied_unordered_pairs": 111,
+      "works": 28
+    },
+    "ttcw14": {
+      "distinct_scores": 7,
+      "exact_ceiling_count": 0,
+      "exact_floor_count": 0,
+      "maximum": 0.5714285714285714,
+      "minimum": 0.14285714285714285,
+      "native_range": [
+        0,
+        1
+      ],
+      "tied_unordered_pairs": 60,
+      "works": 28
+    }
+  },
+  "schema_version": 1,
+  "scope": {
+    "already_opened_development_reference_used": true,
+    "candidate_promoted": false,
+    "export_correlations_recomputed": false,
+    "export_provider_calls": 0,
+    "export_scorer_calls": 0,
+    "full_goal_complete": false,
+    "new_human_labels": 0,
+    "unused_confirmation_used": false
+  },
+  "state": "INITIAL_COLLECTION_COMPLETE_DESCRIPTIVE_DEVELOPMENT",
+  "ttcw14_expert_test_agreement": {
+    "by_test": {
+      "1": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.5523809523809524,
+          "full_denominator_bounds": [
+            0.5370370370370371,
+            0.5648148148148148
+          ],
+          "matches": 58,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.5428571428571428,
+          "full_denominator_bounds": [
+            0.5277777777777778,
+            0.5555555555555556
+          ],
+          "matches": 19,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "10": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.9142857142857143,
+          "full_denominator_bounds": [
+            0.8888888888888888,
+            0.9166666666666666
+          ],
+          "matches": 96,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.9428571428571428,
+          "full_denominator_bounds": [
+            0.9166666666666666,
+            0.9444444444444444
+          ],
+          "matches": 33,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "11": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.8285714285714286,
+          "full_denominator_bounds": [
+            0.8055555555555556,
+            0.8333333333333334
+          ],
+          "matches": 87,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.8571428571428571,
+          "full_denominator_bounds": [
+            0.8333333333333334,
+            0.8611111111111112
+          ],
+          "matches": 30,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "12": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.1523809523809524,
+          "full_denominator_bounds": [
+            0.14814814814814814,
+            0.17592592592592593
+          ],
+          "matches": 16,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.11428571428571428,
+          "full_denominator_bounds": [
+            0.1111111111111111,
+            0.1388888888888889
+          ],
+          "matches": 4,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "13": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.42857142857142855,
+          "full_denominator_bounds": [
+            0.4166666666666667,
+            0.4444444444444444
+          ],
+          "matches": 45,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.4,
+          "full_denominator_bounds": [
+            0.3888888888888889,
+            0.4166666666666667
+          ],
+          "matches": 14,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "14": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.8095238095238095,
+          "full_denominator_bounds": [
+            0.7870370370370371,
+            0.8148148148148148
+          ],
+          "matches": 85,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.9142857142857143,
+          "full_denominator_bounds": [
+            0.8888888888888888,
+            0.9166666666666666
+          ],
+          "matches": 32,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "2": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.6666666666666666,
+          "full_denominator_bounds": [
+            0.6481481481481481,
+            0.6759259259259259
+          ],
+          "matches": 70,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.7428571428571429,
+          "full_denominator_bounds": [
+            0.7222222222222222,
+            0.75
+          ],
+          "matches": 26,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "3": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.6285714285714286,
+          "full_denominator_bounds": [
+            0.6111111111111112,
+            0.6388888888888888
+          ],
+          "matches": 66,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.6,
+          "full_denominator_bounds": [
+            0.5833333333333334,
+            0.6111111111111112
+          ],
+          "matches": 21,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "4": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.6095238095238096,
+          "full_denominator_bounds": [
+            0.5925925925925926,
+            0.6203703703703703
+          ],
+          "matches": 64,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.6,
+          "full_denominator_bounds": [
+            0.5833333333333334,
+            0.6111111111111112
+          ],
+          "matches": 21,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "5": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.7523809523809524,
+          "full_denominator_bounds": [
+            0.7314814814814815,
+            0.7592592592592593
+          ],
+          "matches": 79,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.7428571428571429,
+          "full_denominator_bounds": [
+            0.7222222222222222,
+            0.75
+          ],
+          "matches": 26,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "6": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.5333333333333333,
+          "full_denominator_bounds": [
+            0.5185185185185185,
+            0.5462962962962963
+          ],
+          "matches": 56,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.5428571428571428,
+          "full_denominator_bounds": [
+            0.5277777777777778,
+            0.5555555555555556
+          ],
+          "matches": 19,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "7": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.6476190476190476,
+          "full_denominator_bounds": [
+            0.6296296296296297,
+            0.6574074074074074
+          ],
+          "matches": 68,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.6285714285714286,
+          "full_denominator_bounds": [
+            0.6111111111111112,
+            0.6388888888888888
+          ],
+          "matches": 22,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "8": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.7333333333333333,
+          "full_denominator_bounds": [
+            0.7129629629629629,
+            0.7407407407407407
+          ],
+          "matches": 77,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.7714285714285715,
+          "full_denominator_bounds": [
+            0.75,
+            0.7777777777777778
+          ],
+          "matches": 27,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      },
+      "9": {
+        "individual_ballots": {
+          "assessed_denominator": 105,
+          "expected_denominator": 108,
+          "fraction": 0.780952380952381,
+          "full_denominator_bounds": [
+            0.7592592592592593,
+            0.7870370370370371
+          ],
+          "matches": 82,
+          "state": "descriptive_development",
+          "unassessed": 3
+        },
+        "majority": {
+          "assessed_denominator": 35,
+          "expected_denominator": 36,
+          "fraction": 0.8857142857142857,
+          "full_denominator_bounds": [
+            0.8611111111111112,
+            0.8888888888888888
+          ],
+          "matches": 31,
+          "state": "descriptive_development",
+          "unassessed": 1
+        }
+      }
+    },
+    "expert_majority": {
+      "assessed_denominator": 490,
+      "bootstrap": {
+        "defined_replicates": 2000,
+        "percentile_95": [
+          0.6218487394957983,
+          0.7023809523809523
+        ],
+        "plot_clusters": 12,
+        "redraw_undefined": false,
+        "replicates": 2000,
+        "seed": 20261004,
+        "state": "estimated",
+        "undefined_replicates": 0
+      },
+      "expected_denominator": 504,
+      "fraction": 0.6632653061224489,
+      "full_denominator_bounds": [
+        0.6448412698412699,
+        0.6726190476190477
+      ],
+      "matches": 325,
+      "state": "descriptive_development",
+      "unassessed": 14
+    },
+    "individual_ballots": {
+      "assessed_denominator": 1470,
+      "bootstrap": {
+        "defined_replicates": 2000,
+        "percentile_95": [
+          0.6137566137566137,
+          0.6761904761904762
+        ],
+        "plot_clusters": 12,
+        "redraw_undefined": false,
+        "replicates": 2000,
+        "seed": 20261004,
+        "state": "estimated",
+        "undefined_replicates": 0
+      },
+      "expected_denominator": 1512,
+      "fraction": 0.645578231292517,
+      "full_denominator_bounds": [
+        0.6276455026455027,
+        0.6554232804232805
+      ],
+      "matches": 949,
+      "state": "descriptive_development",
+      "unassessed": 42
+    }
+  },
+  "uncertainty": {
+    "bootstrap_calls_executed": 17,
+    "bootstrap_calls_suppressed": 0,
+    "hbq_method_comparison_intervals_estimated": false,
+    "population_or_method_superiority_inference_supported": false,
+    "rules": "Frozen per-statistic 33-work/12-plot or assessed-pair/cell coverage rules; undefined draws are not redrawn."
+  }
+}

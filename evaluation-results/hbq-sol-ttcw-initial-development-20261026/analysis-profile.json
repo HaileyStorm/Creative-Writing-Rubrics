@@ -1,0 +1,54 @@
+{
+  "aggregate_sha256": "160e0a4b402412d11de6aca97852a6c8fe413f3a4015f8ca47d21ee194b13dc5",
+  "analysis_freeze_sha256": "d7395eeca3bb513b68418589a9496074cce2b093cf96db614451fd7c06dfe035",
+  "analysis_source_sha256": "c843cb8bfb54a3cc27955c911c1a8e5aa053d6a2f25a9f4dd3b67479fa22ae19",
+  "candidate_promoted": false,
+  "constructed_after_saved_results": true,
+  "export_source_sha256": "22a2e1a9af33743ef964afe8e40f63b45531182af554e45bdb4f1dfccdcff6e6",
+  "fixed_view_consumer_receipt_sha256": "06b9507ef20e06cb539b5201d92200c38979531a75cd94102bfa30f6b38e2f39",
+  "frozen_condition_sha256": "219d1388e13bd796d13b93a7511ed7ee55d0cf120479783debf022a622d83dde",
+  "full_goal_complete": false,
+  "initial_worker_terminal_sha256": "c29aeed753e1db0f3370f0b6294ca0c0b7b0fe4d30a8c48a3c1de888e697e57b",
+  "limits": [
+    "Numeric results are hash-bound producer profiles, not independently rescored by this analysis.",
+    "Exact per-method and paired intersections are retained privately; availability-selected subsets do not support a winning-method claim.",
+    "Expert pair directions derive from existing mean expert scores, not direct preference ballots.",
+    "Original33-work and12-plot uncertainty rules retained; missing outcome bounds are not confidence intervals.",
+    "Further continuation is development, not unused confirmation; native/backend/order qualification limits remain inherited."
+  ],
+  "method": {
+    "common_numeric_works": 28,
+    "common_plot_groups": 12,
+    "original_required_common_works": 33,
+    "pair_specific_denominators": {
+      "hbq__compact": 29,
+      "hbq__holistic": 29,
+      "hbq__oregon": 29,
+      "hbq__ttcw14": 28
+    },
+    "planned_works": 36
+  },
+  "new_provider_calls": 0,
+  "prepared_utc": "2026-10-27T03:52:18.099768+00:00",
+  "private_input_sha256": {
+    "analysis": "230b9391bc060d375b529cd715f5442424d70f46ba3e27d3ff5292690366f903",
+    "condition": "219d1388e13bd796d13b93a7511ed7ee55d0cf120479783debf022a622d83dde",
+    "joined": "cbf6192a025521990b17cb3c3f4d2c56e9443eb0ac3084a85eba8fcee9be96f4",
+    "operations": "187fc5e2947470f93af8d5d242c2719e07c4d1307dc1bc39a777c5cb9dd00090",
+    "profiles": "f1ac953b99bbddd96272eb9555e60eb80c9de6d5d30861e2ad7dd2e6fbecd388"
+  },
+  "schema_version": 1,
+  "scoring_source_sha256": {
+    "bundles/all_bundles.json": "012af060e8630b8980661465b368e129ddeec82dfa7b48e13e7a35a473eb95a8",
+    "registry/all_modules.json": "43a33ee015310097f79c8a04bb7c3a8782813e758d523b1db08ae2b14d51f66f",
+    "schema/hbq_judge_response.schema.json": "8896aabcd8f8a503f171d95d70117535da22ceff90400ff8698ee8b3f607edd8",
+    "schema/hbq_verdict.schema.json": "2d176506edab164c71d42a73661bcd526e4331dbdce659dfae56168b708a4f19",
+    "src/hbqrs/__init__.py": "bd80d26dfe93422ca407f3692a227f3070954115df61eeea9b7efd4ec22617ac",
+    "src/hbqrs/core.py": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb",
+    "src/hbqrs/paths.py": "dedadb6d9f8e3cf700c16012b29e1a590a2b1175c8ead0cf17c44aa6417b8266",
+    "src/hbqrs/runner.py": "04a87edb728701afa6a43233a775c032473c82d0f189f209713051025d86f1f7",
+    "src/hbqrs/scoring_v2.py": "1305f444aaa45a0f47cc38cab207e847ae2ca04142637e6ee765edc3f06960d6",
+    "src/hbqrs/weights.py": "6893e8cdbb7ae5de1bb732f6004df558c73838c80bb75d1b2cadb651cc37f139"
+  },
+  "state": "DESCRIPTIVE_DEVELOPMENT_INITIAL_COLLECTION_COMPLETE"
+}
