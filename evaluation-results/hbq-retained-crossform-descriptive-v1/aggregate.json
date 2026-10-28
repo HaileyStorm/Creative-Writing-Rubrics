@@ -1,0 +1,2063 @@
+{
+  "boundaries": {
+    "candidate_or_baseline_promoted": false,
+    "fresh_census": false,
+    "full_program_complete": false,
+    "historical_event_date_inferred_from_filename": false,
+    "human_alignment_gain_established": false,
+    "new_judge_votes": 0,
+    "new_provider_or_native_calls": 0,
+    "new_scoring_or_semantic_validation_calls": 0,
+    "raw_text_response_judgment_label_or_account_details_published": false
+  },
+  "input_aggregate_sha256": {
+    "longform": "ec2da64111928afedfdf234d256938d0d74407562bfec7d3ae65abee9de589dc",
+    "p1b": "073105954b39e2e44b1c0b74eeaeae2b68934b3b553f07bc3bde79080e50cd8c",
+    "p1b_sources": "e61b79c022f5bdca9c79ba2ee1de87a53743f07b6d80c7990e2537bc3097a0c8"
+  },
+  "longform": {
+    "later_pg43_bank": {
+      "derived_semantic_requests": 28,
+      "interpretation": "Grounding eligibility improvement only; no complete bank or quality/human-alignment result",
+      "legacy_pilot_votes_replaced_or_pooled": false,
+      "native_proofs_reused": 10,
+      "new_model_votes": 0,
+      "original_rejected_native_returns_verified": 18,
+      "original_semantic_rejected": 18,
+      "original_strict_accepted": 10,
+      "packets_total": 28,
+      "remaining_ineligible_ordinals": [
+        23
+      ],
+      "same_original_packets_derived_eligible": 27,
+      "score": null,
+      "scorer_calls": 0,
+      "state": "INCOMPLETE_POST_RESULT_V2_BANK_NO_SCORE"
+    },
+    "legacy_dependency_pilot": {
+      "admitted_logical_observations": 111,
+      "assessed_native_ratings": [
+        {
+          "arm": "compact",
+          "cycle": 0,
+          "endpoint": "sol",
+          "native_scale": [
+            1,
+            5
+          ],
+          "state": "assessed",
+          "value": 5,
+          "work_id": "pg209"
+        },
+        {
+          "arm": "holistic",
+          "cycle": 0,
+          "endpoint": "sol",
+          "native_scale": [
+            1,
+            7
+          ],
+          "state": "assessed",
+          "value": 7,
+          "work_id": "pg209"
+        },
+        {
+          "arm": "compact",
+          "cycle": 0,
+          "endpoint": "sol",
+          "native_scale": [
+            1,
+            5
+          ],
+          "state": "assessed",
+          "value": 5,
+          "work_id": "pg43"
+        },
+        {
+          "arm": "holistic",
+          "cycle": 0,
+          "endpoint": "sol",
+          "native_scale": [
+            1,
+            7
+          ],
+          "state": "assessed",
+          "value": 7,
+          "work_id": "pg43"
+        }
+      ],
+      "assessed_whole_work_comparator_profiles": 4,
+      "ceiling_counts_by_arm": {
+        "compact": 2,
+        "holistic": 2
+      },
+      "complete_hbq_whole_work_scores": 0,
+      "distinct_assessed_works": 2,
+      "exploratory_crlf_span_descendants": 54,
+      "grounding_states": {
+        "descendant_rejected": 4,
+        "nonsettled_unadmitted": 1,
+        "not_completed": 348,
+        "projected_accepted": 54,
+        "strict_accepted_inherited": 57
+      },
+      "human_alignment_claim": false,
+      "human_labels_supplied": 0,
+      "planned": {
+        "case_leaf_instances": 18,
+        "cases": 6,
+        "cycles": 3,
+        "diagnostic_requests": 216,
+        "requests_per_endpoint": 232,
+        "requests_total": 464,
+        "summary_generation_calls_separate": 2,
+        "unique_case_leaves": 10,
+        "whole_bank_leaves": 219,
+        "whole_bank_packets": 28,
+        "whole_work_requests": 248,
+        "works": 2
+      },
+      "planned_hbq_bank_profiles": 8,
+      "post_prefix_exploratory": true,
+      "raw_strict_admitted": 57,
+      "same_contract_hbq_comparator_scalar_comparison_available": false,
+      "strict_states": {
+        "accepted": 57,
+        "not_supplied": 232,
+        "semantic_rejected": 58,
+        "started_unresolved": 1,
+        "unadmitted_no_resend": 1,
+        "untouched": 115
+      },
+      "unexamined_endpoint": "grok",
+      "whole_work_comparator_profile_count": 24
+    },
+    "limits": [
+      "Two familiar novellas, not an unseen whole-novel or population sample",
+      "AI summaries/maps and interpretations are diagnostic representations, not human oracles",
+      "Incomplete HBQ banks are not scored or spliced; comparator ratings remain on native scales",
+      "Original strict and derived CRLF/whitespace policies are separate histories, not interchangeable votes",
+      "Ceiling observations on two works do not establish discrimination or agreement with humans",
+      "No empirical claim for fixed-form verse, performed script/audio, nonfiction or unseen whole novels follows from these sources"
+    ]
+  },
+  "longform_source_commitments": {
+    "derived526_no_score": {
+      "bytes": 150,
+      "sha256": "4ef63347e6742c0c5ab5b182650f76fadbeda06043cd5c8bd47519f5054403b5"
+    },
+    "derived526_receipt": {
+      "bytes": 1679,
+      "sha256": "363edc38c689d50e79620d085d4b07f925fc309ad2e1b3bb44199b56367f8737"
+    },
+    "execution_amendment": {
+      "bytes": 6528,
+      "sha256": "b952b3ad607120d4ca3c7f149563f066ff4693a1dce4870d7082f1a1898040f4"
+    },
+    "legacy_profile": {
+      "bytes": 1370,
+      "sha256": "a781feea1f5ccf80c8dfad63fe78ca0b5187c81b632eaa924588110d130130e5"
+    },
+    "legacy_report": {
+      "bytes": 279465,
+      "sha256": "46fd41ccc1028d48052216f353aa8305ee15a6d0d42925c67ef3290b8b9a0317"
+    },
+    "preparation_contract": {
+      "bytes": 7644,
+      "sha256": "264c73cd1a5bc79acdfef94eb0ef5228d7904d86f11b16fe6ef749d35b88486c"
+    },
+    "strict525_receipt": {
+      "bytes": 1686,
+      "sha256": "3e5709e4b5324f3161769dd9fdfd0c2e61c8353f0acad4a181915f6fac15ec00"
+    }
+  },
+  "p1b": {
+    "admission_bases": {
+      "fixed_saved_decode_projection_v1": 2,
+      "qualified_fixed_p1_grok209_ordinary_adoption_v1": 1,
+      "strict_native_continuation": 561,
+      "unobserved": 577,
+      "verified_original_or_transport_prefix": 441,
+      "verified_saved_transport_projection_v1": 2
+    },
+    "existing_HBQ_interendpoint_cycle0_aggregates": [
+      {
+        "arm": "hbq",
+        "cycle": 0,
+        "dimensions_nonabsence": {},
+        "form": "novel_work_segment",
+        "native_leaf_state_agreement": {
+          "cohen_kappa": 0.6737794659814543,
+          "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+          "missing_pairs": 728,
+          "paired_observed_units": 292,
+          "planned_paired_units": 1020,
+          "raw_agreement": 0.9315068493150684
+        },
+        "right_minus_left": "Sol minus Grok",
+        "scalar": {
+          "exact_agreement": null,
+          "mean_absolute_native_difference": null,
+          "mean_signed_right_minus_left": null,
+          "missing_pairs": 6,
+          "observed_pairs": 0,
+          "planned_pairs": 6
+        },
+        "source_json_pointer": "/matched_contrasts/interendpoint_scalars/3"
+      },
+      {
+        "arm": "hbq",
+        "cycle": 0,
+        "dimensions_nonabsence": {},
+        "form": "poem",
+        "native_leaf_state_agreement": {
+          "cohen_kappa": 0.7890995260663506,
+          "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+          "missing_pairs": 445,
+          "paired_observed_units": 89,
+          "planned_paired_units": 534,
+          "raw_agreement": 0.9438202247191011
+        },
+        "right_minus_left": "Sol minus Grok",
+        "scalar": {
+          "exact_agreement": 0.0,
+          "mean_absolute_native_difference": 0.7199999999999989,
+          "mean_signed_right_minus_left": -0.7199999999999989,
+          "missing_pairs": 5,
+          "observed_pairs": 1,
+          "planned_pairs": 6
+        },
+        "source_json_pointer": "/matched_contrasts/interendpoint_scalars/12"
+      },
+      {
+        "arm": "hbq",
+        "cycle": 0,
+        "dimensions_nonabsence": {},
+        "form": "short_narrative",
+        "native_leaf_state_agreement": {
+          "cohen_kappa": 0.6911039221508537,
+          "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+          "missing_pairs": 1264,
+          "paired_observed_units": 872,
+          "planned_paired_units": 2136,
+          "raw_agreement": 0.9220183486238532
+        },
+        "right_minus_left": "Sol minus Grok",
+        "scalar": {
+          "exact_agreement": 0.0,
+          "mean_absolute_native_difference": 3.519199999999998,
+          "mean_signed_right_minus_left": -3.519199999999998,
+          "missing_pairs": 11,
+          "observed_pairs": 1,
+          "planned_pairs": 12
+        },
+        "source_json_pointer": "/matched_contrasts/interendpoint_scalars/24"
+      }
+    ],
+    "existing_HBQ_repeat_aggregates": [
+      {
+        "arm": "hbq",
+        "complete_three_cycle_scalars": 0,
+        "cycle_pairs": [
+          {
+            "cycles": [
+              0,
+              1
+            ],
+            "primary_native_difference": {
+              "exact_agreement": null,
+              "mean_absolute_native_difference": null,
+              "mean_signed_right_minus_left": null,
+              "missing_pairs": 1,
+              "observed_pairs": 0,
+              "planned_pairs": 1
+            }
+          },
+          {
+            "cycles": [
+              0,
+              2
+            ],
+            "primary_native_difference": {
+              "exact_agreement": null,
+              "mean_absolute_native_difference": null,
+              "mean_signed_right_minus_left": null,
+              "missing_pairs": 1,
+              "observed_pairs": 0,
+              "planned_pairs": 1
+            }
+          },
+          {
+            "cycles": [
+              1,
+              2
+            ],
+            "primary_native_difference": {
+              "exact_agreement": null,
+              "mean_absolute_native_difference": null,
+              "mean_signed_right_minus_left": null,
+              "missing_pairs": 1,
+              "observed_pairs": 0,
+              "planned_pairs": 1
+            }
+          }
+        ],
+        "endpoint": "grok",
+        "form": "novel_work_segment",
+        "planned_three_cycle_items": 1,
+        "source_json_pointer": "/repeat_diagnostics/1"
+      },
+      {
+        "arm": "hbq",
+        "complete_three_cycle_scalars": 0,
+        "cycle_pairs": [
+          {
+            "cycles": [
+              0,
+              1
+            ],
+            "primary_native_difference": {
+              "exact_agreement": null,
+              "mean_absolute_native_difference": null,
+              "mean_signed_right_minus_left": null,
+              "missing_pairs": 1,
+              "observed_pairs": 0,
+              "planned_pairs": 1
+            }
+          },
+          {
+            "cycles": [
+              0,
+              2
+            ],
+            "primary_native_difference": {
+              "exact_agreement": null,
+              "mean_absolute_native_difference": null,
+              "mean_signed_right_minus_left": null,
+              "missing_pairs": 1,
+              "observed_pairs": 0,
+              "planned_pairs": 1
+            }
+          },
+          {
+            "cycles": [
+              1,
+              2
+            ],
+            "primary_native_difference": {
+              "exact_agreement": null,
+              "mean_absolute_native_difference": null,
+              "mean_signed_right_minus_left": null,
+              "missing_pairs": 1,
+              "observed_pairs": 0,
+              "planned_pairs": 1
+            }
+          }
+        ],
+        "endpoint": "grok",
+        "form": "poem",
+        "planned_three_cycle_items": 1,
+        "source_json_pointer": "/repeat_diagnostics/4"
+      },
+      {
+        "arm": "hbq",
+        "complete_three_cycle_scalars": 0,
+        "cycle_pairs": [
+          {
+            "cycles": [
+              0,
+              1
+            ],
+            "primary_native_difference": {
+              "exact_agreement": null,
+              "mean_absolute_native_difference": null,
+              "mean_signed_right_minus_left": null,
+              "missing_pairs": 2,
+              "observed_pairs": 0,
+              "planned_pairs": 2
+            }
+          },
+          {
+            "cycles": [
+              0,
+              2
+            ],
+            "primary_native_difference": {
+              "exact_agreement": null,
+              "mean_absolute_native_difference": null,
+              "mean_signed_right_minus_left": null,
+              "missing_pairs": 2,
+              "observed_pairs": 0,
+              "planned_pairs": 2
+            }
+          },
+          {
+            "cycles": [
+              1,
+              2
+            ],
+            "primary_native_difference": {
+              "exact_agreement": null,
+              "mean_absolute_native_difference": null,
+              "mean_signed_right_minus_left": null,
+              "missing_pairs": 2,
+              "observed_pairs": 0,
+              "planned_pairs": 2
+            }
+          }
+        ],
+        "endpoint": "grok",
+        "form": "short_narrative",
+        "planned_three_cycle_items": 2,
+        "source_json_pointer": "/repeat_diagnostics/8"
+      },
+      {
+        "arm": "hbq",
+        "complete_three_cycle_scalars": 1,
+        "cycle_pairs": [
+          {
+            "cycles": [
+              0,
+              1
+            ],
+            "primary_native_difference": {
+              "exact_agreement": 0.0,
+              "mean_absolute_native_difference": 0.5352000000000032,
+              "mean_signed_right_minus_left": -0.5352000000000032,
+              "missing_pairs": 0,
+              "observed_pairs": 1,
+              "planned_pairs": 1
+            }
+          },
+          {
+            "cycles": [
+              0,
+              2
+            ],
+            "primary_native_difference": {
+              "exact_agreement": 1.0,
+              "mean_absolute_native_difference": 0.0,
+              "mean_signed_right_minus_left": 0.0,
+              "missing_pairs": 0,
+              "observed_pairs": 1,
+              "planned_pairs": 1
+            }
+          },
+          {
+            "cycles": [
+              1,
+              2
+            ],
+            "primary_native_difference": {
+              "exact_agreement": 0.0,
+              "mean_absolute_native_difference": 0.5352000000000032,
+              "mean_signed_right_minus_left": 0.5352000000000032,
+              "missing_pairs": 0,
+              "observed_pairs": 1,
+              "planned_pairs": 1
+            }
+          }
+        ],
+        "endpoint": "sol",
+        "form": "novel_work_segment",
+        "planned_three_cycle_items": 1,
+        "source_json_pointer": "/repeat_diagnostics/13"
+      },
+      {
+        "arm": "hbq",
+        "complete_three_cycle_scalars": 1,
+        "cycle_pairs": [
+          {
+            "cycles": [
+              0,
+              1
+            ],
+            "primary_native_difference": {
+              "exact_agreement": 0.0,
+              "mean_absolute_native_difference": 5.439999999999998,
+              "mean_signed_right_minus_left": -5.439999999999998,
+              "missing_pairs": 0,
+              "observed_pairs": 1,
+              "planned_pairs": 1
+            }
+          },
+          {
+            "cycles": [
+              0,
+              2
+            ],
+            "primary_native_difference": {
+              "exact_agreement": 0.0,
+              "mean_absolute_native_difference": 3.519999999999996,
+              "mean_signed_right_minus_left": -3.519999999999996,
+              "missing_pairs": 0,
+              "observed_pairs": 1,
+              "planned_pairs": 1
+            }
+          },
+          {
+            "cycles": [
+              1,
+              2
+            ],
+            "primary_native_difference": {
+              "exact_agreement": 0.0,
+              "mean_absolute_native_difference": 1.9200000000000017,
+              "mean_signed_right_minus_left": 1.9200000000000017,
+              "missing_pairs": 0,
+              "observed_pairs": 1,
+              "planned_pairs": 1
+            }
+          }
+        ],
+        "endpoint": "sol",
+        "form": "poem",
+        "planned_three_cycle_items": 1,
+        "source_json_pointer": "/repeat_diagnostics/16"
+      },
+      {
+        "arm": "hbq",
+        "complete_three_cycle_scalars": 1,
+        "cycle_pairs": [
+          {
+            "cycles": [
+              0,
+              1
+            ],
+            "primary_native_difference": {
+              "exact_agreement": 1.0,
+              "mean_absolute_native_difference": 0.0,
+              "mean_signed_right_minus_left": 0.0,
+              "missing_pairs": 1,
+              "observed_pairs": 1,
+              "planned_pairs": 2
+            }
+          },
+          {
+            "cycles": [
+              0,
+              2
+            ],
+            "primary_native_difference": {
+              "exact_agreement": 1.0,
+              "mean_absolute_native_difference": 0.0,
+              "mean_signed_right_minus_left": 0.0,
+              "missing_pairs": 1,
+              "observed_pairs": 1,
+              "planned_pairs": 2
+            }
+          },
+          {
+            "cycles": [
+              1,
+              2
+            ],
+            "primary_native_difference": {
+              "exact_agreement": 0.5,
+              "mean_absolute_native_difference": 2.1377000000000024,
+              "mean_signed_right_minus_left": -2.1377000000000024,
+              "missing_pairs": 0,
+              "observed_pairs": 2,
+              "planned_pairs": 2
+            }
+          }
+        ],
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "planned_three_cycle_items": 2,
+        "source_json_pointer": "/repeat_diagnostics/20"
+      }
+    ],
+    "existing_Sol_initial_HBQ_vs_arm_direction_aggregates": [
+      {
+        "arms": [
+          "compact",
+          "hbq"
+        ],
+        "cohen_kappa": 0.49999999999999994,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 2,
+        "paired_observed_units": 6,
+        "planned_paired_units": 8,
+        "raw_agreement": 0.6666666666666666,
+        "source_json_pointer": "/matched_contrasts/initial_matched_arm_pair_directions/31"
+      },
+      {
+        "arms": [
+          "hbq",
+          "holistic"
+        ],
+        "cohen_kappa": 0.49999999999999994,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 2,
+        "paired_observed_units": 6,
+        "planned_paired_units": 8,
+        "raw_agreement": 0.6666666666666666,
+        "source_json_pointer": "/matched_contrasts/initial_matched_arm_pair_directions/36"
+      },
+      {
+        "arms": [
+          "hbq",
+          "oregon"
+        ],
+        "cohen_kappa": 0.49999999999999994,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 2,
+        "paired_observed_units": 6,
+        "planned_paired_units": 8,
+        "raw_agreement": 0.6666666666666666,
+        "source_json_pointer": "/matched_contrasts/initial_matched_arm_pair_directions/37"
+      },
+      {
+        "arms": [
+          "hbq",
+          "pairwise"
+        ],
+        "cohen_kappa": 0.25,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 2,
+        "paired_observed_units": 6,
+        "planned_paired_units": 8,
+        "raw_agreement": 0.5,
+        "source_json_pointer": "/matched_contrasts/initial_matched_arm_pair_directions/38"
+      },
+      {
+        "arms": [
+          "hbq",
+          "ttcw14"
+        ],
+        "cohen_kappa": 0.49999999999999994,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 2,
+        "paired_observed_units": 6,
+        "planned_paired_units": 8,
+        "raw_agreement": 0.6666666666666666,
+        "source_json_pointer": "/matched_contrasts/initial_matched_arm_pair_directions/39"
+      },
+      {
+        "arms": [
+          "compact",
+          "hbq"
+        ],
+        "cohen_kappa": 0.07692307692307693,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "novel_work_segment",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 0,
+        "paired_observed_units": 4,
+        "planned_paired_units": 4,
+        "raw_agreement": 0.25,
+        "source_json_pointer": "/matched_contrasts/initial_matched_arm_pair_directions/46"
+      },
+      {
+        "arms": [
+          "hbq",
+          "holistic"
+        ],
+        "cohen_kappa": 0.2,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "novel_work_segment",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 0,
+        "paired_observed_units": 4,
+        "planned_paired_units": 4,
+        "raw_agreement": 0.5,
+        "source_json_pointer": "/matched_contrasts/initial_matched_arm_pair_directions/49"
+      },
+      {
+        "arms": [
+          "hbq",
+          "pairwise"
+        ],
+        "cohen_kappa": 0.0,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "novel_work_segment",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 0,
+        "paired_observed_units": 4,
+        "planned_paired_units": 4,
+        "raw_agreement": 0.75,
+        "source_json_pointer": "/matched_contrasts/initial_matched_arm_pair_directions/50"
+      },
+      {
+        "arms": [
+          "compact",
+          "hbq"
+        ],
+        "cohen_kappa": 0.0,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "poem",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 0,
+        "paired_observed_units": 4,
+        "planned_paired_units": 4,
+        "raw_agreement": 0.25,
+        "source_json_pointer": "/matched_contrasts/initial_matched_arm_pair_directions/52"
+      },
+      {
+        "arms": [
+          "hbq",
+          "holistic"
+        ],
+        "cohen_kappa": 0.6,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "poem",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 0,
+        "paired_observed_units": 4,
+        "planned_paired_units": 4,
+        "raw_agreement": 0.75,
+        "source_json_pointer": "/matched_contrasts/initial_matched_arm_pair_directions/56"
+      },
+      {
+        "arms": [
+          "hbq",
+          "pairwise"
+        ],
+        "cohen_kappa": 0.0,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "poem",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 0,
+        "paired_observed_units": 4,
+        "planned_paired_units": 4,
+        "raw_agreement": 0.5,
+        "source_json_pointer": "/matched_contrasts/initial_matched_arm_pair_directions/57"
+      },
+      {
+        "arms": [
+          "hbq",
+          "poemetric"
+        ],
+        "cohen_kappa": 0.2,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "poem",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 0,
+        "paired_observed_units": 4,
+        "planned_paired_units": 4,
+        "raw_agreement": 0.5,
+        "source_json_pointer": "/matched_contrasts/initial_matched_arm_pair_directions/58"
+      }
+    ],
+    "existing_cycle0_pair_orientation_aggregates": [
+      {
+        "assessed_both_orientations": 1,
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "novel_work_segment",
+        "native_decision_counts": {
+          "MISSING": 4,
+          "SELECTED": 4
+        },
+        "orientation_consistency": 1.0,
+        "planned_orientations": 8,
+        "planned_pairs": 4,
+        "source_json_pointer": "/pairwise/order/0",
+        "states": {
+          "consistent_selection": 1,
+          "missing_orientation": 3
+        }
+      },
+      {
+        "assessed_both_orientations": 0,
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "poem",
+        "native_decision_counts": {
+          "MISSING": 6,
+          "SELECTED": 2
+        },
+        "orientation_consistency": null,
+        "planned_orientations": 8,
+        "planned_pairs": 4,
+        "source_json_pointer": "/pairwise/order/3",
+        "states": {
+          "missing_orientation": 4
+        }
+      },
+      {
+        "assessed_both_orientations": 1,
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "short_narrative",
+        "native_decision_counts": {
+          "MISSING": 10,
+          "SELECTED": 6
+        },
+        "orientation_consistency": 0.0,
+        "planned_orientations": 16,
+        "planned_pairs": 8,
+        "source_json_pointer": "/pairwise/order/6",
+        "states": {
+          "missing_orientation": 7,
+          "orientation_conflict": 1
+        }
+      },
+      {
+        "assessed_both_orientations": 4,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "novel_work_segment",
+        "native_decision_counts": {
+          "SELECTED": 8
+        },
+        "orientation_consistency": 1.0,
+        "planned_orientations": 8,
+        "planned_pairs": 4,
+        "source_json_pointer": "/pairwise/order/9",
+        "states": {
+          "consistent_selection": 4
+        }
+      },
+      {
+        "assessed_both_orientations": 4,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "poem",
+        "native_decision_counts": {
+          "SELECTED": 8
+        },
+        "orientation_consistency": 1.0,
+        "planned_orientations": 8,
+        "planned_pairs": 4,
+        "source_json_pointer": "/pairwise/order/12",
+        "states": {
+          "consistent_selection": 4
+        }
+      },
+      {
+        "assessed_both_orientations": 8,
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "native_decision_counts": {
+          "SELECTED": 16
+        },
+        "orientation_consistency": 1.0,
+        "planned_orientations": 16,
+        "planned_pairs": 8,
+        "source_json_pointer": "/pairwise/order/15",
+        "states": {
+          "consistent_selection": 8
+        }
+      }
+    ],
+    "existing_cycle0_scalar_aggregates": [
+      {
+        "arm": "compact",
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "novel_work_segment",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 1,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 4,
+          "mean": 4,
+          "minimum": 4,
+          "missing_or_abstained": 5,
+          "native_scale": [
+            1,
+            5
+          ],
+          "near_ceiling_inclusive": 1,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 6,
+          "reported_values": 1
+        },
+        "source_json_pointer": "/scalar_diagnostics/0",
+        "states": {
+          "assessed": 1,
+          "missing_unadmitted_no_scalar": 5
+        }
+      },
+      {
+        "arm": "hbq",
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "novel_work_segment",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 0,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_abstained": 6,
+          "native_scale": [
+            0,
+            100
+          ],
+          "near_ceiling_inclusive": 0,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 5,
+          "planned_items": 6,
+          "reported_values": 0
+        },
+        "source_json_pointer": "/scalar_diagnostics/3",
+        "states": {
+          "incomplete_or_nonunique_full_bank_no_scalar": 6
+        }
+      },
+      {
+        "arm": "holistic",
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "novel_work_segment",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 2,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 6,
+          "mean": 6,
+          "minimum": 6,
+          "missing_or_abstained": 4,
+          "native_scale": [
+            1,
+            7
+          ],
+          "near_ceiling_inclusive": 2,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 6,
+          "reported_values": 2
+        },
+        "source_json_pointer": "/scalar_diagnostics/6",
+        "states": {
+          "assessed": 2,
+          "missing_unadmitted_no_scalar": 4
+        }
+      },
+      {
+        "arm": "compact",
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "poem",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 4,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 4,
+          "mean": 4,
+          "minimum": 4,
+          "missing_or_abstained": 2,
+          "native_scale": [
+            1,
+            5
+          ],
+          "near_ceiling_inclusive": 4,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 6,
+          "reported_values": 4
+        },
+        "source_json_pointer": "/scalar_diagnostics/9",
+        "states": {
+          "assessed": 4,
+          "missing_unadmitted_no_scalar": 2
+        }
+      },
+      {
+        "arm": "hbq",
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "poem",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 1,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 91.84,
+          "mean": 91.84,
+          "minimum": 91.84,
+          "missing_or_abstained": 5,
+          "native_scale": [
+            0,
+            100
+          ],
+          "near_ceiling_inclusive": 0,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 5,
+          "planned_items": 6,
+          "reported_values": 1
+        },
+        "source_json_pointer": "/scalar_diagnostics/12",
+        "states": {
+          "SCORED": 1,
+          "incomplete_or_nonunique_full_bank_no_scalar": 5
+        }
+      },
+      {
+        "arm": "holistic",
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "poem",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 2,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 6,
+          "mean": 5.5,
+          "minimum": 5,
+          "missing_or_abstained": 4,
+          "native_scale": [
+            1,
+            7
+          ],
+          "near_ceiling_inclusive": 1,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 6,
+          "reported_values": 2
+        },
+        "source_json_pointer": "/scalar_diagnostics/15",
+        "states": {
+          "assessed": 2,
+          "missing_unadmitted_no_scalar": 4
+        }
+      },
+      {
+        "arm": "poemetric",
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "poem",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 2,
+          "exact_ceiling": 2,
+          "exact_floor": 0,
+          "maximum": 5,
+          "mean": 5,
+          "minimum": 5,
+          "missing_or_abstained": 4,
+          "native_scale": [
+            1,
+            5
+          ],
+          "near_ceiling_inclusive": 2,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 6,
+          "reported_values": 2
+        },
+        "source_json_pointer": "/scalar_diagnostics/18",
+        "states": {
+          "assessed": 2,
+          "missing_unadmitted_no_scalar": 4
+        }
+      },
+      {
+        "arm": "compact",
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "short_narrative",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 2,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 4,
+          "mean": 3.5,
+          "minimum": 3,
+          "missing_or_abstained": 10,
+          "native_scale": [
+            1,
+            5
+          ],
+          "near_ceiling_inclusive": 1,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 12,
+          "reported_values": 2
+        },
+        "source_json_pointer": "/scalar_diagnostics/21",
+        "states": {
+          "assessed": 2,
+          "missing_unadmitted_no_scalar": 10
+        }
+      },
+      {
+        "arm": "hbq",
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "short_narrative",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 2,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 98.0,
+          "mean": 89.05555,
+          "minimum": 80.1111,
+          "missing_or_abstained": 10,
+          "native_scale": [
+            0,
+            100
+          ],
+          "near_ceiling_inclusive": 1,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 5,
+          "planned_items": 12,
+          "reported_values": 2
+        },
+        "source_json_pointer": "/scalar_diagnostics/24",
+        "states": {
+          "SCORED": 2,
+          "incomplete_or_nonunique_full_bank_no_scalar": 10
+        }
+      },
+      {
+        "arm": "holistic",
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "short_narrative",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 2,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 6,
+          "mean": 5.5,
+          "minimum": 5,
+          "missing_or_abstained": 10,
+          "native_scale": [
+            1,
+            7
+          ],
+          "near_ceiling_inclusive": 1,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 12,
+          "reported_values": 2
+        },
+        "source_json_pointer": "/scalar_diagnostics/27",
+        "states": {
+          "assessed": 2,
+          "missing_unadmitted_no_scalar": 10
+        }
+      },
+      {
+        "arm": "oregon",
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "short_narrative",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 7,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 34,
+          "mean": 33.285714285714285,
+          "minimum": 31,
+          "missing_or_abstained": 5,
+          "native_scale": [
+            6,
+            36
+          ],
+          "near_ceiling_inclusive": 0,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 12,
+          "reported_values": 7
+        },
+        "source_json_pointer": "/scalar_diagnostics/30",
+        "states": {
+          "assessed": 7,
+          "missing_unadmitted_no_scalar": 5
+        }
+      },
+      {
+        "arm": "ttcw14",
+        "cycle": 0,
+        "endpoint": "grok",
+        "form": "short_narrative",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 4,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 0.9285714285714286,
+          "mean": 0.7857142857142857,
+          "minimum": 0.7142857142857143,
+          "missing_or_abstained": 8,
+          "native_scale": [
+            0,
+            1
+          ],
+          "near_ceiling_inclusive": 1,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 0.07142857142857142,
+          "planned_items": 12,
+          "reported_values": 4
+        },
+        "source_json_pointer": "/scalar_diagnostics/33",
+        "states": {
+          "assessed": 4,
+          "missing_unadmitted_no_scalar": 8
+        }
+      },
+      {
+        "arm": "compact",
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "novel_work_segment",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 6,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 4,
+          "mean": 3.8333333333333335,
+          "minimum": 3,
+          "missing_or_abstained": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "near_ceiling_inclusive": 5,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 6,
+          "reported_values": 6
+        },
+        "source_json_pointer": "/scalar_diagnostics/36",
+        "states": {
+          "assessed": 6
+        }
+      },
+      {
+        "arm": "hbq",
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "novel_work_segment",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 6,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 98.0,
+          "mean": 93.51978333333334,
+          "minimum": 86.793,
+          "missing_or_abstained": 0,
+          "native_scale": [
+            0,
+            100
+          ],
+          "near_ceiling_inclusive": 3,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 5,
+          "planned_items": 6,
+          "reported_values": 6
+        },
+        "source_json_pointer": "/scalar_diagnostics/39",
+        "states": {
+          "SCORED": 6
+        }
+      },
+      {
+        "arm": "holistic",
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "novel_work_segment",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 6,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 6,
+          "mean": 5.333333333333333,
+          "minimum": 3,
+          "missing_or_abstained": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "near_ceiling_inclusive": 4,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 6,
+          "reported_values": 6
+        },
+        "source_json_pointer": "/scalar_diagnostics/42",
+        "states": {
+          "assessed": 6
+        }
+      },
+      {
+        "arm": "compact",
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "poem",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 6,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 4,
+          "mean": 4,
+          "minimum": 4,
+          "missing_or_abstained": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "near_ceiling_inclusive": 6,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 6,
+          "reported_values": 6
+        },
+        "source_json_pointer": "/scalar_diagnostics/45",
+        "states": {
+          "assessed": 6
+        }
+      },
+      {
+        "arm": "hbq",
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "poem",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 6,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 98.0,
+          "mean": 91.62441666666666,
+          "minimum": 79.612,
+          "missing_or_abstained": 0,
+          "native_scale": [
+            0,
+            100
+          ],
+          "near_ceiling_inclusive": 2,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 5,
+          "planned_items": 6,
+          "reported_values": 6
+        },
+        "source_json_pointer": "/scalar_diagnostics/48",
+        "states": {
+          "SCORED": 6
+        }
+      },
+      {
+        "arm": "holistic",
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "poem",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 6,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 6,
+          "mean": 5.666666666666667,
+          "minimum": 5,
+          "missing_or_abstained": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "near_ceiling_inclusive": 4,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 6,
+          "reported_values": 6
+        },
+        "source_json_pointer": "/scalar_diagnostics/51",
+        "states": {
+          "assessed": 6
+        }
+      },
+      {
+        "arm": "poemetric",
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "poem",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 6,
+          "exact_ceiling": 1,
+          "exact_floor": 0,
+          "maximum": 5,
+          "mean": 4.166666666666667,
+          "minimum": 4,
+          "missing_or_abstained": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "near_ceiling_inclusive": 6,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 6,
+          "reported_values": 6
+        },
+        "source_json_pointer": "/scalar_diagnostics/54",
+        "states": {
+          "assessed": 6
+        }
+      },
+      {
+        "arm": "compact",
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 12,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 4,
+          "mean": 3.6666666666666665,
+          "minimum": 2,
+          "missing_or_abstained": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "near_ceiling_inclusive": 9,
+          "near_floor_inclusive": 1,
+          "near_threshold_increment": 1,
+          "planned_items": 12,
+          "reported_values": 12
+        },
+        "source_json_pointer": "/scalar_diagnostics/57",
+        "states": {
+          "assessed": 12
+        }
+      },
+      {
+        "arm": "hbq",
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 10,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 98.0,
+          "mean": 95.93567,
+          "minimum": 84.0198,
+          "missing_or_abstained": 2,
+          "native_scale": [
+            0,
+            100
+          ],
+          "near_ceiling_inclusive": 8,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 5,
+          "planned_items": 12,
+          "reported_values": 10
+        },
+        "source_json_pointer": "/scalar_diagnostics/60",
+        "states": {
+          "SCORED": 10,
+          "incomplete_or_nonunique_full_bank_no_scalar": 2
+        }
+      },
+      {
+        "arm": "holistic",
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 12,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 6,
+          "mean": 4.833333333333333,
+          "minimum": 3,
+          "missing_or_abstained": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "near_ceiling_inclusive": 2,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 12,
+          "reported_values": 12
+        },
+        "source_json_pointer": "/scalar_diagnostics/63",
+        "states": {
+          "assessed": 12
+        }
+      },
+      {
+        "arm": "oregon",
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 12,
+          "exact_ceiling": 5,
+          "exact_floor": 0,
+          "maximum": 36,
+          "mean": 33.833333333333336,
+          "minimum": 28,
+          "missing_or_abstained": 0,
+          "native_scale": [
+            6,
+            36
+          ],
+          "near_ceiling_inclusive": 7,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 1,
+          "planned_items": 12,
+          "reported_values": 12
+        },
+        "source_json_pointer": "/scalar_diagnostics/66",
+        "states": {
+          "assessed": 12
+        }
+      },
+      {
+        "arm": "ttcw14",
+        "cycle": 0,
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "primary": {
+          "absence_zero": null,
+          "assessed_nonabsence": 12,
+          "exact_ceiling": 0,
+          "exact_floor": 0,
+          "maximum": 0.9285714285714286,
+          "mean": 0.8392857142857143,
+          "minimum": 0.6428571428571429,
+          "missing_or_abstained": 0,
+          "native_scale": [
+            0,
+            1
+          ],
+          "near_ceiling_inclusive": 4,
+          "near_floor_inclusive": 0,
+          "near_threshold_increment": 0.07142857142857142,
+          "planned_items": 12,
+          "reported_values": 12
+        },
+        "source_json_pointer": "/scalar_diagnostics/69",
+        "states": {
+          "assessed": 12
+        }
+      }
+    ],
+    "existing_interendpoint_pairwise_aggregates": [
+      {
+        "cohen_kappa": null,
+        "cycle": 0,
+        "form": "short_narrative",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 8,
+        "paired_observed_units": 0,
+        "planned_paired_units": 8,
+        "raw_agreement": null
+      },
+      {
+        "cohen_kappa": null,
+        "cycle": 0,
+        "form": "novel_work_segment",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 3,
+        "paired_observed_units": 1,
+        "planned_paired_units": 4,
+        "raw_agreement": 1.0
+      },
+      {
+        "cohen_kappa": null,
+        "cycle": 0,
+        "form": "poem",
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 4,
+        "paired_observed_units": 0,
+        "planned_paired_units": 4,
+        "raw_agreement": null
+      }
+    ],
+    "existing_pairwise_repeat_aggregates": [
+      {
+        "complete_three_cycle_consistent_decisions": 0,
+        "cycle_pairs": [
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              0,
+              1
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 2,
+            "paired_observed_units": 0,
+            "planned_paired_units": 2,
+            "raw_agreement": null
+          },
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              0,
+              2
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 2,
+            "paired_observed_units": 0,
+            "planned_paired_units": 2,
+            "raw_agreement": null
+          },
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              1,
+              2
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 2,
+            "paired_observed_units": 0,
+            "planned_paired_units": 2,
+            "raw_agreement": null
+          }
+        ],
+        "endpoint": "grok",
+        "form": "short_narrative",
+        "planned_three_cycle_pairs": 2
+      },
+      {
+        "complete_three_cycle_consistent_decisions": 0,
+        "cycle_pairs": [
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              0,
+              1
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 1,
+            "paired_observed_units": 0,
+            "planned_paired_units": 1,
+            "raw_agreement": null
+          },
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              0,
+              2
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 1,
+            "paired_observed_units": 0,
+            "planned_paired_units": 1,
+            "raw_agreement": null
+          },
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              1,
+              2
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 1,
+            "paired_observed_units": 0,
+            "planned_paired_units": 1,
+            "raw_agreement": null
+          }
+        ],
+        "endpoint": "grok",
+        "form": "novel_work_segment",
+        "planned_three_cycle_pairs": 1
+      },
+      {
+        "complete_three_cycle_consistent_decisions": 0,
+        "cycle_pairs": [
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              0,
+              1
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 1,
+            "paired_observed_units": 0,
+            "planned_paired_units": 1,
+            "raw_agreement": null
+          },
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              0,
+              2
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 1,
+            "paired_observed_units": 0,
+            "planned_paired_units": 1,
+            "raw_agreement": null
+          },
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              1,
+              2
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 1,
+            "paired_observed_units": 0,
+            "planned_paired_units": 1,
+            "raw_agreement": null
+          }
+        ],
+        "endpoint": "grok",
+        "form": "poem",
+        "planned_three_cycle_pairs": 1
+      },
+      {
+        "complete_three_cycle_consistent_decisions": 1,
+        "cycle_pairs": [
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              0,
+              1
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 1,
+            "paired_observed_units": 1,
+            "planned_paired_units": 2,
+            "raw_agreement": 1.0
+          },
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              0,
+              2
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 0,
+            "paired_observed_units": 2,
+            "planned_paired_units": 2,
+            "raw_agreement": 1.0
+          },
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              1,
+              2
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 1,
+            "paired_observed_units": 1,
+            "planned_paired_units": 2,
+            "raw_agreement": 1.0
+          }
+        ],
+        "endpoint": "sol",
+        "form": "short_narrative",
+        "planned_three_cycle_pairs": 2
+      },
+      {
+        "complete_three_cycle_consistent_decisions": 1,
+        "cycle_pairs": [
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              0,
+              1
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 0,
+            "paired_observed_units": 1,
+            "planned_paired_units": 1,
+            "raw_agreement": 1.0
+          },
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              0,
+              2
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 0,
+            "paired_observed_units": 1,
+            "planned_paired_units": 1,
+            "raw_agreement": 1.0
+          },
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              1,
+              2
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 0,
+            "paired_observed_units": 1,
+            "planned_paired_units": 1,
+            "raw_agreement": 1.0
+          }
+        ],
+        "endpoint": "sol",
+        "form": "novel_work_segment",
+        "planned_three_cycle_pairs": 1
+      },
+      {
+        "complete_three_cycle_consistent_decisions": 1,
+        "cycle_pairs": [
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              0,
+              1
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 0,
+            "paired_observed_units": 1,
+            "planned_paired_units": 1,
+            "raw_agreement": 1.0
+          },
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              0,
+              2
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 0,
+            "paired_observed_units": 1,
+            "planned_paired_units": 1,
+            "raw_agreement": 1.0
+          },
+          {
+            "cohen_kappa": null,
+            "cycles": [
+              1,
+              2
+            ],
+            "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+            "missing_pairs": 0,
+            "paired_observed_units": 1,
+            "planned_paired_units": 1,
+            "raw_agreement": 1.0
+          }
+        ],
+        "endpoint": "sol",
+        "form": "poem",
+        "planned_three_cycle_pairs": 1
+      }
+    ],
+    "historical_analysis_flags": {
+      "candidate_gain_claim": false,
+      "fixed_synthetic_labels": false,
+      "human_alignment_claim": false,
+      "human_release_eligible": false,
+      "labels_opened": false,
+      "native_sources_replayed": true,
+      "new_votes": 0,
+      "oracle_accepted": false,
+      "original_native_envelopes_reconstructed": false,
+      "original_unresolved_grok148_reserved": true,
+      "physical_contact_cardinality_proven": false,
+      "provider_calls": 0
+    },
+    "historical_analysis_limitations": [
+      "Twenty-four AI stimuli in eight source families; no human labels or accepted aesthetic oracle.",
+      "Native scalar descriptions and within-pair directions only; no intended-transform correctness or candidate inference.",
+      "Incomplete/unadmitted banks have no scalar or weighted coverage/bounds; CA/N/A remain native states.",
+      "HBQ bounds are rubric-sensitivity bounds, not statistical confidence intervals.",
+      "POEMetric item 10 is primary; absence codes 7/8 are diagnostic categories; fixed-form-to-free-verse transfer is unvalidated.",
+      "Raw agreement/kappa are descriptive; sparse form-balanced sentinels do not establish population reliability.",
+      "Reported token coverage is native completed-turn usage only; latency, unreported tokens, cost/cache and physical contact count remain unavailable."
+    ],
+    "historical_analysis_sha256": "9f3c5dec6177694c8053a680fdeb716d34008a9dc289c124323480f874f0e0df",
+    "historical_endpoint_inventory_sums": {
+      "grok": {
+        "construction": "Arithmetic sum of existing /request_inventory/*/states for this endpoint, all forms/arms/cycles; not a fresh census",
+        "states": {
+          "accepted": 202,
+          "ambiguous": 1,
+          "semantic_rejected": 12,
+          "untouched": 577
+        }
+      },
+      "sol": {
+        "construction": "Arithmetic sum of existing /request_inventory/*/states for this endpoint, all forms/arms/cycles; not a fresh census",
+        "states": {
+          "accepted": 788,
+          "semantic_rejected": 3,
+          "unadmitted_no_resend": 1
+        }
+      }
+    },
+    "historical_plan": {
+      "bank_sentinels": 4,
+      "by_arm_per_endpoint": {
+        "grok": {
+          "compact": 32,
+          "hbq": 640,
+          "holistic": 32,
+          "oregon": 16,
+          "pairwise": 48,
+          "poemetric": 8,
+          "ttcw14": 16
+        },
+        "sol": {
+          "compact": 32,
+          "hbq": 640,
+          "holistic": 32,
+          "oregon": 16,
+          "pairwise": 48,
+          "poemetric": 8,
+          "ttcw14": 16
+        }
+      },
+      "cycles": 3,
+      "families": 8,
+      "forms": {
+        "novel_work_segment": 6,
+        "poem": 6,
+        "short_narrative": 12
+      },
+      "pair_sentinels": 4,
+      "requests_per_endpoint": 792,
+      "requests_total": 1584,
+      "texts": 24,
+      "unordered_pairs": 16
+    },
+    "historical_terminal_counts": {
+      "accepted": 990,
+      "ambiguous": 1,
+      "semantic_rejected": 15,
+      "unadmitted_no_resend": 1,
+      "untouched": 577
+    },
+    "intent_review_002": {
+      "accepted_oracles": 1,
+      "accepted_scope": "One ordinary-physical-state repair-shop consequence triad only; other seven full triads remain unadmitted.",
+      "anchor_assessments": 168,
+      "exact_evidence_quotes_validated": 760,
+      "families": 8,
+      "followup_review_packets": 8,
+      "fresh_conversation_packets": 7,
+      "human_validation": false,
+      "independent_model_evidence": false,
+      "independent_review_conversations": 7,
+      "limitations": [
+        "AI review supplies synthetic diagnostic evidence, not human judgments or independent endpoint evaluation.",
+        "The first image-poem follow-up reuses the independently created consequence reviewer; seven native conversations cover eight packets.",
+        "Historical fieldless packets use filter version1; five new packets use version2. Complete role blindness across every historical packet is not asserted.",
+        "Local criterion failures do not settle global artistic quality; plausible poetry and speculative alternatives remain unresolved.",
+        "Novel scenes are bounded two-scene segments; no unseen whole-novel quality claim follows.",
+        "No intended-defect success rate, human alignment gain or rubric promotion is established by these reviews."
+      ],
+      "new_human_votes": 0,
+      "prospective_scoring_freeze": false,
+      "retrospective_adjudication": true,
+      "rubric_or_candidate_promoted": false,
+      "unresolved_disagreements": 25,
+      "variants": 24
+    },
+    "matched_contrast_basis": "Exact same texts, form and cycle; unlike native scales are never subtracted; no oracle direction is assigned",
+    "matched_manifest_sha256": "4e139dc1ef859be838cbe9ee8c579285845074032c6a00867a1b03859fdec2ff",
+    "source_date_policy": "Consolidation timestamp only; historical analysis event date not inferred from filenames"
+  },
+  "p1b_source_commitments": {
+    "discordance_readme": {
+      "bytes": 1262,
+      "sha256": "f54d734aaf7eaf6d1a989ef69177266d6857890083a069abc993d86c1e79a1d2"
+    },
+    "discordance_v7": {
+      "bytes": 1923,
+      "sha256": "fbc20e8ed3dbbe95d3beeaf834ccad1f497be59343f416aee45b87353314eac5"
+    },
+    "execution_plan": {
+      "bytes": 40928,
+      "sha256": "2f1e328166d10a6e036f5bd00b2c3082667c773869bf3c7bbdefc762d75c5654"
+    },
+    "generation_readme": {
+      "bytes": 5322,
+      "sha256": "e206a488e5b1b6a97cd0391b5e906c671be022035292a438e944176b485c9ee8"
+    },
+    "installed_repair_journey": {
+      "bytes": 61704,
+      "sha256": "585fc8b0f7a4e13198b1509a7afa4ede784b180fb17ede4d6be45bf94a2935d9"
+    },
+    "intent_readme": {
+      "bytes": 6154,
+      "sha256": "29a39fea135dbf93c46b839f2b7eac21cca2b52730ab813ac16f490ae378fa99"
+    },
+    "intent_summary002": {
+      "bytes": 9173,
+      "sha256": "71c88edb909ff453c4ba5bce1ed9bace012e00cfaa0c7989f34ab7cbc114f5df"
+    },
+    "matched_manifest": {
+      "bytes": 3604632,
+      "sha256": "4e139dc1ef859be838cbe9ee8c579285845074032c6a00867a1b03859fdec2ff"
+    },
+    "matched_readme": {
+      "bytes": 6425,
+      "sha256": "87ab6ec8728daa52d3234e2800d55b87249a12da0e30c6487f4f37b1dcec367f"
+    },
+    "program_map": {
+      "bytes": 3565,
+      "sha256": "70f2653c14601c737f94c5033b90b80a0f9a2b711ec87b047de300bbe3735f5c"
+    },
+    "reference_provenance": {
+      "bytes": 2899,
+      "sha256": "92f95ff911b089544b634a33d3c656bfee8c5af314619e466b5e11062f7d9b52"
+    },
+    "sol_amendment": {
+      "bytes": 6528,
+      "sha256": "b952b3ad607120d4ca3c7f149563f066ff4693a1dce4870d7082f1a1898040f4"
+    },
+    "terminal_analysis": {
+      "bytes": 511467,
+      "sha256": "9f3c5dec6177694c8053a680fdeb716d34008a9dc289c124323480f874f0e0df"
+    },
+    "whole_poem_dspy_readme": {
+      "bytes": 1363,
+      "sha256": "3a791b0f8d77a210161bd980a1d6581dfc81200f16738d78181373dffd1ad8ee"
+    },
+    "whole_poem_dspy_v6": {
+      "bytes": 1773,
+      "sha256": "125d3666ce5176636dec524a5d52ff9abff7458c068d171d50e4b1e6109f53fc"
+    },
+    "whole_poem_v1": {
+      "bytes": 1663,
+      "sha256": "c89ce775c0cc97c0750d8eb4b09d34179b4a03bfe86546ad7773ff9d6ae21298"
+    },
+    "whole_poem_v2": {
+      "bytes": 1655,
+      "sha256": "f7ed8775a975d0f42630eba313d5e27c8596416988c9ed957c2fa43799b11afb"
+    }
+  },
+  "policy": "retained_crossform_aggregate_only_descriptive_synthesis_v1",
+  "schema_version": 1
+}
