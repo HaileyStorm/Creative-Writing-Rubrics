@@ -6,6 +6,28 @@ prompt, batch geometry, and evidence boundary. `Positive` means a declared
 product test succeeded; `Negative` means a proposed claim or treatment failed;
 `Bounded` means the result is useful but does not support a broader promotion.
 
+## October Sol comparisons and selected repeats
+
+The completed October collections add contemporary expert and reader comparisons
+under their frozen conditions. They are development or selected-set descriptions;
+their populations, reference constructs and available cohorts remain separate.
+
+| Evidence | Matched scope | Descriptive result and limit |
+| --- | --- | --- |
+| [TTCW initial expert comparison](../evaluation-results/hbq-sol-ttcw-initial-development-20261026/README.md) | Same 28 stories across all five scalar methods; all 12 plot groups. | HBQ Spearman `0.712` versus TTCW14 `0.423` on this shared set. HBQ has 29 numeric banks among 36 planned stories; the registered 33-shared-story requirement is unmet. No HBQ superiority interval or winner claim follows. |
+| [Dryad reader comparison](../evaluation-results/hbq-reader-reference-descriptive-v1/README.md#dryad-selected-exposed-dev30) | Same availability-selected 27 stories from DEV30. | HBQ rho is `0.064` for well written and `0.197` for enjoyed; Oregon is `0.469` and `0.443` on those same stories. Missingness and reader reuse limit inference; pair-specific contrasts use their own separately reported cohorts. |
+| [Kyoto reader comparison](../evaluation-results/hbq-reader-reference-descriptive-v1/README.md#kyoto-fixed-12-stories-across-three-topics) | Fixed 12 stories across three topics. | HBQ rho is `-0.007` for enjoyment and `-0.074` for pleasing style; TTCW14 is `0.223` and `0.188`. These full-12 points are available, with no estimated confidence interval. Secondary 11-story diagnostics cannot replace missing full-12 comparator results. The ladder projection establishes no gain. |
+| [Selected TTCW repeats](../evaluation-results/hbq-sol-ttcw-selected-repeats-20261026/README.md) | Two complete HBQ banks; scalar comparisons across three stories overall. | Raw leaf agreement is `338/356` (`94.94%`), kappa `0.914`; all seven available comparator scalar comparisons are unchanged. Leaves within a bank are dependent, and exact evidence sets match for only `9/356` leaf pairs. This supports a scoped repeat description, not population reliability or human validity. |
+
+The [portable measurement matrix](../evaluation-results/hbq-measurement-matrix-v1/README.md)
+projects these existing results into 199 metric-family rows with source pointers,
+cohort denominators, distributions, uncertainty status and provenance. Its command
+regenerates the matrix from public aggregates and metadata, without private stories,
+individual ratings or runtime stores. It estimates no new statistics. Missing-outcome
+bounds remain distinct from confidence intervals, and missing operational counters
+remain missing. Canonical scoring and candidate promotion are unchanged; the wider
+alignment, cross-form and release program remains in progress.
+
 ## Headline findings
 
 | Finding | Status | Public result | What it supports |
