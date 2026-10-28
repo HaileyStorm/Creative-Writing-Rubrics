@@ -1,0 +1,276 @@
+{
+  "axis_bindings": {
+    "dryad": {
+      "condition_sha256": "887f5e73995b8dabe0f384f9f368f3397140711cf2cdd1d632b340dfd252138b",
+      "endpoint": "sol",
+      "endpoint_basis": "literal uniform810 request endpoint",
+      "endpoint_source_pointer": "/requests/*/endpoint",
+      "form": "prose.short_story",
+      "form_basis": "literal scientific condition scope and uniform810 request bundle",
+      "form_source_pointer": [
+        "/scientific_condition/scope",
+        "/requests/*/bundle_id"
+      ],
+      "model": "gpt-6.1-sol",
+      "reasoning": "high",
+      "settings_basis": "requested condition"
+    },
+    "kyoto": {
+      "condition_sha256": "c4a2a74049aad928a1cd28a97ca999c1b9fc10b3bdd72f959a152f5e92b7f8c5",
+      "endpoint": "sol",
+      "endpoint_basis": "logical requested Sol route from requested_native/model; no literal endpoint field",
+      "endpoint_source_pointer": "/requested_native/model",
+      "form": "prose.short_story",
+      "form_basis": "declared condition scope",
+      "form_source_pointer": "/scope",
+      "model": "gpt-6.1-sol",
+      "reasoning": "high",
+      "settings_basis": "requested_native fields"
+    },
+    "ttcw_initial_and_selected_repeats": {
+      "condition_sha256": "219d1388e13bd796d13b93a7511ed7ee55d0cf120479783debf022a622d83dde",
+      "endpoint": "sol",
+      "endpoint_basis": "literal uniform request endpoint",
+      "endpoint_source_pointer": [
+        "/requests/*/endpoint",
+        "/repeat_phase/requests/*/endpoint"
+      ],
+      "form": "prose.short_story",
+      "form_basis": "declared CWR bundle, not inferred literary genre",
+      "form_source_pointer": [
+        "/requests/*/bundle_id",
+        "/repeat_phase/requests/*/bundle_id"
+      ],
+      "model": "gpt-6.1-sol",
+      "reasoning": "high",
+      "settings_basis": "requested condition; retained observed summaries remain separate"
+    }
+  },
+  "axis_proof_commitment": {
+    "bytes": 3958,
+    "sha256": "b87a68d3950b5fa59dae17d5f755fbdcbae5d46fe4e412b644068a6cc9562a9e"
+  },
+  "axis_scope": "Declared CWR task scope, not a new literary genre classification. Requested settings, source-declared observed summaries and actual per-attempt fields remain distinct.",
+  "axis_source_commitments": {
+    "dryad_generation637_job": {
+      "bytes": 17731,
+      "sha256": "32f261fd4cc1639eed7a376a3f498bdd6556734d732935945ad2bedc8c893631"
+    },
+    "dryad_manifest419": {
+      "bytes": 1390610,
+      "sha256": "0aaeba18d7bd0523fddf46347e43d951a879a22107f0f185de2a5b4828c07af2"
+    },
+    "kyoto_condition466": {
+      "bytes": 19242,
+      "sha256": "c4a2a74049aad928a1cd28a97ca999c1b9fc10b3bdd72f959a152f5e92b7f8c5"
+    },
+    "ttcw_analysis_profile": {
+      "bytes": 3343,
+      "sha256": "512201b92c3911f7cb358f46f09d6e3a494a9bd1f72e9999294d59e4d5a8c270"
+    },
+    "ttcw_manifest216": {
+      "bytes": 5737731,
+      "sha256": "00b4e3cd33a8d9ed3cc24e6e3e8d07ec20511a6dd87c6507f888d43eb59391bc"
+    }
+  },
+  "boundaries": {
+    "byte_equality_with_original_private_matrix_claimed": false,
+    "candidate_promoted": false,
+    "cohorts_pooled": false,
+    "new_bootstraps": false,
+    "new_native_replays": false,
+    "new_provider_calls": false,
+    "new_statistics": false,
+    "private_sources_required_for_regeneration": false,
+    "raw_text_or_individual_human_ratings_included": false
+  },
+  "effective_public_inputs": {
+    "reader": {
+      "bytes": 28080,
+      "path": "evaluation-results/hbq-reader-reference-descriptive-v1/aggregate.json",
+      "sha256": "fa88d67ee0d4cd181a2bb6ceb9716f74ee09a4c951fed52702617cfe88e21d65"
+    },
+    "ttcw_initial": {
+      "bytes": 48458,
+      "path": "evaluation-results/hbq-sol-ttcw-initial-development-20261026/aggregates.json",
+      "sha256": "160e0a4b402412d11de6aca97852a6c8fe413f3a4015f8ca47d21ee194b13dc5"
+    },
+    "ttcw_repeats": {
+      "bytes": 6673,
+      "path": "evaluation-results/hbq-sol-ttcw-selected-repeats-20261026/aggregates.json",
+      "sha256": "eeb28b026430b8707a2568a2277b2aa05fa40db27429244ad79db9a59aa9e1ad"
+    }
+  },
+  "expected_row_coverage": {
+    "Dryad_DEV30": 34,
+    "Kyoto_QSF12": 39,
+    "TTCW": 126,
+    "total": 199
+  },
+  "limitations": {
+    "ttcw_initial": [
+      "Already opened development expert reference; no unused confirmation, winner or candidate promotion.",
+      "Per-statistic marginal, exact-common and pair-specific denominators remain separate; original shared coverage requirement remains unmet.",
+      "Undefined bootstrap draws remain undefined without redraw; missing-outcome bounds are not confidence intervals.",
+      "Expert-derived pair directions are not direct human preference ballots; cells and ballots are clustered observations.",
+      "Requested settings and observed summaries do not attest backend, sampler, full-wire or historical account equivalence."
+    ]
+  },
+  "original_input_commitments": {
+    "original_private_matrix": {
+      "bytes": 688842,
+      "sha256": "3a0c6ee1915d8cc82ebfd969603f035835d7f1ea9437fe73e5275fa2c68bd9ad"
+    },
+    "reader": {
+      "bytes": 31400,
+      "sha256": "589fe871852a25792bee3738337474f0fbd23ef4258764843ebcd1cc52f65e90"
+    },
+    "ttcw_initial": {
+      "bytes": 48458,
+      "sha256": "160e0a4b402412d11de6aca97852a6c8fe413f3a4015f8ca47d21ee194b13dc5"
+    },
+    "ttcw_repeats": {
+      "bytes": 6673,
+      "sha256": "eeb28b026430b8707a2568a2277b2aa05fa40db27429244ad79db9a59aa9e1ad"
+    }
+  },
+  "policy": "portable_existing_measurements_aggregate_projection_v1",
+  "reader_extension_fields": 48,
+  "reader_extensions": {
+    "dryad": {
+      "contrast_results": {
+        "HBQ_minus_compact/enjoyed": {
+          "conditional_story_bootstrap": {
+            "draws_sha256": "4ff6246a14c6b64b7660ea09f5a9c9b0c0309b0516c9f494599b70879d4f5468",
+            "interval95": null,
+            "seed": 20261027
+          },
+          "full_planned_missing_outcome_bounds": [
+            -2,
+            2
+          ],
+          "missing_bounds_type": "unsharpened_universal_range_not_a_confidence_interval"
+        },
+        "HBQ_minus_compact/well_written": {
+          "conditional_story_bootstrap": {
+            "draws_sha256": "374a84804719ac2c991fb334699c23f43f91036b4658bf5f43f09f8e3f84cee7",
+            "interval95": null,
+            "seed": 20261027
+          },
+          "full_planned_missing_outcome_bounds": [
+            -2,
+            2
+          ],
+          "missing_bounds_type": "unsharpened_universal_range_not_a_confidence_interval"
+        },
+        "HBQ_minus_holistic/enjoyed": {
+          "conditional_story_bootstrap": {
+            "draws_sha256": "c4d8c89faaf7da1452a1581ca79309e915f855130f8db4ef00b02b76051c9c6a",
+            "interval95": null,
+            "seed": 20261027
+          },
+          "full_planned_missing_outcome_bounds": [
+            -2,
+            2
+          ],
+          "missing_bounds_type": "unsharpened_universal_range_not_a_confidence_interval"
+        },
+        "HBQ_minus_holistic/well_written": {
+          "conditional_story_bootstrap": {
+            "draws_sha256": "625699f156526121edf6627b205af93daf2414ae7a948e1dd7ef573e827ec50e",
+            "interval95": null,
+            "seed": 20261027
+          },
+          "full_planned_missing_outcome_bounds": [
+            -2,
+            2
+          ],
+          "missing_bounds_type": "unsharpened_universal_range_not_a_confidence_interval"
+        },
+        "HBQ_minus_oregon/enjoyed": {
+          "conditional_story_bootstrap": {
+            "draws_sha256": "00c7628d48dbebcfd87c25bf15234edae77f3a3f7963360397c80ae775f0c555",
+            "interval95": null,
+            "seed": 20261027
+          },
+          "full_planned_missing_outcome_bounds": [
+            -2,
+            2
+          ],
+          "missing_bounds_type": "unsharpened_universal_range_not_a_confidence_interval"
+        },
+        "HBQ_minus_oregon/well_written": {
+          "conditional_story_bootstrap": {
+            "draws_sha256": "549ff6baa4768a4562ad70838885026ea33aa767e2c6935ee38b2739df476949",
+            "interval95": null,
+            "seed": 20261027
+          },
+          "full_planned_missing_outcome_bounds": [
+            -2,
+            2
+          ],
+          "missing_bounds_type": "unsharpened_universal_range_not_a_confidence_interval"
+        },
+        "HBQ_minus_ttcw14/enjoyed": {
+          "conditional_story_bootstrap": {
+            "draws_sha256": "508a0058cf2c602c3809c5785cb6aa9c16a168d392e24a3aff67e9716ac44d8c",
+            "interval95": null,
+            "seed": 20261027
+          },
+          "full_planned_missing_outcome_bounds": [
+            -2,
+            2
+          ],
+          "missing_bounds_type": "unsharpened_universal_range_not_a_confidence_interval"
+        },
+        "HBQ_minus_ttcw14/well_written": {
+          "conditional_story_bootstrap": {
+            "draws_sha256": "843d23de0158656b6b813cef6c26ecdf1461c614e516ae281076534b59c676fc",
+            "interval95": null,
+            "seed": 20261027
+          },
+          "full_planned_missing_outcome_bounds": [
+            -2,
+            2
+          ],
+          "missing_bounds_type": "unsharpened_universal_range_not_a_confidence_interval"
+        }
+      }
+    },
+    "kyoto_qsf12": {
+      "hbq_ttcw_primary_differences": {
+        "difference/hbq/ttcw14/enjoyment": {
+          "bounds_are_confidence_intervals": false,
+          "full12_missing_outcome_bounds": [
+            -2,
+            2
+          ]
+        },
+        "difference/hbq/ttcw14/pleasing_style": {
+          "bounds_are_confidence_intervals": false,
+          "full12_missing_outcome_bounds": [
+            -2,
+            2
+          ]
+        }
+      },
+      "ladder_primary_differences": {
+        "difference/ladder_candidate/hbq/enjoyment": {
+          "bounds_are_confidence_intervals": false,
+          "full12_missing_outcome_bounds": [
+            -2,
+            2
+          ]
+        },
+        "difference/ladder_candidate/hbq/pleasing_style": {
+          "bounds_are_confidence_intervals": false,
+          "full12_missing_outcome_bounds": [
+            -2,
+            2
+          ]
+        }
+      }
+    }
+  },
+  "schema_version": 1
+}
