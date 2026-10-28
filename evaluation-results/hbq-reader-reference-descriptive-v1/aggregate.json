@@ -1,0 +1,891 @@
+{
+  "boundaries": {
+    "candidate_or_baseline_promoted": false,
+    "cohorts_pooled": false,
+    "confidence_intervals_reproduced": false,
+    "expert_population_claim": false,
+    "fresh_census": false,
+    "full_program_complete": false,
+    "human_alignment_gain_established": false,
+    "method_winner_established": false,
+    "new_human_labels_or_judge_training": false,
+    "new_judge_votes": 0,
+    "new_provider_or_native_calls": 0,
+    "new_scoring_or_semantic_validation_calls": 0,
+    "raw_text_ratings_memberships_or_account_details_published": false
+  },
+  "dryad": {
+    "arms": {
+      "compact": {
+        "distribution": {
+          "available": 30,
+          "available_unordered_pairs": 435,
+          "distinct_scores": 3,
+          "exact_ceiling_count": 0,
+          "exact_floor_count": 2,
+          "maximum": 3.0,
+          "mean": 1.9666666666666666,
+          "minimum": 1.0,
+          "missing": 0,
+          "native_range": [
+            1,
+            5
+          ],
+          "planned": 30,
+          "tied_unordered_pairs": 352
+        },
+        "planned_packets": 30,
+        "received_packets": 30,
+        "request_complete_stories": 30,
+        "states": {
+          "assessed": 30
+        }
+      },
+      "hbq": {
+        "distribution": {
+          "available": 28,
+          "available_unordered_pairs": 378,
+          "distinct_scores": 28,
+          "exact_ceiling_count": 0,
+          "exact_floor_count": 0,
+          "maximum": 74.1292,
+          "mean": 52.64380714285714,
+          "minimum": 33.8737,
+          "missing": 2,
+          "native_range": [
+            0,
+            100
+          ],
+          "planned": 30,
+          "tied_unordered_pairs": 0
+        },
+        "planned_packets": 690,
+        "received_packets": 688,
+        "request_complete_stories": 28,
+        "states": {
+          "SCORED": 28,
+          "incomplete_native_packets_no_score": 2
+        }
+      },
+      "holistic": {
+        "distribution": {
+          "available": 30,
+          "available_unordered_pairs": 435,
+          "distinct_scores": 3,
+          "exact_ceiling_count": 0,
+          "exact_floor_count": 4,
+          "maximum": 3.0,
+          "mean": 1.9333333333333333,
+          "minimum": 1.0,
+          "missing": 0,
+          "native_range": [
+            1,
+            7
+          ],
+          "planned": 30,
+          "tied_unordered_pairs": 283
+        },
+        "planned_packets": 30,
+        "received_packets": 30,
+        "request_complete_stories": 30,
+        "states": {
+          "assessed": 30
+        }
+      },
+      "oregon": {
+        "distribution": {
+          "available": 30,
+          "available_unordered_pairs": 435,
+          "distinct_scores": 9,
+          "exact_ceiling_count": 0,
+          "exact_floor_count": 0,
+          "maximum": 25.0,
+          "mean": 17.933333333333334,
+          "minimum": 14.0,
+          "missing": 0,
+          "native_range": [
+            6,
+            36
+          ],
+          "planned": 30,
+          "tied_unordered_pairs": 68
+        },
+        "planned_packets": 30,
+        "received_packets": 30,
+        "request_complete_stories": 30,
+        "states": {
+          "assessed": 30
+        }
+      },
+      "ttcw14": {
+        "distribution": {
+          "available": 29,
+          "available_unordered_pairs": 406,
+          "distinct_scores": 9,
+          "exact_ceiling_count": 0,
+          "exact_floor_count": 4,
+          "maximum": 0.6428571428571429,
+          "mean": 0.19458128078817732,
+          "minimum": 0.0,
+          "missing": 1,
+          "native_range": [
+            0,
+            1
+          ],
+          "planned": 30,
+          "tied_unordered_pairs": 60
+        },
+        "planned_packets": 30,
+        "received_packets": 30,
+        "request_complete_stories": 30,
+        "states": {
+          "assessed": 29,
+          "partial_abstention_no_complete_score": 1
+        }
+      }
+    },
+    "fixed_all_five_common_distributions": {
+      "compact": {
+        "available": 27,
+        "available_unordered_pairs": 351,
+        "distinct_scores": 2,
+        "exact_ceiling_count": 0,
+        "exact_floor_count": 2,
+        "maximum": 2.0,
+        "mean": 1.9259259259259258,
+        "minimum": 1.0,
+        "missing": 3,
+        "native_range": [
+          1,
+          5
+        ],
+        "planned": 30,
+        "tied_unordered_pairs": 301
+      },
+      "hbq": {
+        "available": 27,
+        "available_unordered_pairs": 351,
+        "distinct_scores": 27,
+        "exact_ceiling_count": 0,
+        "exact_floor_count": 0,
+        "maximum": 74.1292,
+        "mean": 52.553451851851854,
+        "minimum": 33.8737,
+        "missing": 3,
+        "native_range": [
+          0,
+          100
+        ],
+        "planned": 30,
+        "tied_unordered_pairs": 0
+      },
+      "holistic": {
+        "available": 27,
+        "available_unordered_pairs": 351,
+        "distinct_scores": 3,
+        "exact_ceiling_count": 0,
+        "exact_floor_count": 4,
+        "maximum": 3.0,
+        "mean": 1.8888888888888888,
+        "minimum": 1.0,
+        "missing": 3,
+        "native_range": [
+          1,
+          7
+        ],
+        "planned": 30,
+        "tied_unordered_pairs": 237
+      },
+      "oregon": {
+        "available": 27,
+        "available_unordered_pairs": 351,
+        "distinct_scores": 8,
+        "exact_ceiling_count": 0,
+        "exact_floor_count": 0,
+        "maximum": 21.0,
+        "mean": 17.88888888888889,
+        "minimum": 14.0,
+        "missing": 3,
+        "native_range": [
+          6,
+          36
+        ],
+        "planned": 30,
+        "tied_unordered_pairs": 63
+      },
+      "ttcw14": {
+        "available": 27,
+        "available_unordered_pairs": 351,
+        "distinct_scores": 8,
+        "exact_ceiling_count": 0,
+        "exact_floor_count": 4,
+        "maximum": 0.5,
+        "mean": 0.17989417989417988,
+        "minimum": 0.0,
+        "missing": 3,
+        "native_range": [
+          0,
+          1
+        ],
+        "planned": 30,
+        "tied_unordered_pairs": 56
+      }
+    },
+    "fixed_all_five_common_rhos": {
+      "all_five/compact/enjoyed": 0.32697261466740324,
+      "all_five/compact/well_written": 0.417989947642614,
+      "all_five/hbq/enjoyed": 0.19667126815365768,
+      "all_five/hbq/well_written": 0.06416134684219958,
+      "all_five/holistic/enjoyed": 0.32910750062547334,
+      "all_five/holistic/well_written": 0.3482541115723934,
+      "all_five/oregon/enjoyed": 0.44304029030995673,
+      "all_five/oregon/well_written": 0.4686883501271142,
+      "all_five/ttcw14/enjoyed": 0.2940288011314502,
+      "all_five/ttcw14/well_written": 0.16456925832342256
+    },
+    "fixed_all_five_numeric_common_stories": 27,
+    "hbq_complete_stories": 28,
+    "limits": [
+      "Selected exposed DEV30 stories and pooled reader means only; no population or crossed-rater interval.",
+      "Dryad common-set and contrast interpretations remain inconclusive with arm-dependent availability; point estimates are descriptive.",
+      "Conditional resampling is conditional on selected observed stories; no confidence intervals are reproduced in this package.",
+      "Native packet completeness and numeric score availability differ; abstention does not become a numeric score.",
+      "Different native scales and tie granularity do not establish stronger alignment, calibration or a method winner."
+    ],
+    "native_admitted_packets": 808,
+    "pairwise_availability_conditioned_contrasts": {
+      "HBQ_minus_compact/enjoyed": {
+        "HBQ_rho_on_common_set": 0.17577003535622637,
+        "arm": "compact",
+        "arm_dependent_attrition": true,
+        "available": 28,
+        "axis": "enjoyed",
+        "comparator_rho_on_common_set": 0.3091426534846445,
+        "conditional_story_bootstrap": {
+          "replicates": 2000,
+          "undefined_draws": 243
+        },
+        "inconclusive_reasons": [
+          "differing_arm_numeric_availability_sets",
+          "undefined_bootstrap_draws_retained_without_redraw"
+        ],
+        "interpretation": "INCONCLUSIVE",
+        "kind": "difference",
+        "missing": 2,
+        "planned": 30,
+        "point": -0.1333726181284181
+      },
+      "HBQ_minus_compact/well_written": {
+        "HBQ_rho_on_common_set": 0.04190634118082987,
+        "arm": "compact",
+        "arm_dependent_attrition": true,
+        "available": 28,
+        "axis": "well_written",
+        "comparator_rho_on_common_set": 0.3951780035894175,
+        "conditional_story_bootstrap": {
+          "replicates": 2000,
+          "undefined_draws": 243
+        },
+        "inconclusive_reasons": [
+          "differing_arm_numeric_availability_sets",
+          "undefined_bootstrap_draws_retained_without_redraw"
+        ],
+        "interpretation": "INCONCLUSIVE",
+        "kind": "difference",
+        "missing": 2,
+        "planned": 30,
+        "point": -0.35327166240858765
+      },
+      "HBQ_minus_holistic/enjoyed": {
+        "HBQ_rho_on_common_set": 0.17577003535622637,
+        "arm": "holistic",
+        "arm_dependent_attrition": true,
+        "available": 28,
+        "axis": "enjoyed",
+        "comparator_rho_on_common_set": 0.29420240211464055,
+        "conditional_story_bootstrap": {
+          "replicates": 2000,
+          "undefined_draws": 8
+        },
+        "inconclusive_reasons": [
+          "differing_arm_numeric_availability_sets",
+          "undefined_bootstrap_draws_retained_without_redraw"
+        ],
+        "interpretation": "INCONCLUSIVE",
+        "kind": "difference",
+        "missing": 2,
+        "planned": 30,
+        "point": -0.11843236675841418
+      },
+      "HBQ_minus_holistic/well_written": {
+        "HBQ_rho_on_common_set": 0.04190634118082987,
+        "arm": "holistic",
+        "arm_dependent_attrition": true,
+        "available": 28,
+        "axis": "well_written",
+        "comparator_rho_on_common_set": 0.31221722098552157,
+        "conditional_story_bootstrap": {
+          "replicates": 2000,
+          "undefined_draws": 8
+        },
+        "inconclusive_reasons": [
+          "differing_arm_numeric_availability_sets",
+          "undefined_bootstrap_draws_retained_without_redraw"
+        ],
+        "interpretation": "INCONCLUSIVE",
+        "kind": "difference",
+        "missing": 2,
+        "planned": 30,
+        "point": -0.2703108798046917
+      },
+      "HBQ_minus_oregon/enjoyed": {
+        "HBQ_rho_on_common_set": 0.17577003535622637,
+        "arm": "oregon",
+        "arm_dependent_attrition": true,
+        "available": 28,
+        "axis": "enjoyed",
+        "comparator_rho_on_common_set": 0.47930581460697297,
+        "conditional_story_bootstrap": {
+          "replicates": 2000,
+          "undefined_draws": 0
+        },
+        "inconclusive_reasons": [
+          "differing_arm_numeric_availability_sets"
+        ],
+        "interpretation": "INCONCLUSIVE",
+        "kind": "difference",
+        "missing": 2,
+        "planned": 30,
+        "point": -0.3035357792507466
+      },
+      "HBQ_minus_oregon/well_written": {
+        "HBQ_rho_on_common_set": 0.04190634118082987,
+        "arm": "oregon",
+        "arm_dependent_attrition": true,
+        "available": 28,
+        "axis": "well_written",
+        "comparator_rho_on_common_set": 0.5213575294406219,
+        "conditional_story_bootstrap": {
+          "replicates": 2000,
+          "undefined_draws": 0
+        },
+        "inconclusive_reasons": [
+          "differing_arm_numeric_availability_sets"
+        ],
+        "interpretation": "INCONCLUSIVE",
+        "kind": "difference",
+        "missing": 2,
+        "planned": 30,
+        "point": -0.479451188259792
+      },
+      "HBQ_minus_ttcw14/enjoyed": {
+        "HBQ_rho_on_common_set": 0.19667126815365768,
+        "arm": "ttcw14",
+        "arm_dependent_attrition": true,
+        "available": 27,
+        "axis": "enjoyed",
+        "comparator_rho_on_common_set": 0.2940288011314502,
+        "conditional_story_bootstrap": {
+          "replicates": 2000,
+          "undefined_draws": 0
+        },
+        "inconclusive_reasons": [
+          "differing_arm_numeric_availability_sets"
+        ],
+        "interpretation": "INCONCLUSIVE",
+        "kind": "difference",
+        "missing": 3,
+        "planned": 30,
+        "point": -0.09735753297779251
+      },
+      "HBQ_minus_ttcw14/well_written": {
+        "HBQ_rho_on_common_set": 0.06416134684219958,
+        "arm": "ttcw14",
+        "arm_dependent_attrition": true,
+        "available": 27,
+        "axis": "well_written",
+        "comparator_rho_on_common_set": 0.16456925832342256,
+        "conditional_story_bootstrap": {
+          "replicates": 2000,
+          "undefined_draws": 0
+        },
+        "inconclusive_reasons": [
+          "differing_arm_numeric_availability_sets"
+        ],
+        "interpretation": "INCONCLUSIVE",
+        "kind": "difference",
+        "missing": 3,
+        "planned": 30,
+        "point": -0.10040791148122298
+      }
+    },
+    "planned_native_packets": 810,
+    "planned_stories": 30,
+    "target_use": {
+      "axes_used": [
+        "well_written",
+        "enjoyed"
+      ],
+      "distinct_evaluators_established": false,
+      "pooled_means_only": true,
+      "prepared_DEV_rows_decoded": 60,
+      "rating_count_range": [
+        10,
+        13
+      ],
+      "selected_DEV_stories_used": 30,
+      "selected_rating_events": 362,
+      "unused_confirmation_read": false
+    }
+  },
+  "input_aggregate_sha256": "589fe871852a25792bee3738337474f0fbd23ef4258764843ebcd1cc52f65e90",
+  "kyoto_qsf12": {
+    "hbq_ttcw_primary_differences": {
+      "difference/hbq/ttcw14/enjoyment": {
+        "arm_dependent_attrition": false,
+        "attrition_inconclusive": false,
+        "interval_estimated": false,
+        "primary_fixed12": {
+          "complete_values": 12,
+          "planned": 12,
+          "point": -0.23042216278318367,
+          "state": "DESCRIPTIVE_POINT_DIFFERENCE"
+        },
+        "secondary_exact_common_diagnostic": {
+          "missing_of_planned12": 0,
+          "never_substitutes_primary": true,
+          "point": -0.23042216278318367,
+          "state": "DESCRIPTIVE_POINT_DIFFERENCE",
+          "works": 12
+        }
+      },
+      "difference/hbq/ttcw14/pleasing_style": {
+        "arm_dependent_attrition": false,
+        "attrition_inconclusive": false,
+        "interval_estimated": false,
+        "primary_fixed12": {
+          "complete_values": 12,
+          "planned": 12,
+          "point": -0.26196917648580326,
+          "state": "DESCRIPTIVE_POINT_DIFFERENCE"
+        },
+        "secondary_exact_common_diagnostic": {
+          "missing_of_planned12": 0,
+          "never_substitutes_primary": true,
+          "point": -0.26196917648580326,
+          "state": "DESCRIPTIVE_POINT_DIFFERENCE",
+          "works": 12
+        }
+      }
+    },
+    "ladder_primary_differences": {
+      "difference/ladder_candidate/hbq/enjoyment": {
+        "arm_dependent_attrition": false,
+        "attrition_inconclusive": false,
+        "interval_estimated": false,
+        "primary_fixed12": {
+          "complete_values": 12,
+          "planned": 12,
+          "point": 0.0,
+          "state": "DESCRIPTIVE_POINT_DIFFERENCE"
+        },
+        "secondary_exact_common_diagnostic": {
+          "missing_of_planned12": 0,
+          "never_substitutes_primary": true,
+          "point": 0.0,
+          "state": "DESCRIPTIVE_POINT_DIFFERENCE",
+          "works": 12
+        }
+      },
+      "difference/ladder_candidate/hbq/pleasing_style": {
+        "arm_dependent_attrition": false,
+        "attrition_inconclusive": false,
+        "interval_estimated": false,
+        "primary_fixed12": {
+          "complete_values": 12,
+          "planned": 12,
+          "point": 0.0,
+          "state": "DESCRIPTIVE_POINT_DIFFERENCE"
+        },
+        "secondary_exact_common_diagnostic": {
+          "missing_of_planned12": 0,
+          "never_substitutes_primary": true,
+          "point": 0.0,
+          "state": "DESCRIPTIVE_POINT_DIFFERENCE",
+          "works": 12
+        }
+      }
+    },
+    "limits": [
+      "Twelve selected stories across three topics; no independent-story or independent-reader uncertainty claim.",
+      "Reader enjoyment and pleasing style are separate constructs; no expert-population, broad-quality or improvement claim.",
+      "HBQ, TTCW and lexical-control fixed12 points are available; these complete comparisons are not attrition-inconclusive.",
+      "Holistic, compact and Oregon have 11 numeric stories; their fixed12 primary is unavailable and secondary11 never substitutes for it.",
+      "Constant-vector correlation is undefined despite complete coverage.",
+      "Recorded valid-response sums of 115 per axis do not establish 115 distinct participants; rater identities are not established.",
+      "Historical preprocessing and exclusion counts remain partly unknown.",
+      "After the frozen condition was fixed, source-only mapping incidentally encountered upstream aggregate ICC weights; those values were not returned to or used by this analysis lane. Global prior use remains unknown.",
+      "Ladder aggregate distributions/correlations match HBQ and reported rho differences are zero; these aggregates alone do not prove paired score equality.",
+      "No additional native packets were obtained for the ladder projection; its admitted parent packets are shared with HBQ.",
+      "No fitting, sign selection, bootstrap or confidence interval was performed for these Kyoto points."
+    ],
+    "method_story_profile_cells": 72,
+    "methods": {
+      "compact": {
+        "additional_native_packets": null,
+        "admitted_parent_packets": 11,
+        "complete_original_request_banks": 11,
+        "distribution": {
+          "available_unordered_pairs": 55,
+          "distinct_scores": 2,
+          "exact_ceiling_count": 0,
+          "exact_floor_count": 0,
+          "maximum": 3.0,
+          "mean": 2.5454545454545454,
+          "minimum": 2.0,
+          "missing_stories": 1,
+          "native_range": [
+            1,
+            5
+          ],
+          "numeric_stories": 11,
+          "planned_stories": 12,
+          "tied_unordered_pairs": 25
+        },
+        "states": {
+          "assessed": 11,
+          "not_admitted": 1
+        }
+      },
+      "hbq": {
+        "additional_native_packets": null,
+        "admitted_parent_packets": 276,
+        "complete_original_request_banks": 12,
+        "distribution": {
+          "available_unordered_pairs": 66,
+          "distinct_scores": 12,
+          "exact_ceiling_count": 0,
+          "exact_floor_count": 0,
+          "maximum": 95.6087,
+          "mean": 77.04048333333333,
+          "minimum": 60.0228,
+          "missing_stories": 0,
+          "native_range": [
+            0,
+            100
+          ],
+          "numeric_stories": 12,
+          "planned_stories": 12,
+          "tied_unordered_pairs": 0
+        },
+        "states": {
+          "SCORED": 12
+        }
+      },
+      "holistic": {
+        "additional_native_packets": null,
+        "admitted_parent_packets": 11,
+        "complete_original_request_banks": 11,
+        "distribution": {
+          "available_unordered_pairs": 55,
+          "distinct_scores": 3,
+          "exact_ceiling_count": 0,
+          "exact_floor_count": 0,
+          "maximum": 4.0,
+          "mean": 3.4545454545454546,
+          "minimum": 2.0,
+          "missing_stories": 1,
+          "native_range": [
+            1,
+            7
+          ],
+          "numeric_stories": 11,
+          "planned_stories": 12,
+          "tied_unordered_pairs": 21
+        },
+        "states": {
+          "assessed": 11,
+          "not_admitted": 1
+        }
+      },
+      "ladder_candidate": {
+        "additional_native_packets": 0,
+        "admitted_parent_packets": 276,
+        "complete_original_request_banks": 12,
+        "distribution": {
+          "available_unordered_pairs": 66,
+          "distinct_scores": 12,
+          "exact_ceiling_count": 0,
+          "exact_floor_count": 0,
+          "maximum": 95.6087,
+          "mean": 77.04048333333333,
+          "minimum": 60.0228,
+          "missing_stories": 0,
+          "native_range": [
+            0,
+            100
+          ],
+          "numeric_stories": 12,
+          "planned_stories": 12,
+          "tied_unordered_pairs": 0
+        },
+        "states": {
+          "SCORED": 12
+        }
+      },
+      "oregon": {
+        "additional_native_packets": null,
+        "admitted_parent_packets": 11,
+        "complete_original_request_banks": 11,
+        "distribution": {
+          "available_unordered_pairs": 55,
+          "distinct_scores": 8,
+          "exact_ceiling_count": 0,
+          "exact_floor_count": 0,
+          "maximum": 32.0,
+          "mean": 28.454545454545453,
+          "minimum": 25.0,
+          "missing_stories": 1,
+          "native_range": [
+            6,
+            36
+          ],
+          "numeric_stories": 11,
+          "planned_stories": 12,
+          "tied_unordered_pairs": 3
+        },
+        "states": {
+          "assessed": 11,
+          "not_admitted": 1
+        }
+      },
+      "ttcw14": {
+        "additional_native_packets": null,
+        "admitted_parent_packets": 12,
+        "complete_original_request_banks": 12,
+        "distribution": {
+          "available_unordered_pairs": 66,
+          "distinct_scores": 7,
+          "exact_ceiling_count": 0,
+          "exact_floor_count": 0,
+          "maximum": 0.8571428571428571,
+          "mean": 0.6011904761904762,
+          "minimum": 0.42857142857142855,
+          "missing_stories": 0,
+          "native_range": [
+            0,
+            1
+          ],
+          "numeric_stories": 12,
+          "planned_stories": 12,
+          "tied_unordered_pairs": 6
+        },
+        "states": {
+          "assessed": 12
+        }
+      }
+    },
+    "native_admitted_packets": 321,
+    "native_rejected_packets": 3,
+    "planned_native_packets": 324,
+    "planned_stories": 12,
+    "primary_fixed12_rhos": {
+      "rho/compact/enjoyment": {
+        "complete_values": 11,
+        "planned": 12,
+        "point": null,
+        "state": "UNAVAILABLE_REQUIRED_VALUE_MISSING"
+      },
+      "rho/compact/pleasing_style": {
+        "complete_values": 11,
+        "planned": 12,
+        "point": null,
+        "state": "UNAVAILABLE_REQUIRED_VALUE_MISSING"
+      },
+      "rho/constant_zero/enjoyment": {
+        "complete_values": 12,
+        "planned": 12,
+        "point": null,
+        "state": "UNDEFINED_CONSTANT_VECTOR"
+      },
+      "rho/constant_zero/pleasing_style": {
+        "complete_values": 12,
+        "planned": 12,
+        "point": null,
+        "state": "UNDEFINED_CONSTANT_VECTOR"
+      },
+      "rho/hbq/enjoyment": {
+        "complete_values": 12,
+        "planned": 12,
+        "point": -0.007005264683383462,
+        "state": "DESCRIPTIVE_POINT"
+      },
+      "rho/hbq/pleasing_style": {
+        "complete_values": 12,
+        "planned": 12,
+        "point": -0.07368466411136292,
+        "state": "DESCRIPTIVE_POINT"
+      },
+      "rho/holistic/enjoyment": {
+        "complete_values": 11,
+        "planned": 12,
+        "point": null,
+        "state": "UNAVAILABLE_REQUIRED_VALUE_MISSING"
+      },
+      "rho/holistic/pleasing_style": {
+        "complete_values": 11,
+        "planned": 12,
+        "point": null,
+        "state": "UNAVAILABLE_REQUIRED_VALUE_MISSING"
+      },
+      "rho/ladder_candidate/enjoyment": {
+        "complete_values": 12,
+        "planned": 12,
+        "point": -0.007005264683383462,
+        "state": "DESCRIPTIVE_POINT"
+      },
+      "rho/ladder_candidate/pleasing_style": {
+        "complete_values": 12,
+        "planned": 12,
+        "point": -0.07368466411136292,
+        "state": "DESCRIPTIVE_POINT"
+      },
+      "rho/lexical_token_count/enjoyment": {
+        "complete_values": 12,
+        "planned": 12,
+        "point": 0.8210526315789474,
+        "state": "DESCRIPTIVE_POINT"
+      },
+      "rho/lexical_token_count/pleasing_style": {
+        "complete_values": 12,
+        "planned": 12,
+        "point": 0.6274174891632619,
+        "state": "DESCRIPTIVE_POINT"
+      },
+      "rho/oregon/enjoyment": {
+        "complete_values": 11,
+        "planned": 12,
+        "point": null,
+        "state": "UNAVAILABLE_REQUIRED_VALUE_MISSING"
+      },
+      "rho/oregon/pleasing_style": {
+        "complete_values": 11,
+        "planned": 12,
+        "point": null,
+        "state": "UNAVAILABLE_REQUIRED_VALUE_MISSING"
+      },
+      "rho/raw_type_token_ratio/enjoyment": {
+        "complete_values": 12,
+        "planned": 12,
+        "point": 0.045534220441992505,
+        "state": "DESCRIPTIVE_POINT"
+      },
+      "rho/raw_type_token_ratio/pleasing_style": {
+        "complete_values": 12,
+        "planned": 12,
+        "point": 0.0,
+        "state": "DESCRIPTIVE_POINT"
+      },
+      "rho/ttcw14/enjoyment": {
+        "complete_values": 12,
+        "planned": 12,
+        "point": 0.2234168980998002,
+        "state": "DESCRIPTIVE_POINT"
+      },
+      "rho/ttcw14/pleasing_style": {
+        "complete_values": 12,
+        "planned": 12,
+        "point": 0.18828451237444033,
+        "state": "DESCRIPTIVE_POINT"
+      }
+    },
+    "targets": {
+      "enjoyment": {
+        "available_story_means": 12,
+        "distinct_participants_established": false,
+        "excluded_raters": {
+          "all12_total": null,
+          "known_count_sum": 0,
+          "unknown_story_counts": 12
+        },
+        "missing_raters": {
+          "all12_total": 0,
+          "known_count_sum": 0,
+          "unknown_story_counts": 0
+        },
+        "missing_story_means": 0,
+        "planned_stories": 12,
+        "recorded_valid_responses": {
+          "all12_total": 115,
+          "known_count_sum": 115,
+          "unknown_story_counts": 0
+        },
+        "states": {
+          "OBSERVED_EQUAL_RESPONSE_MEAN": 12
+        }
+      },
+      "pleasing_style": {
+        "available_story_means": 12,
+        "distinct_participants_established": false,
+        "excluded_raters": {
+          "all12_total": null,
+          "known_count_sum": 0,
+          "unknown_story_counts": 12
+        },
+        "missing_raters": {
+          "all12_total": 0,
+          "known_count_sum": 0,
+          "unknown_story_counts": 0
+        },
+        "missing_story_means": 0,
+        "planned_stories": 12,
+        "recorded_valid_responses": {
+          "all12_total": 115,
+          "known_count_sum": 115,
+          "unknown_story_counts": 0
+        },
+        "states": {
+          "OBSERVED_EQUAL_RESPONSE_MEAN": 12
+        }
+      }
+    },
+    "topics": 3
+  },
+  "lineage_clarification": "Structured execution lineage identifies collection generation637 and its actual owning joins. Frozen Dryad lineage captions name618 and Kyoto captions sayPOST618. This derived clarification preserves the raw reports unchanged.",
+  "policy": "retained_reader_aggregate_only_descriptive_synthesis_v1",
+  "schema_version": 1,
+  "source_commitments": {
+    "dryad_analysis": {
+      "bytes": 54471,
+      "sha256": "0b42b7f01deb8f7a845269c04198dec233388ed25f9560fff3fcf8f5b5cf9a33"
+    },
+    "dryad_analysis_receipt": {
+      "bytes": 1221,
+      "sha256": "a7da76f0d61bc01abbf44e5056f093d21db765e1f98b195c476e8a2a23f4aa54"
+    },
+    "dryad_control_receipt": {
+      "bytes": 985,
+      "sha256": "2190f6743891cb00268f48178d84bb3f93e1e07d570cd645400bdbfae8c02ee6"
+    },
+    "dryad_controls": {
+      "bytes": 8152,
+      "sha256": "5ce9cab6509d1e21950f528792ec5df2226b5028ec1324588e76d66c27e4882c"
+    },
+    "dryad_prediction_receipt": {
+      "bytes": 1719,
+      "sha256": "40a85fad249a59635fdf42e4399ea50f88f19585f8da82a266667be11f8a9f34"
+    },
+    "kyoto_analysis": {
+      "bytes": 38066,
+      "sha256": "ed93a07ff114f31c62284ee23d8add342f78a13056a3d37aa6731ab9b5a84909"
+    },
+    "kyoto_profile_receipt": {
+      "bytes": 18655,
+      "sha256": "8c9f77588eb71f08286ced1ad1dd8c91ee81a3a3d66fd0875f4b0da0c6490ae5"
+    },
+    "kyoto_target_receipt": {
+      "bytes": 3439,
+      "sha256": "c2e63f60d74a28ba4c9934e2bd26737098ee9c478cd8e91e758a612bd4c61bba"
+    }
+  }
+}
