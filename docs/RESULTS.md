@@ -28,6 +28,12 @@ bounds remain distinct from confidence intervals, and missing operational counte
 remain missing. Canonical scoring and candidate promotion are unchanged; the wider
 alignment, cross-form and release program remains in progress.
 
+The separate [accepted-request operations snapshot](../evaluation-results/hbq-reader-repeat-operations-v1/README.md)
+reports saved token and native timing counters for 808 Dryad, 321 Kyoto and 56
+selected-repeat requests. It excludes failures and resource waits, counts shared
+ladder parents once, and supplies no full-cost, throughput or quality-efficiency
+claim. The earlier matrix retains its original efficiency-not-reported snapshot.
+
 ## Headline findings
 
 | Finding | Status | Public result | What it supports |
