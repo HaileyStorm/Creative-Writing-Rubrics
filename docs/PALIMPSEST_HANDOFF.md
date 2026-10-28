@@ -64,27 +64,29 @@ revision or expose the specifically unavailable operation and prerequisite;
 it must never silently substitute a newer book or rewrite prior verdict
 provenance.
 
-## Subsequent update gate
+## Subsequent update acceptance
 
 For every deliberately selected future CWR revision, make one reviewable
 Palimpsest commit that changes the gitlink and its compatibility evidence
-together. From the Palimpsest root, rerun at least:
+together. Inspect the selected revision and gitlink from the Palimpsest root:
 
 ```powershell
 git submodule update --init --recursive
-python -m hbqrs validate
-python -m pytest "Rubric Book/tests"
-uv run --locked --extra test --extra prompt-optimizer python scripts/validate_bootstrap.py
-uv run --locked --extra test --extra prompt-optimizer python -m pytest python/tests/test_m5_hbq_review.py python/tests/test_m5_custom_rubric_service.py python/tests/test_m5_application_service.py
 git diff --submodule=log -- .gitmodules "Rubric Book"
 ```
 
-Run the CWR commands from a development environment in which the pinned book
-is installed, for example with `python -m pip install -e "Rubric Book[dev]"`
-during environment setup. Add focused `palimpsest.hbq` adapter and saved-project
-compatibility tests for each selected revision. Confirm module/leaf/bundle
-counts, stable-ID ownership, JSON/YAML/JSONL parity, manifest reconstruction,
-and the exact old-project path under test before accepting an update.
+Use [Local acceptance](LOCAL_VALIDATION.md) for the CWR behavior changed by the
+selected revision. CWR has no routine unit or integration suite; an update does
+not require a blanket pytest run, inventory/parity matrix or new test count.
+When registry or packaging inputs change, follow the corresponding production
+validation or build described there.
+
+For a changed Palimpsest adapter or saved-project path, exercise the affected
+application journey under Palimpsest's current policy. Verify the recorded
+revision and compatibility behavior for that path, including an existing saved
+project when replay or upgrade behavior changes. Preserve immutable identities,
+native execution and privacy controls. Historical checkpoint tests remain
+evidence for their recorded revision and scope.
 
 ## Rollback and bounded obligations
 
@@ -95,8 +97,8 @@ Rollback is a normal Git revert of the Palimpsest integration commit, including
 git submodule update --init --recursive --checkout
 ```
 
-Rerun the same validation gates after rollback. Preserve recorded project
-manifests, prior adapter compatibility code, and the pinned CWR commits they
+Exercise the affected rollback/replay journey after rollback. Preserve recorded
+project manifests, prior adapter compatibility code, and the pinned CWR commits they
 name so existing evidence remains inspectable; do not mutate run history during
 rollback.
 
