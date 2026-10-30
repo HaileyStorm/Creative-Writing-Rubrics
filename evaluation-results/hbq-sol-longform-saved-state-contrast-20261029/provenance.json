@@ -1,0 +1,98 @@
+{
+  "evidence_class": "executed_private_analysis_with_public_aggregate_projection",
+  "executed_once": true,
+  "execution_exit_code": 0,
+  "no_private_paths_account_details_native_identities_text_individual_verdicts_or_credentials": true,
+  "private_analysis_commitments": {
+    "implementation": {
+      "bytes": 13752,
+      "sha256": "65dfc921c8f61c85a25b08aa391cefad4fb1cbedb76c1c5882bb7a2141ba8d2b"
+    },
+    "report": {
+      "bytes": 39534,
+      "sha256": "3794abc5e80501a9d68c31261fc7b3c89b59eb614c3e26eb72c9c5e9b9935ac5"
+    },
+    "source_packet": {
+      "bytes": 7454,
+      "sha256": "d89f802cac8baf4f78cdcd61455f313c50f51a1e8b9efd585f52ddfe4021bb98"
+    }
+  },
+  "public_files": {
+    "README.md": {
+      "bytes": 2930,
+      "sha256": "13d66e3d453d5f6e82d8860d59d8018f17afd1f6d713a19b7f77e0cebd280e45"
+    },
+    "report.json": {
+      "bytes": 3993,
+      "sha256": "16202540248a1dfd06f0188cf89c4d4ce4275b8c95d37497469ba867073ae8c7"
+    }
+  },
+  "qualified_input_commitments": {
+    "agreement_source": {
+      "bytes": 32677,
+      "sha256": "e158e278b29a0a2ade3aeae4691a86ba70d1a9f1f618b3a94a2d33d43ee5fd04"
+    },
+    "controller_decision": {
+      "bytes": 2677,
+      "sha256": "9fc64d6beaffbbd2f3224942db139d70ecb4f6adc205ee128ac18026d5eaf822"
+    },
+    "current_report": {
+      "bytes": 36018,
+      "sha256": "6d4ce54f6901eeb231b4824d22a4855bc31a4c3d5db97f76fc91d2c6d6264d81"
+    },
+    "grounding": {
+      "bytes": 7332,
+      "sha256": "3f2896d10a0a15b01fa603090483798fd77d9135bdeacee708fbed1a1931bf52"
+    },
+    "manifest": {
+      "bytes": 1068624,
+      "sha256": "d0cb6589924a4900b123206f40595035a6d792c623bac1c8303de9d95bac1ac4"
+    },
+    "old_capacity_job": {
+      "bytes": 3340,
+      "sha256": "197d2f18e97a16041ebfe6c8983c328d4f5890c756044fd2e847640f1bb63ac4"
+    },
+    "old_grounding_analysis": {
+      "bytes": 11657,
+      "sha256": "e0abb42a3a6e8d908db9801d8552c99912b2ca1b79dfb088f1ef42e5ed356de6"
+    },
+    "old_inventory": {
+      "bytes": 1113404,
+      "sha256": "3b24acba92ec9cbd203f3dd2209c4329732aade51b8230aa322cc8683ce3e566"
+    },
+    "old_ledger": {
+      "bytes": 2432084,
+      "sha256": "de1f9ea1c66a739a2443e0659ac04f3249afa95b4fb5eaa401ef72e7d31f8fdd"
+    },
+    "old_longform_analysis": {
+      "bytes": 20824,
+      "sha256": "08b551ceaa864af7927a78986a2d7e96ac73916591077eda553190a1b4732e5a"
+    },
+    "old_profile": {
+      "bytes": 1370,
+      "sha256": "a781feea1f5ccf80c8dfad63fe78ca0b5187c81b632eaa924588110d130130e5"
+    },
+    "old_qualification_source": {
+      "bytes": 12375,
+      "sha256": "19fa40f801573e6667b126109d2f1d54d9c8a612893c9edb80a01d5d4b9f2750"
+    },
+    "old_report": {
+      "bytes": 279465,
+      "sha256": "46fd41ccc1028d48052216f353aa8305ee15a6d0d42925c67ef3290b8b9a0317"
+    },
+    "old_source_job": {
+      "bytes": 2746,
+      "sha256": "d1ab2ec9c8dcbf10351d109e4d4e97793071a7678f0a223f6fb23fc19b9108e3"
+    },
+    "packet1261": {
+      "bytes": 8933,
+      "sha256": "24ebbf305409746c87121f65e2a749802ccf23710037e4897b1252e629abb00e"
+    },
+    "packet835": {
+      "bytes": 13475,
+      "sha256": "b9b6218265f90fc9c708f32f633749d05151b9bea44f1917cf13187cd311eeff"
+    }
+  },
+  "review": "Controller reviewed source, existing arithmetic, scope and aggregate projection; no independent numerical rerun claimed",
+  "schema_version": 1
+}

@@ -1,0 +1,147 @@
+{
+  "candidate_promoted": false,
+  "changed_state_leaves": 7,
+  "cycle1_tail_overlap_available": false,
+  "earlier_cycle": 0,
+  "evidence_class": "DESCRIPTIVE_AVAILABILITY_SELECTED_SAME_POLICY_ONE_WORK_CONTRAST",
+  "four_state_agreement": {
+    "cohen_kappa": 0.8271758436944937,
+    "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+    "missing_pairs": 16,
+    "paired_observed_units": 139,
+    "planned_paired_units": 155,
+    "raw_agreement": 0.9496402877697842
+  },
+  "four_state_transitions": [
+    {
+      "count": 114,
+      "left": "YES",
+      "right": "YES"
+    },
+    {
+      "count": 0,
+      "left": "YES",
+      "right": "NO"
+    },
+    {
+      "count": 0,
+      "left": "YES",
+      "right": "CANNOT_ASSESS"
+    },
+    {
+      "count": 3,
+      "left": "YES",
+      "right": "NOT_APPLICABLE"
+    },
+    {
+      "count": 1,
+      "left": "NO",
+      "right": "YES"
+    },
+    {
+      "count": 7,
+      "left": "NO",
+      "right": "NO"
+    },
+    {
+      "count": 0,
+      "left": "NO",
+      "right": "CANNOT_ASSESS"
+    },
+    {
+      "count": 0,
+      "left": "NO",
+      "right": "NOT_APPLICABLE"
+    },
+    {
+      "count": 0,
+      "left": "CANNOT_ASSESS",
+      "right": "YES"
+    },
+    {
+      "count": 0,
+      "left": "CANNOT_ASSESS",
+      "right": "NO"
+    },
+    {
+      "count": 1,
+      "left": "CANNOT_ASSESS",
+      "right": "CANNOT_ASSESS"
+    },
+    {
+      "count": 0,
+      "left": "CANNOT_ASSESS",
+      "right": "NOT_APPLICABLE"
+    },
+    {
+      "count": 0,
+      "left": "NOT_APPLICABLE",
+      "right": "YES"
+    },
+    {
+      "count": 1,
+      "left": "NOT_APPLICABLE",
+      "right": "NO"
+    },
+    {
+      "count": 2,
+      "left": "NOT_APPLICABLE",
+      "right": "CANNOT_ASSESS"
+    },
+    {
+      "count": 10,
+      "left": "NOT_APPLICABLE",
+      "right": "NOT_APPLICABLE"
+    }
+  ],
+  "full_research_goal_complete": false,
+  "grounding_policy": "p4_crlf_span_grounding_v1",
+  "human_quality_validation_alignment_or_generalization_claimed": false,
+  "interpretation": "Availability-selected descriptive contrast on one known human-authored work under the same named grounding policy; not a controlled identical-runtime repeatability estimate.",
+  "later_cycle": 2,
+  "matched_leaves": 139,
+  "matched_packets": 18,
+  "matched_state_prevalence": {
+    "earlier": {
+      "CANNOT_ASSESS": 1,
+      "NO": 8,
+      "NOT_APPLICABLE": 13,
+      "YES": 117
+    },
+    "later": {
+      "CANNOT_ASSESS": 3,
+      "NO": 8,
+      "NOT_APPLICABLE": 13,
+      "YES": 115
+    }
+  },
+  "missing_leaves": 16,
+  "missing_packets": 2,
+  "missingness_summary": {
+    "earlier_admitted_later_unadmitted_leaves": 8,
+    "earlier_rejected_later_admitted_leaves": 8
+  },
+  "native_or_semantic_qualification_repeated": false,
+  "new_votes": 0,
+  "original_evidence_rewritten": false,
+  "planned_leaves": 155,
+  "planned_packets": 20,
+  "prevalence_limit": "Raw agreement and Cohen kappa depend on marginal state prevalence; kappa is unavailable for no pairs or degenerate chance agreement. Leaves share packets/work and are not independent population observations.",
+  "provider_calls": 0,
+  "runtime_limit": "Both histories declare Sol/high; old native transport/CLI and receipt policy differ. Old32-tools-OFF equivalence is not established here. No new effective-setting or native attestation.",
+  "same_runtime_contract_established": false,
+  "same_state_leaves": 132,
+  "schema_version": 1,
+  "selected155_missingness_bounds": {
+    "denominator": 155,
+    "interpretation": "Worst and best assignments of the sixteen unresolved pairs; not a confidence interval or a full219 bound.",
+    "lower": 0.8516129032258064,
+    "same_state_lower_numerator": 132,
+    "same_state_upper_numerator": 148,
+    "upper": 0.9548387096774194
+  },
+  "study_id": "hbq_sol_longform_saved_state_contrast_20261029",
+  "whole219_or_current221_eligibility_claimed": false,
+  "whole_bank_score_computed": false,
+  "works": 1
+}
