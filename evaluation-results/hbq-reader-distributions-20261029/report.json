@@ -1,0 +1,1255 @@
+{
+  "datasets": {
+    "Dryad_DEV30": {
+      "all_five_exact_common27": {
+        "excluded_from_original": 3,
+        "matched_stories": 27,
+        "methods": {
+          "compact": {
+            "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+            "assessment_bound_width": {
+              "absent_on_qualified": 0,
+              "all_planned_field_presence": {
+                "absent": 27,
+                "explicit_null": 0,
+                "value_present": 0
+              },
+              "cache_field": "uncertainty_bounds",
+              "explicit_null_on_qualified": 0,
+              "incomplete_triplet_on_qualified": 0,
+              "not_applicable": 27,
+              "qualified_numeric": 27,
+              "sampling_confidence_interval": false,
+              "summary": {
+                "available": 0,
+                "maximum": null,
+                "mean": null,
+                "median": null,
+                "minimum": null,
+                "planned": 0,
+                "state": "unavailable",
+                "unavailable": 0
+              },
+              "unit": "original_score_units"
+            },
+            "constant_numeric": false,
+            "missing": 0,
+            "near_ceiling_count": 0,
+            "near_ceiling_rate_of_numeric": 0.0,
+            "near_ceiling_threshold_inclusive": 90,
+            "near_floor_count": 2,
+            "near_floor_rate_of_numeric": 0.07407407407407407,
+            "near_floor_threshold_inclusive": 10,
+            "numeric": 27,
+            "original_scale": [
+              1,
+              5
+            ],
+            "planned": 27,
+            "weighted_coverage": {
+              "absent_on_qualified": 0,
+              "all_planned_field_presence": {
+                "absent": 27,
+                "explicit_null": 0,
+                "value_present": 0
+              },
+              "cache_field": "weighted_coverage",
+              "explicit_null_on_qualified": 0,
+              "incomplete_triplet_on_qualified": 0,
+              "not_applicable": 27,
+              "qualified_numeric": 27,
+              "sampling_confidence_interval": false,
+              "summary": {
+                "available": 0,
+                "maximum": null,
+                "mean": null,
+                "median": null,
+                "minimum": null,
+                "planned": 0,
+                "state": "unavailable",
+                "unavailable": 0
+              },
+              "unit": "fraction_0_to_1"
+            },
+            "zero_numeric": false
+          },
+          "hbq": {
+            "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+            "assessment_bound_width": {
+              "absent_on_qualified": 0,
+              "all_planned_field_presence": {
+                "absent": 0,
+                "explicit_null": 0,
+                "value_present": 27
+              },
+              "cache_field": "uncertainty_bounds",
+              "explicit_null_on_qualified": 0,
+              "incomplete_triplet_on_qualified": 0,
+              "not_applicable": 0,
+              "qualified_numeric": 27,
+              "sampling_confidence_interval": false,
+              "summary": {
+                "available": 27,
+                "maximum": 4.9067,
+                "mean": 2.2572074074074076,
+                "median": 1.9341,
+                "minimum": 1.4945,
+                "planned": 27,
+                "state": "variable",
+                "unavailable": 0
+              },
+              "unit": "original_score_units"
+            },
+            "constant_numeric": false,
+            "missing": 0,
+            "near_ceiling_count": 0,
+            "near_ceiling_rate_of_numeric": 0.0,
+            "near_ceiling_threshold_inclusive": 90,
+            "near_floor_count": 0,
+            "near_floor_rate_of_numeric": 0.0,
+            "near_floor_threshold_inclusive": 10,
+            "numeric": 27,
+            "original_scale": [
+              0,
+              100
+            ],
+            "planned": 27,
+            "weighted_coverage": {
+              "absent_on_qualified": 0,
+              "all_planned_field_presence": {
+                "absent": 0,
+                "explicit_null": 0,
+                "value_present": 27
+              },
+              "cache_field": "weighted_coverage",
+              "explicit_null_on_qualified": 0,
+              "incomplete_triplet_on_qualified": 0,
+              "not_applicable": 0,
+              "qualified_numeric": 27,
+              "sampling_confidence_interval": false,
+              "summary": {
+                "available": 27,
+                "maximum": 0.9862,
+                "mean": 0.9804037037037037,
+                "median": 0.9807,
+                "minimum": 0.9634,
+                "planned": 27,
+                "state": "variable",
+                "unavailable": 0
+              },
+              "unit": "fraction_0_to_1"
+            },
+            "zero_numeric": false
+          },
+          "holistic": {
+            "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+            "assessment_bound_width": {
+              "absent_on_qualified": 0,
+              "all_planned_field_presence": {
+                "absent": 27,
+                "explicit_null": 0,
+                "value_present": 0
+              },
+              "cache_field": "uncertainty_bounds",
+              "explicit_null_on_qualified": 0,
+              "incomplete_triplet_on_qualified": 0,
+              "not_applicable": 27,
+              "qualified_numeric": 27,
+              "sampling_confidence_interval": false,
+              "summary": {
+                "available": 0,
+                "maximum": null,
+                "mean": null,
+                "median": null,
+                "minimum": null,
+                "planned": 0,
+                "state": "unavailable",
+                "unavailable": 0
+              },
+              "unit": "original_score_units"
+            },
+            "constant_numeric": false,
+            "missing": 0,
+            "near_ceiling_count": 0,
+            "near_ceiling_rate_of_numeric": 0.0,
+            "near_ceiling_threshold_inclusive": 90,
+            "near_floor_count": 4,
+            "near_floor_rate_of_numeric": 0.14814814814814814,
+            "near_floor_threshold_inclusive": 10,
+            "numeric": 27,
+            "original_scale": [
+              1,
+              7
+            ],
+            "planned": 27,
+            "weighted_coverage": {
+              "absent_on_qualified": 0,
+              "all_planned_field_presence": {
+                "absent": 27,
+                "explicit_null": 0,
+                "value_present": 0
+              },
+              "cache_field": "weighted_coverage",
+              "explicit_null_on_qualified": 0,
+              "incomplete_triplet_on_qualified": 0,
+              "not_applicable": 27,
+              "qualified_numeric": 27,
+              "sampling_confidence_interval": false,
+              "summary": {
+                "available": 0,
+                "maximum": null,
+                "mean": null,
+                "median": null,
+                "minimum": null,
+                "planned": 0,
+                "state": "unavailable",
+                "unavailable": 0
+              },
+              "unit": "fraction_0_to_1"
+            },
+            "zero_numeric": false
+          },
+          "oregon": {
+            "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+            "assessment_bound_width": {
+              "absent_on_qualified": 0,
+              "all_planned_field_presence": {
+                "absent": 27,
+                "explicit_null": 0,
+                "value_present": 0
+              },
+              "cache_field": "uncertainty_bounds",
+              "explicit_null_on_qualified": 0,
+              "incomplete_triplet_on_qualified": 0,
+              "not_applicable": 27,
+              "qualified_numeric": 27,
+              "sampling_confidence_interval": false,
+              "summary": {
+                "available": 0,
+                "maximum": null,
+                "mean": null,
+                "median": null,
+                "minimum": null,
+                "planned": 0,
+                "state": "unavailable",
+                "unavailable": 0
+              },
+              "unit": "original_score_units"
+            },
+            "constant_numeric": false,
+            "missing": 0,
+            "near_ceiling_count": 0,
+            "near_ceiling_rate_of_numeric": 0.0,
+            "near_ceiling_threshold_inclusive": 90,
+            "near_floor_count": 0,
+            "near_floor_rate_of_numeric": 0.0,
+            "near_floor_threshold_inclusive": 10,
+            "numeric": 27,
+            "original_scale": [
+              6,
+              36
+            ],
+            "planned": 27,
+            "weighted_coverage": {
+              "absent_on_qualified": 0,
+              "all_planned_field_presence": {
+                "absent": 27,
+                "explicit_null": 0,
+                "value_present": 0
+              },
+              "cache_field": "weighted_coverage",
+              "explicit_null_on_qualified": 0,
+              "incomplete_triplet_on_qualified": 0,
+              "not_applicable": 27,
+              "qualified_numeric": 27,
+              "sampling_confidence_interval": false,
+              "summary": {
+                "available": 0,
+                "maximum": null,
+                "mean": null,
+                "median": null,
+                "minimum": null,
+                "planned": 0,
+                "state": "unavailable",
+                "unavailable": 0
+              },
+              "unit": "fraction_0_to_1"
+            },
+            "zero_numeric": false
+          },
+          "ttcw14": {
+            "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+            "assessment_bound_width": {
+              "absent_on_qualified": 0,
+              "all_planned_field_presence": {
+                "absent": 27,
+                "explicit_null": 0,
+                "value_present": 0
+              },
+              "cache_field": "uncertainty_bounds",
+              "explicit_null_on_qualified": 0,
+              "incomplete_triplet_on_qualified": 0,
+              "not_applicable": 27,
+              "qualified_numeric": 27,
+              "sampling_confidence_interval": false,
+              "summary": {
+                "available": 0,
+                "maximum": null,
+                "mean": null,
+                "median": null,
+                "minimum": null,
+                "planned": 0,
+                "state": "unavailable",
+                "unavailable": 0
+              },
+              "unit": "original_score_units"
+            },
+            "constant_numeric": false,
+            "missing": 0,
+            "near_ceiling_count": 0,
+            "near_ceiling_rate_of_numeric": 0.0,
+            "near_ceiling_threshold_inclusive": 90,
+            "near_floor_count": 12,
+            "near_floor_rate_of_numeric": 0.4444444444444444,
+            "near_floor_threshold_inclusive": 10,
+            "numeric": 27,
+            "original_scale": [
+              0,
+              1
+            ],
+            "planned": 27,
+            "weighted_coverage": {
+              "absent_on_qualified": 0,
+              "all_planned_field_presence": {
+                "absent": 27,
+                "explicit_null": 0,
+                "value_present": 0
+              },
+              "cache_field": "weighted_coverage",
+              "explicit_null_on_qualified": 0,
+              "incomplete_triplet_on_qualified": 0,
+              "not_applicable": 27,
+              "qualified_numeric": 27,
+              "sampling_confidence_interval": false,
+              "summary": {
+                "available": 0,
+                "maximum": null,
+                "mean": null,
+                "median": null,
+                "minimum": null,
+                "planned": 0,
+                "state": "unavailable",
+                "unavailable": 0
+              },
+              "unit": "fraction_0_to_1"
+            },
+            "zero_numeric": false
+          }
+        },
+        "original_planned_stories": 30
+      },
+      "methods": {
+        "compact": {
+          "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+          "assessment_bound_width": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 30,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "uncertainty_bounds",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 30,
+            "qualified_numeric": 30,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "original_score_units"
+          },
+          "cohort_status": "method_specific_available_DEV30",
+          "constant_numeric": false,
+          "missing": 0,
+          "near_ceiling_count": 0,
+          "near_ceiling_rate_of_numeric": 0.0,
+          "near_ceiling_threshold_inclusive": 90,
+          "near_floor_count": 2,
+          "near_floor_rate_of_numeric": 0.06666666666666667,
+          "near_floor_threshold_inclusive": 10,
+          "numeric": 30,
+          "original_scale": [
+            1,
+            5
+          ],
+          "planned": 30,
+          "weighted_coverage": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 30,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "weighted_coverage",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 30,
+            "qualified_numeric": 30,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "fraction_0_to_1"
+          },
+          "zero_numeric": false
+        },
+        "hbq": {
+          "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+          "assessment_bound_width": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 2,
+              "explicit_null": 0,
+              "value_present": 28
+            },
+            "cache_field": "uncertainty_bounds",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 0,
+            "qualified_numeric": 28,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 28,
+              "maximum": 4.9067,
+              "mean": 2.2456642857142857,
+              "median": 1.9341,
+              "minimum": 1.4945,
+              "planned": 28,
+              "state": "variable",
+              "unavailable": 0
+            },
+            "unit": "original_score_units"
+          },
+          "cohort_status": "method_specific_available_DEV30",
+          "constant_numeric": false,
+          "missing": 2,
+          "near_ceiling_count": 0,
+          "near_ceiling_rate_of_numeric": 0.0,
+          "near_ceiling_threshold_inclusive": 90,
+          "near_floor_count": 0,
+          "near_floor_rate_of_numeric": 0.0,
+          "near_floor_threshold_inclusive": 10,
+          "numeric": 28,
+          "original_scale": [
+            0,
+            100
+          ],
+          "planned": 30,
+          "weighted_coverage": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 2,
+              "explicit_null": 0,
+              "value_present": 28
+            },
+            "cache_field": "weighted_coverage",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 0,
+            "qualified_numeric": 28,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 28,
+              "maximum": 0.9862,
+              "mean": 0.9804142857142857,
+              "median": 0.9807,
+              "minimum": 0.9634,
+              "planned": 28,
+              "state": "variable",
+              "unavailable": 0
+            },
+            "unit": "fraction_0_to_1"
+          },
+          "zero_numeric": false
+        },
+        "holistic": {
+          "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+          "assessment_bound_width": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 30,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "uncertainty_bounds",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 30,
+            "qualified_numeric": 30,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "original_score_units"
+          },
+          "cohort_status": "method_specific_available_DEV30",
+          "constant_numeric": false,
+          "missing": 0,
+          "near_ceiling_count": 0,
+          "near_ceiling_rate_of_numeric": 0.0,
+          "near_ceiling_threshold_inclusive": 90,
+          "near_floor_count": 4,
+          "near_floor_rate_of_numeric": 0.13333333333333333,
+          "near_floor_threshold_inclusive": 10,
+          "numeric": 30,
+          "original_scale": [
+            1,
+            7
+          ],
+          "planned": 30,
+          "weighted_coverage": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 30,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "weighted_coverage",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 30,
+            "qualified_numeric": 30,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "fraction_0_to_1"
+          },
+          "zero_numeric": false
+        },
+        "oregon": {
+          "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+          "assessment_bound_width": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 30,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "uncertainty_bounds",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 30,
+            "qualified_numeric": 30,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "original_score_units"
+          },
+          "cohort_status": "method_specific_available_DEV30",
+          "constant_numeric": false,
+          "missing": 0,
+          "near_ceiling_count": 0,
+          "near_ceiling_rate_of_numeric": 0.0,
+          "near_ceiling_threshold_inclusive": 90,
+          "near_floor_count": 0,
+          "near_floor_rate_of_numeric": 0.0,
+          "near_floor_threshold_inclusive": 10,
+          "numeric": 30,
+          "original_scale": [
+            6,
+            36
+          ],
+          "planned": 30,
+          "weighted_coverage": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 30,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "weighted_coverage",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 30,
+            "qualified_numeric": 30,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "fraction_0_to_1"
+          },
+          "zero_numeric": false
+        },
+        "ttcw14": {
+          "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+          "assessment_bound_width": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 30,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "uncertainty_bounds",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 29,
+            "qualified_numeric": 29,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "original_score_units"
+          },
+          "cohort_status": "method_specific_available_DEV30",
+          "constant_numeric": false,
+          "missing": 1,
+          "near_ceiling_count": 0,
+          "near_ceiling_rate_of_numeric": 0.0,
+          "near_ceiling_threshold_inclusive": 90,
+          "near_floor_count": 12,
+          "near_floor_rate_of_numeric": 0.41379310344827586,
+          "near_floor_threshold_inclusive": 10,
+          "numeric": 29,
+          "original_scale": [
+            0,
+            1
+          ],
+          "planned": 30,
+          "weighted_coverage": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 30,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "weighted_coverage",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 29,
+            "qualified_numeric": 29,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "fraction_0_to_1"
+          },
+          "zero_numeric": false
+        }
+      }
+    },
+    "Kyoto_QSF12": {
+      "methods": {
+        "compact": {
+          "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+          "assessment_bound_width": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 12,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "uncertainty_bounds",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 11,
+            "qualified_numeric": 11,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "original_score_units"
+          },
+          "cohort_status": "secondary_available_only_not_fixed12_primary",
+          "constant_numeric": false,
+          "missing": 1,
+          "near_ceiling_count": 0,
+          "near_ceiling_rate_of_numeric": 0.0,
+          "near_ceiling_threshold_inclusive": 90,
+          "near_floor_count": 0,
+          "near_floor_rate_of_numeric": 0.0,
+          "near_floor_threshold_inclusive": 10,
+          "numeric": 11,
+          "original_scale": [
+            1,
+            5
+          ],
+          "planned": 12,
+          "weighted_coverage": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 12,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "weighted_coverage",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 11,
+            "qualified_numeric": 11,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "fraction_0_to_1"
+          },
+          "zero_numeric": false
+        },
+        "hbq": {
+          "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+          "assessment_bound_width": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 0,
+              "explicit_null": 0,
+              "value_present": 12
+            },
+            "cache_field": "uncertainty_bounds",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 0,
+            "qualified_numeric": 12,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 12,
+              "maximum": 0.2637,
+              "mean": 0.04395,
+              "median": 0.0,
+              "minimum": 0.0,
+              "planned": 12,
+              "state": "variable",
+              "unavailable": 0
+            },
+            "unit": "original_score_units"
+          },
+          "cohort_status": "complete_fixed12_primary",
+          "constant_numeric": false,
+          "missing": 0,
+          "near_ceiling_count": 1,
+          "near_ceiling_rate_of_numeric": 0.08333333333333333,
+          "near_ceiling_threshold_inclusive": 90,
+          "near_floor_count": 0,
+          "near_floor_rate_of_numeric": 0.0,
+          "near_floor_threshold_inclusive": 10,
+          "numeric": 12,
+          "original_scale": [
+            0,
+            100
+          ],
+          "planned": 12,
+          "weighted_coverage": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 0,
+              "explicit_null": 0,
+              "value_present": 12
+            },
+            "cache_field": "weighted_coverage",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 0,
+            "qualified_numeric": 12,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 12,
+              "maximum": 1.0,
+              "mean": 0.9995666666666667,
+              "median": 1.0,
+              "minimum": 0.9974,
+              "planned": 12,
+              "state": "variable",
+              "unavailable": 0
+            },
+            "unit": "fraction_0_to_1"
+          },
+          "zero_numeric": false
+        },
+        "holistic": {
+          "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+          "assessment_bound_width": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 12,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "uncertainty_bounds",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 11,
+            "qualified_numeric": 11,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "original_score_units"
+          },
+          "cohort_status": "secondary_available_only_not_fixed12_primary",
+          "constant_numeric": false,
+          "missing": 1,
+          "near_ceiling_count": 0,
+          "near_ceiling_rate_of_numeric": 0.0,
+          "near_ceiling_threshold_inclusive": 90,
+          "near_floor_count": 0,
+          "near_floor_rate_of_numeric": 0.0,
+          "near_floor_threshold_inclusive": 10,
+          "numeric": 11,
+          "original_scale": [
+            1,
+            7
+          ],
+          "planned": 12,
+          "weighted_coverage": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 12,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "weighted_coverage",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 11,
+            "qualified_numeric": 11,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "fraction_0_to_1"
+          },
+          "zero_numeric": false
+        },
+        "ladder_candidate": {
+          "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+          "assessment_bound_width": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 0,
+              "explicit_null": 0,
+              "value_present": 12
+            },
+            "cache_field": "uncertainty_bounds",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 0,
+            "qualified_numeric": 12,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 12,
+              "maximum": 0.2637,
+              "mean": 0.04395,
+              "median": 0.0,
+              "minimum": 0.0,
+              "planned": 12,
+              "state": "variable",
+              "unavailable": 0
+            },
+            "unit": "original_score_units"
+          },
+          "cohort_status": "complete_fixed12_primary",
+          "constant_numeric": false,
+          "missing": 0,
+          "near_ceiling_count": 1,
+          "near_ceiling_rate_of_numeric": 0.08333333333333333,
+          "near_ceiling_threshold_inclusive": 90,
+          "near_floor_count": 0,
+          "near_floor_rate_of_numeric": 0.0,
+          "near_floor_threshold_inclusive": 10,
+          "numeric": 12,
+          "original_scale": [
+            0,
+            100
+          ],
+          "planned": 12,
+          "weighted_coverage": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 0,
+              "explicit_null": 0,
+              "value_present": 12
+            },
+            "cache_field": "weighted_coverage",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 0,
+            "qualified_numeric": 12,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 12,
+              "maximum": 1.0,
+              "mean": 0.9995666666666667,
+              "median": 1.0,
+              "minimum": 0.9974,
+              "planned": 12,
+              "state": "variable",
+              "unavailable": 0
+            },
+            "unit": "fraction_0_to_1"
+          },
+          "zero_numeric": false
+        },
+        "oregon": {
+          "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+          "assessment_bound_width": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 12,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "uncertainty_bounds",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 11,
+            "qualified_numeric": 11,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "original_score_units"
+          },
+          "cohort_status": "secondary_available_only_not_fixed12_primary",
+          "constant_numeric": false,
+          "missing": 1,
+          "near_ceiling_count": 0,
+          "near_ceiling_rate_of_numeric": 0.0,
+          "near_ceiling_threshold_inclusive": 90,
+          "near_floor_count": 0,
+          "near_floor_rate_of_numeric": 0.0,
+          "near_floor_threshold_inclusive": 10,
+          "numeric": 11,
+          "original_scale": [
+            6,
+            36
+          ],
+          "planned": 12,
+          "weighted_coverage": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 12,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "weighted_coverage",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 11,
+            "qualified_numeric": 11,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "fraction_0_to_1"
+          },
+          "zero_numeric": false
+        },
+        "ttcw14": {
+          "affine_mapping": "100 * (score - original_min) / (original_max - original_min)",
+          "assessment_bound_width": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 12,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "uncertainty_bounds",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 12,
+            "qualified_numeric": 12,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "original_score_units"
+          },
+          "cohort_status": "complete_fixed12_primary",
+          "constant_numeric": false,
+          "missing": 0,
+          "near_ceiling_count": 0,
+          "near_ceiling_rate_of_numeric": 0.0,
+          "near_ceiling_threshold_inclusive": 90,
+          "near_floor_count": 0,
+          "near_floor_rate_of_numeric": 0.0,
+          "near_floor_threshold_inclusive": 10,
+          "numeric": 12,
+          "original_scale": [
+            0,
+            1
+          ],
+          "planned": 12,
+          "weighted_coverage": {
+            "absent_on_qualified": 0,
+            "all_planned_field_presence": {
+              "absent": 12,
+              "explicit_null": 0,
+              "value_present": 0
+            },
+            "cache_field": "weighted_coverage",
+            "explicit_null_on_qualified": 0,
+            "incomplete_triplet_on_qualified": 0,
+            "not_applicable": 12,
+            "qualified_numeric": 12,
+            "sampling_confidence_interval": false,
+            "summary": {
+              "available": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "planned": 0,
+              "state": "unavailable",
+              "unavailable": 0
+            },
+            "unit": "fraction_0_to_1"
+          },
+          "zero_numeric": false
+        }
+      }
+    }
+  },
+  "full_goal_complete": false,
+  "human_targets_decoded": false,
+  "limitations": [
+    "Opened selected development cohorts only; no unused HF/MFA references, confirmation, improvement or promotion.",
+    "These per-method distributions are not duplicated over human axes. Six saved marginal intervals retain original axes and different N28/30/29; they are not common27 or matched contrasts.",
+    "Original Dryad eight paired and ten common interval95=null rules, inconclusive reasons and universal missing-outcome bounds remain unchanged in referenced report.",
+    "Near-extreme rates use explicit original-scale affine display, not fitting, calibration or observed-minimum scaling. Different available-set denominators are not interchangeable.",
+    "Cached assessment-bound widths represent missing rubric assessments, not sampling confidence intervals. Weighted coverage is not a new native-admission or penalty-coverage proof.",
+    "Absent, explicit null, incomplete bound triplet and method-not-applicable remain distinct; no absent value becomes zero.",
+    "Kyoto primary12 versus secondary available11 remains explicit; HBQ ladder shares parent votes and adds none.",
+    "Source/human-delivery joins, unknown distinct raters, pooled means, informative availability and Kyoto three-topic dependence remain; no population or crossed-rater interval or human reliability ceiling.",
+    "Private case values are projected only at later explicit ROOT execution. No targets, text, evidence, bootstrap arrays, scoring/native replay or provider calls. Full research Goal incomplete."
+  ],
+  "original_matched_intervals": {
+    "eight_paired_and_ten_common_interval95": null,
+    "marginal_intervals_are_not_matched_comparisons": true,
+    "original_missing_outcome_bounds_and_rules_unchanged": true
+  },
+  "policy": "saved_reader_distribution1328_v1",
+  "provider_or_scorer_or_bootstrap_calls": 0,
+  "saved_dryad_marginal_intervals": {
+    "marginal/hbq/enjoyed": {
+      "arm": "hbq",
+      "available": 28,
+      "axis": "enjoyed",
+      "conditional_story_bootstrap": {
+        "draws_sha256": "90caef4938ac375f19f87cadea60131972987e95a1de3a69fd05f99112947e01",
+        "interval95": [
+          -0.20596724226153645,
+          0.5627586986306535
+        ],
+        "replicates": 2000,
+        "seed": 20261027,
+        "undefined_draws": 0
+      },
+      "interpretation": "CONDITIONAL_DESCRIPTIVE_ONLY",
+      "missing": 2,
+      "planned": 30,
+      "point": 0.17577003535622637
+    },
+    "marginal/hbq/well_written": {
+      "arm": "hbq",
+      "available": 28,
+      "axis": "well_written",
+      "conditional_story_bootstrap": {
+        "draws_sha256": "1200aa659afb65372c73b1e53cdb166ed28b3de6818dfa058736061e0f1fde91",
+        "interval95": [
+          -0.3180103097031175,
+          0.4504321030003103
+        ],
+        "replicates": 2000,
+        "seed": 20261027,
+        "undefined_draws": 0
+      },
+      "interpretation": "CONDITIONAL_DESCRIPTIVE_ONLY",
+      "missing": 2,
+      "planned": 30,
+      "point": 0.04190634118082987
+    },
+    "marginal/oregon/enjoyed": {
+      "arm": "oregon",
+      "available": 30,
+      "axis": "enjoyed",
+      "conditional_story_bootstrap": {
+        "draws_sha256": "c42fcb3907dc39b00c859379d55ae6097444dda2c378ea719aa5c306cc72ac47",
+        "interval95": [
+          0.20655032575770724,
+          0.745438334902749
+        ],
+        "replicates": 2000,
+        "seed": 20261027,
+        "undefined_draws": 0
+      },
+      "interpretation": "CONDITIONAL_DESCRIPTIVE_ONLY",
+      "missing": 0,
+      "planned": 30,
+      "point": 0.5162467845265822
+    },
+    "marginal/oregon/well_written": {
+      "arm": "oregon",
+      "available": 30,
+      "axis": "well_written",
+      "conditional_story_bootstrap": {
+        "draws_sha256": "7942f0e726efc58135b27e8e91a6806e548eac9543335ec99c5a3dbab0f13115",
+        "interval95": [
+          0.2652460345588355,
+          0.8224973094690395
+        ],
+        "replicates": 2000,
+        "seed": 20261027,
+        "undefined_draws": 0
+      },
+      "interpretation": "CONDITIONAL_DESCRIPTIVE_ONLY",
+      "missing": 0,
+      "planned": 30,
+      "point": 0.5882113211057566
+    },
+    "marginal/ttcw14/enjoyed": {
+      "arm": "ttcw14",
+      "available": 29,
+      "axis": "enjoyed",
+      "conditional_story_bootstrap": {
+        "draws_sha256": "17b00ab1cfd1145003ec91a6df2738a1f92d9aaf4b6baa238e3151cd9fc625c5",
+        "interval95": [
+          -0.07449726322138076,
+          0.6075220191347813
+        ],
+        "replicates": 2000,
+        "seed": 20261027,
+        "undefined_draws": 0
+      },
+      "interpretation": "CONDITIONAL_DESCRIPTIVE_ONLY",
+      "missing": 1,
+      "planned": 30,
+      "point": 0.29250617772873827
+    },
+    "marginal/ttcw14/well_written": {
+      "arm": "ttcw14",
+      "available": 29,
+      "axis": "well_written",
+      "conditional_story_bootstrap": {
+        "draws_sha256": "6629ae16e17cc3a67d1c3b2372ac130d0bfdecf778993dc9236eca71576bcd90",
+        "interval95": [
+          -0.1563997935621717,
+          0.5246057403061684
+        ],
+        "replicates": 2000,
+        "seed": 20261027,
+        "undefined_draws": 0
+      },
+      "interpretation": "CONDITIONAL_DESCRIPTIVE_ONLY",
+      "missing": 1,
+      "planned": 30,
+      "point": 0.21110934918868043
+    }
+  },
+  "scope": "AGGREGATE_SELECTED_DEVELOPMENT_ONLY"
+}

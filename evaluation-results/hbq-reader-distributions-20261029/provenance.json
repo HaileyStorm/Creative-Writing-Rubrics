@@ -1,0 +1,76 @@
+{
+  "actual_projection": {
+    "exit_code": 0,
+    "output_readback_tool_chunk": "beebca",
+    "rerun": false,
+    "runs": 1,
+    "tool_chunk": "15cfd6"
+  },
+  "existing_repository_commit": "4aef3bdf5a999c99bf747b7365b2a00216f36b31",
+  "native_or_scientific_replays": 0,
+  "new_bootstrap_draws": 0,
+  "new_judgments": 0,
+  "original_raw_responses_and_null_intervals_unchanged": true,
+  "private_case_inputs_published": false,
+  "private_executed_report": {
+    "bytes": 30719,
+    "sha256": "99e3f8d37363689bcec5e7b8beb24faafb27d6ab70592c5aaf38a7cb3974baa6"
+  },
+  "private_inputs": {
+    "dryad_profiles": {
+      "bytes": 115530,
+      "sha256": "cd6133a77cbae19340721638cf156cfa99ade217a3c08de49c9b9365c477ddcc"
+    },
+    "dryad_receipt": {
+      "bytes": 1719,
+      "sha256": "40a85fad249a59635fdf42e4399ea50f88f19585f8da82a266667be11f8a9f34"
+    },
+    "dryad_report": {
+      "bytes": 54471,
+      "sha256": "0b42b7f01deb8f7a845269c04198dec233388ed25f9560fff3fcf8f5b5cf9a33"
+    },
+    "dryad_statistics_source": {
+      "bytes": 12401,
+      "sha256": "8745f026e03c7b54c2e6b869555e6d925eb6dff7907074a2ab8f8ceaea7276a4"
+    },
+    "kyoto_profiles": {
+      "bytes": 334265,
+      "sha256": "0ffba7c566ea54de8cbc58cad3d10f69eaa39563c865f4ada7feafe7f6a5f392"
+    },
+    "kyoto_receipt": {
+      "bytes": 18655,
+      "sha256": "8c9f77588eb71f08286ced1ad1dd8c91ee81a3a3d66fd0875f4b0da0c6490ae5"
+    },
+    "kyoto_report": {
+      "bytes": 38066,
+      "sha256": "ed93a07ff114f31c62284ee23d8add342f78a13056a3d37aa6731ab9b5a84909"
+    },
+    "kyoto_statistics_source": {
+      "bytes": 17884,
+      "sha256": "067ba087b194d801603bdfc5b21308a5e98367c9937a64e9080f237f67ff10ad"
+    },
+    "lexical_reader": {
+      "bytes": 31867,
+      "sha256": "2d82e4959c3296ccaa6e6521adb46f85588427d429a544b36a2891ebaea8c7b0"
+    }
+  },
+  "projection_policy": "saved_reader_distribution1328_v1",
+  "public_case_level_regeneration_available": false,
+  "public_context": [
+    "evaluation-results/hbq-reader-reference-descriptive-v1",
+    "evaluation-results/hbq-measurement-matrix-v1"
+  ],
+  "public_report": {
+    "bytes": 43526,
+    "sha256": "c649ebe991d95a586a248a20a1d2bbfa33d62cf6115031ad5c767d30c7ac48df"
+  },
+  "recipe": {
+    "bytes": 7219,
+    "sha256": "17143e69cf6a477fcd177854f4e69046ed1d37a9c4eb492fdb563b514943380c"
+  },
+  "schema_version": 1,
+  "source_packet": {
+    "bytes": 2198,
+    "sha256": "27ecd871da3643654853b7aaf00bc254e7f1ed430572b6e290e00df28870f37d"
+  }
+}
