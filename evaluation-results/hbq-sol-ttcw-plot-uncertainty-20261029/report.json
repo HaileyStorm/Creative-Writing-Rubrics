@@ -1,0 +1,128 @@
+{
+  "candidate_promoted": false,
+  "evidence_class": "post_result_development_sensitivity",
+  "full_goal_complete": false,
+  "limits": [
+    "Post-result development sensitivity frozen after observed401/437 results; not original preregistration or unused confirmation.",
+    "Exact availability-selected common28 of planned36; missing8 outcomes and original33-work coverage rule remain unresolved. No replacements or denominator expansion.",
+    "95% bootstrap percentile range under resampling12 plots with replacement, not a coverage guarantee, causal result, superiority test, alignment-improvement proof or population/generator generalization.",
+    "Only12 plot clusters; small dependent plot/source-generator structure, missingness and distributional assumptions limit the range. No bias correction, fitting, calibration, sign flips, reselection or tuning.",
+    "Undefined or constant draws are retained in counts and never redrawn; reported percentiles use defined draws only. Variable works-per-draw and ties are explicit.",
+    "Secondary raw TTR objection uses exactly the same28 cached rational features and identical paired draws. It is not another primary test or a feature-selection result.",
+    "Existing native/backend/order/scientific qualifications and source437 limitations remain; no new scoring, raw ratings/text, human labels, held-out/currentHF targets, native replay, model requests or candidate promotion."
+  ],
+  "missing_works": 8,
+  "native_or_scorer_replays": 0,
+  "new_human_labels": 0,
+  "original_full36_HBQ_minus_TTCW14_missing_outcome_bounds": [
+    -2,
+    2
+  ],
+  "original_full36_pair_bootstrap_state": "not_estimated",
+  "original_full36_pair_bootstrap_status_changed": false,
+  "original_shared33_rule_met": false,
+  "planned_works": 36,
+  "plots": 12,
+  "primary_HBQ_minus_TTCW14": {
+    "defined_replicates": 2000,
+    "invalid_replicates": 0,
+    "percentile_2_5": 0.02298203047257516,
+    "percentile_97_5": 0.6153803071957245,
+    "point": 0.2893724392600825,
+    "range_conditional_on_defined_replicates": true,
+    "redraw_undefined": false,
+    "state": "defined_percentile_range"
+  },
+  "private_inputs_or_individual_targets_included": false,
+  "provider_calls": 0,
+  "range_label": "95% bootstrap percentile range under the plot-resampling assumption; not a coverage guarantee",
+  "raw_rating_files_opened": 0,
+  "resampling": {
+    "all_matched_works_retained_in_each_selected_plot": true,
+    "average_ties_reranked_every_resample": true,
+    "distinct_plots_per_resample_distribution": {
+      "10": 84,
+      "11": 1,
+      "4": 1,
+      "5": 39,
+      "6": 186,
+      "7": 586,
+      "8": 706,
+      "9": 397
+    },
+    "duplicate_draws_duplicate_work_occurrences": true,
+    "paired_identical_draws_for_all_methods": true,
+    "percentiles": [
+      0.025,
+      0.975
+    ],
+    "plot_draws_sha256": "c774a0c48b816c93018e3f8527fd1c950b642024271e335ccc20f0f4a42f5f76",
+    "plots_per_draw": 12,
+    "redraw_undefined": false,
+    "replacement": true,
+    "replicates": 2000,
+    "resample_results_sha256": "1fc9a374ce73840634c856302d2f904ef74dc179433b1606cebcae92f1876287",
+    "seed": 20261030,
+    "vector_variance_status_counts": {
+      "expert": {
+        "variable": 2000
+      },
+      "hbq": {
+        "variable": 2000
+      },
+      "ttcw14": {
+        "variable": 2000
+      },
+      "ttr": {
+        "variable": 2000
+      }
+    },
+    "works_per_resample_distribution": {
+      "19": 2,
+      "20": 4,
+      "21": 6,
+      "22": 19,
+      "23": 73,
+      "24": 84,
+      "25": 171,
+      "26": 221,
+      "27": 256,
+      "28": 269,
+      "29": 317,
+      "30": 247,
+      "31": 168,
+      "32": 96,
+      "33": 46,
+      "34": 20,
+      "35": 1
+    }
+  },
+  "retained_source437_limits": [
+    "Post-result development hypothesis check motivated by observed HBQ association; definitions frozen now, not an original-study preregistration.",
+    "Exact available all-five28 and HBQ29 selected memberships; missing8/7 of planned36 and original33-work rule unmet; no bootstrap/new CI.",
+    "Within12 plots dependence and availability selection remain; no population, causal verbosity explanation, method superiority, human-alignment gain or candidate promotion.",
+    "Lexical regex includes digits, splits underscores/hyphens/combining sequences; not a linguistic word count. Casefold is not normalization/stemming.",
+    "Raw type/token ratio is length-dependent. No abs-rho maximization, direction flipping, feature transforms, fitting or retuning.",
+    "Expert mean uses existing42 binary ballots per story, not42 independent experts or direct pair-preference ground truth.",
+    "Weak or strong control association does not establish whether HBQ is caused by superficial features or measures quality."
+  ],
+  "rho": {
+    "hbq": 0.7119170412541377,
+    "ttcw14": 0.4225446019940552,
+    "ttr": 0.7807503145032858
+  },
+  "schema_version": 1,
+  "secondary_HBQ_minus_raw_TTR": {
+    "defined_replicates": 2000,
+    "invalid_replicates": 0,
+    "percentile_2_5": -0.19539640291763238,
+    "percentile_97_5": 0.12648492260358837,
+    "point": -0.06883327324914812,
+    "range_conditional_on_defined_replicates": true,
+    "redraw_undefined": false,
+    "state": "defined_percentile_range"
+  },
+  "study_id": "hbq_sol_ttcw_common28_plot_uncertainty_20261029",
+  "unused_confirmation": false,
+  "works": 28
+}
