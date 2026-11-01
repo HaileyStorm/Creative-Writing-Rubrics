@@ -34,6 +34,22 @@ selected-repeat requests. It excludes failures and resource waits, counts shared
 ladder parents once, and supplies no full-cost, throughput or quality-efficiency
 claim. The earlier matrix retains its original efficiency-not-reported snapshot.
 
+## Retained cross-form diagnostics
+
+The [completed descriptive campaign](../evaluation-results/hbq-retained-crossform-descriptive-v1/README.md)
+retains eight AI-generated families and 24 variants across short narratives,
+bounded work segments and free-verse poems. Initial Sol HBQ scalar coverage is
+10/12 narratives, 6/6 segments and 6/6 poems. Complete three-cycle HBQ results
+exist for one sentinel in each form; their sparse coverage limits reliability
+claims. The package reports distributions, method agreement and pair-order
+behavior with the original planned and observed denominators.
+
+The campaign has no accepted synthetic oracle or candidate arm. Its retrospective
+AI intent review supplies no human votes or defect-detection accuracy result.
+Historical admission qualifications remain separate from current native
+attestation; physical-contact cardinality is unproven. These are completed
+descriptive diagnostics, with no rubric or candidate promotion.
+
 ## Headline findings
 
 | Finding | Status | Public result | What it supports |
