@@ -50,6 +50,17 @@ Historical admission qualifications remain separate from current native
 attestation; physical-contact cardinality is unproven. These are completed
 descriptive diagnostics, with no rubric or candidate promotion.
 
+The [native poetry diagnostics](../evaluation-results/hbq-poetry-native-descriptive-20261101/README.md)
+extend this descriptive coverage to 24 AI-created poems in eight designed families.
+Twelve prespecified sentinel poems supply 36 full-bank profiles across three
+cycles: 35 banks are complete, 29 supply eligible HBQ scalars, six remain
+ineligible and one is unavailable. Comparators cover all 24 poems initially;
+concordance uses only matched eligible artifacts within each form and cycle.
+Undefined correlations stay undefined. Repeat contrasts share poems and retain
+their historical configuration differences. The package preserves the original
+local report failure and its closed-input recovery, with no new judgments,
+human-quality oracle, human-alignment claim or candidate promotion.
+
 ## Headline findings
 
 | Finding | Status | Public result | What it supports |

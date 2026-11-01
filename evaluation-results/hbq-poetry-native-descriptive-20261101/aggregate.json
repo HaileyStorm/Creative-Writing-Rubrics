@@ -1,0 +1,2519 @@
+{
+  "HBQ_repeat_summaries": [
+    {
+      "complete_bank_pairs": 5,
+      "eligible_scalar_absolute_change": {
+        "maximum": 0.870900000000006,
+        "mean": 0.1741800000000012,
+        "minimum": 0.0,
+        "observed": 5
+      },
+      "eligible_scalar_pairs": 5,
+      "eligible_scalar_signed_right_minus_left_change": {
+        "maximum": 0.870900000000006,
+        "mean": 0.1741800000000012,
+        "minimum": 0.0,
+        "observed": 5
+      },
+      "form": "poetry.free_verse",
+      "left_repeat": 0,
+      "missing_complete_bank_pairs": 1,
+      "other_or_unavailable_contract_configuration_pairs": 5,
+      "per_bank_raw_agreement": {
+        "maximum": 1.0,
+        "mean": 0.9842696629213483,
+        "minimum": 0.9438202247191011,
+        "observed": 5
+      },
+      "planned_artifact_pairs": 6,
+      "recorded_configuration_equality": {
+        "False": 4,
+        "True": 1,
+        "unavailable": 1
+      },
+      "recorded_contract_configuration_interpretations": {
+        "contract_or_configuration_contrast_not_pure_repeatability": 4,
+        "same_contract_configuration_repeat": 1,
+        "unavailable_complete_pair": 1
+      },
+      "right_repeat": 1,
+      "same_contract_and_configuration_pairs": 1
+    },
+    {
+      "complete_bank_pairs": 6,
+      "eligible_scalar_absolute_change": {
+        "maximum": 3.2609000000000066,
+        "mean": 0.7486166666666682,
+        "minimum": 0.0,
+        "observed": 6
+      },
+      "eligible_scalar_pairs": 6,
+      "eligible_scalar_signed_right_minus_left_change": {
+        "maximum": 3.2609000000000066,
+        "mean": 0.7486166666666682,
+        "minimum": 0.0,
+        "observed": 6
+      },
+      "form": "poetry.free_verse",
+      "left_repeat": 0,
+      "missing_complete_bank_pairs": 0,
+      "other_or_unavailable_contract_configuration_pairs": 4,
+      "per_bank_raw_agreement": {
+        "maximum": 1.0,
+        "mean": 0.9868913857677902,
+        "minimum": 0.9550561797752809,
+        "observed": 6
+      },
+      "planned_artifact_pairs": 6,
+      "recorded_configuration_equality": {
+        "False": 4,
+        "True": 2
+      },
+      "recorded_contract_configuration_interpretations": {
+        "contract_or_configuration_contrast_not_pure_repeatability": 4,
+        "same_contract_configuration_repeat": 2
+      },
+      "right_repeat": 2,
+      "same_contract_and_configuration_pairs": 2
+    },
+    {
+      "complete_bank_pairs": 5,
+      "eligible_scalar_absolute_change": {
+        "maximum": 2.3900000000000006,
+        "mean": 0.4780000000000001,
+        "minimum": 0.0,
+        "observed": 5
+      },
+      "eligible_scalar_pairs": 5,
+      "eligible_scalar_signed_right_minus_left_change": {
+        "maximum": 2.3900000000000006,
+        "mean": 0.4780000000000001,
+        "minimum": 0.0,
+        "observed": 5
+      },
+      "form": "poetry.free_verse",
+      "left_repeat": 1,
+      "missing_complete_bank_pairs": 1,
+      "other_or_unavailable_contract_configuration_pairs": 5,
+      "per_bank_raw_agreement": {
+        "maximum": 1.0,
+        "mean": 0.9887640449438202,
+        "minimum": 0.9662921348314607,
+        "observed": 5
+      },
+      "planned_artifact_pairs": 6,
+      "recorded_configuration_equality": {
+        "False": 4,
+        "True": 1,
+        "unavailable": 1
+      },
+      "recorded_contract_configuration_interpretations": {
+        "contract_or_configuration_contrast_not_pure_repeatability": 4,
+        "same_contract_configuration_repeat": 1,
+        "unavailable_complete_pair": 1
+      },
+      "right_repeat": 2,
+      "same_contract_and_configuration_pairs": 1
+    },
+    {
+      "complete_bank_pairs": 3,
+      "eligible_scalar_absolute_change": {
+        "maximum": 0.33200000000000784,
+        "mean": 0.16600000000000392,
+        "minimum": 0.0,
+        "observed": 2
+      },
+      "eligible_scalar_pairs": 2,
+      "eligible_scalar_signed_right_minus_left_change": {
+        "maximum": 0.0,
+        "mean": -0.16600000000000392,
+        "minimum": -0.33200000000000784,
+        "observed": 2
+      },
+      "form": "poetry.sonnet.contemporary",
+      "left_repeat": 0,
+      "missing_complete_bank_pairs": 0,
+      "other_or_unavailable_contract_configuration_pairs": 3,
+      "per_bank_raw_agreement": {
+        "maximum": 0.9876543209876543,
+        "mean": 0.97119341563786,
+        "minimum": 0.9629629629629629,
+        "observed": 3
+      },
+      "planned_artifact_pairs": 3,
+      "recorded_configuration_equality": {
+        "False": 3
+      },
+      "recorded_contract_configuration_interpretations": {
+        "contract_or_configuration_contrast_not_pure_repeatability": 3
+      },
+      "right_repeat": 1,
+      "same_contract_and_configuration_pairs": 0
+    },
+    {
+      "complete_bank_pairs": 3,
+      "eligible_scalar_absolute_change": {
+        "maximum": 0.8771999999999878,
+        "mean": 0.7462999999999909,
+        "minimum": 0.615399999999994,
+        "observed": 2
+      },
+      "eligible_scalar_pairs": 2,
+      "eligible_scalar_signed_right_minus_left_change": {
+        "maximum": 0.8771999999999878,
+        "mean": 0.7462999999999909,
+        "minimum": 0.615399999999994,
+        "observed": 2
+      },
+      "form": "poetry.sonnet.contemporary",
+      "left_repeat": 0,
+      "missing_complete_bank_pairs": 0,
+      "other_or_unavailable_contract_configuration_pairs": 0,
+      "per_bank_raw_agreement": {
+        "maximum": 0.9753086419753086,
+        "mean": 0.9711934156378601,
+        "minimum": 0.9629629629629629,
+        "observed": 3
+      },
+      "planned_artifact_pairs": 3,
+      "recorded_configuration_equality": {
+        "True": 3
+      },
+      "recorded_contract_configuration_interpretations": {
+        "same_contract_configuration_repeat": 3
+      },
+      "right_repeat": 2,
+      "same_contract_and_configuration_pairs": 3
+    },
+    {
+      "complete_bank_pairs": 3,
+      "eligible_scalar_absolute_change": {
+        "maximum": 0.9474000000000018,
+        "mean": 0.9122999999999948,
+        "minimum": 0.8771999999999878,
+        "observed": 2
+      },
+      "eligible_scalar_pairs": 2,
+      "eligible_scalar_signed_right_minus_left_change": {
+        "maximum": 0.9474000000000018,
+        "mean": 0.9122999999999948,
+        "minimum": 0.8771999999999878,
+        "observed": 2
+      },
+      "form": "poetry.sonnet.contemporary",
+      "left_repeat": 1,
+      "missing_complete_bank_pairs": 0,
+      "other_or_unavailable_contract_configuration_pairs": 3,
+      "per_bank_raw_agreement": {
+        "maximum": 0.9876543209876543,
+        "mean": 0.9753086419753086,
+        "minimum": 0.9629629629629629,
+        "observed": 3
+      },
+      "planned_artifact_pairs": 3,
+      "recorded_configuration_equality": {
+        "False": 3
+      },
+      "recorded_contract_configuration_interpretations": {
+        "contract_or_configuration_contrast_not_pure_repeatability": 3
+      },
+      "right_repeat": 2,
+      "same_contract_and_configuration_pairs": 0
+    },
+    {
+      "complete_bank_pairs": 3,
+      "eligible_scalar_absolute_change": {
+        "maximum": 0.0,
+        "mean": 0.0,
+        "minimum": 0.0,
+        "observed": 2
+      },
+      "eligible_scalar_pairs": 2,
+      "eligible_scalar_signed_right_minus_left_change": {
+        "maximum": 0.0,
+        "mean": 0.0,
+        "minimum": 0.0,
+        "observed": 2
+      },
+      "form": "poetry.sonnet.petrarchan",
+      "left_repeat": 0,
+      "missing_complete_bank_pairs": 0,
+      "other_or_unavailable_contract_configuration_pairs": 2,
+      "per_bank_raw_agreement": {
+        "maximum": 1.0,
+        "mean": 0.9711934156378601,
+        "minimum": 0.9135802469135802,
+        "observed": 3
+      },
+      "planned_artifact_pairs": 3,
+      "recorded_configuration_equality": {
+        "False": 2,
+        "True": 1
+      },
+      "recorded_contract_configuration_interpretations": {
+        "contract_or_configuration_contrast_not_pure_repeatability": 2,
+        "same_contract_configuration_repeat": 1
+      },
+      "right_repeat": 1,
+      "same_contract_and_configuration_pairs": 1
+    },
+    {
+      "complete_bank_pairs": 3,
+      "eligible_scalar_absolute_change": {
+        "maximum": 3.200000000000003,
+        "mean": 1.7579000000000065,
+        "minimum": 0.3158000000000101,
+        "observed": 2
+      },
+      "eligible_scalar_pairs": 2,
+      "eligible_scalar_signed_right_minus_left_change": {
+        "maximum": 0.3158000000000101,
+        "mean": -1.4420999999999964,
+        "minimum": -3.200000000000003,
+        "observed": 2
+      },
+      "form": "poetry.sonnet.petrarchan",
+      "left_repeat": 0,
+      "missing_complete_bank_pairs": 0,
+      "other_or_unavailable_contract_configuration_pairs": 2,
+      "per_bank_raw_agreement": {
+        "maximum": 0.9876543209876543,
+        "mean": 0.9711934156378601,
+        "minimum": 0.9506172839506173,
+        "observed": 3
+      },
+      "planned_artifact_pairs": 3,
+      "recorded_configuration_equality": {
+        "False": 2,
+        "True": 1
+      },
+      "recorded_contract_configuration_interpretations": {
+        "contract_or_configuration_contrast_not_pure_repeatability": 2,
+        "same_contract_configuration_repeat": 1
+      },
+      "right_repeat": 2,
+      "same_contract_and_configuration_pairs": 1
+    },
+    {
+      "complete_bank_pairs": 3,
+      "eligible_scalar_absolute_change": {
+        "maximum": 3.200000000000003,
+        "mean": 1.7579000000000065,
+        "minimum": 0.3158000000000101,
+        "observed": 2
+      },
+      "eligible_scalar_pairs": 2,
+      "eligible_scalar_signed_right_minus_left_change": {
+        "maximum": 0.3158000000000101,
+        "mean": -1.4420999999999964,
+        "minimum": -3.200000000000003,
+        "observed": 2
+      },
+      "form": "poetry.sonnet.petrarchan",
+      "left_repeat": 1,
+      "missing_complete_bank_pairs": 0,
+      "other_or_unavailable_contract_configuration_pairs": 2,
+      "per_bank_raw_agreement": {
+        "maximum": 0.9876543209876543,
+        "mean": 0.9670781893004115,
+        "minimum": 0.9382716049382716,
+        "observed": 3
+      },
+      "planned_artifact_pairs": 3,
+      "recorded_configuration_equality": {
+        "False": 2,
+        "True": 1
+      },
+      "recorded_contract_configuration_interpretations": {
+        "contract_or_configuration_contrast_not_pure_repeatability": 2,
+        "same_contract_configuration_repeat": 1
+      },
+      "right_repeat": 2,
+      "same_contract_and_configuration_pairs": 1
+    }
+  ],
+  "aggregation_method": "Copy existing form/scalar concordance summaries. Simple counts and unweighted min/max/arithmetic means over existing per-artifact saved repeat differences/agreements and bank coverage, separately by form/repeat pair; no new qualification, score or rho. Repeat contrasts sharing an artifact are dependent; no leaf pooling or independent-sample interpretation.",
+  "bootstrap_draws": 0,
+  "candidate_or_baseline_promoted": false,
+  "coverage_by_form_and_repeat": [
+    {
+      "complete_banks": 6,
+      "eligibility_separate_from_coverage": true,
+      "form": "poetry.free_verse",
+      "planned_banks": 6,
+      "repeat": 0,
+      "weighted_coverage_across_available_banks": {
+        "maximum": 1.0,
+        "mean": 0.9968166666666667,
+        "minimum": 0.9809,
+        "observed": 6
+      }
+    },
+    {
+      "complete_banks": 5,
+      "eligibility_separate_from_coverage": true,
+      "form": "poetry.free_verse",
+      "planned_banks": 6,
+      "repeat": 1,
+      "weighted_coverage_across_available_banks": {
+        "maximum": 1.0,
+        "mean": 0.99634,
+        "minimum": 0.9817,
+        "observed": 5
+      }
+    },
+    {
+      "complete_banks": 6,
+      "eligibility_separate_from_coverage": true,
+      "form": "poetry.free_verse",
+      "planned_banks": 6,
+      "repeat": 2,
+      "weighted_coverage_across_available_banks": {
+        "maximum": 1.0,
+        "mean": 0.9907166666666667,
+        "minimum": 0.9809,
+        "observed": 6
+      }
+    },
+    {
+      "complete_banks": 3,
+      "eligibility_separate_from_coverage": true,
+      "form": "poetry.sonnet.contemporary",
+      "planned_banks": 3,
+      "repeat": 0,
+      "weighted_coverage_across_available_banks": {
+        "maximum": 1.0,
+        "mean": 0.9531666666666667,
+        "minimum": 0.8595,
+        "observed": 3
+      }
+    },
+    {
+      "complete_banks": 3,
+      "eligibility_separate_from_coverage": true,
+      "form": "poetry.sonnet.contemporary",
+      "planned_banks": 3,
+      "repeat": 1,
+      "weighted_coverage_across_available_banks": {
+        "maximum": 1.0,
+        "mean": 0.9494,
+        "minimum": 0.8482,
+        "observed": 3
+      }
+    },
+    {
+      "complete_banks": 3,
+      "eligibility_separate_from_coverage": true,
+      "form": "poetry.sonnet.contemporary",
+      "planned_banks": 3,
+      "repeat": 2,
+      "weighted_coverage_across_available_banks": {
+        "maximum": 1.0,
+        "mean": 0.9722333333333333,
+        "minimum": 0.9167,
+        "observed": 3
+      }
+    },
+    {
+      "complete_banks": 3,
+      "eligibility_separate_from_coverage": true,
+      "form": "poetry.sonnet.petrarchan",
+      "planned_banks": 3,
+      "repeat": 0,
+      "weighted_coverage_across_available_banks": {
+        "maximum": 1.0,
+        "mean": 1.0,
+        "minimum": 1.0,
+        "observed": 3
+      }
+    },
+    {
+      "complete_banks": 3,
+      "eligibility_separate_from_coverage": true,
+      "form": "poetry.sonnet.petrarchan",
+      "planned_banks": 3,
+      "repeat": 1,
+      "weighted_coverage_across_available_banks": {
+        "maximum": 1.0,
+        "mean": 1.0,
+        "minimum": 1.0,
+        "observed": 3
+      }
+    },
+    {
+      "complete_banks": 3,
+      "eligibility_separate_from_coverage": true,
+      "form": "poetry.sonnet.petrarchan",
+      "planned_banks": 3,
+      "repeat": 2,
+      "weighted_coverage_across_available_banks": {
+        "maximum": 1.0,
+        "mean": 1.0,
+        "minimum": 1.0,
+        "observed": 3
+      }
+    }
+  ],
+  "form_summary": [
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.75,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 12,
+          "planned": 12
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 3,
+          "floor_count": 0,
+          "maximum": 6,
+          "mean": 4.5,
+          "minimum": 3,
+          "missing_or_ineligible": 2,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 10,
+          "planned": 12
+        },
+        "poemetric": {
+          "ceiling_count": 1,
+          "distinct_values": 3,
+          "floor_count": 0,
+          "maximum": 5,
+          "mean": 3.8181818181818183,
+          "minimum": 3,
+          "missing_or_ineligible": 1,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 11,
+          "planned": 12
+        }
+      },
+      "complete_full_banks": 6,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 4,
+        "floor_count": 0,
+        "maximum": 98.0,
+        "mean": 92.51675,
+        "minimum": 72.2513,
+        "missing_or_ineligible": 0,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 6,
+        "planned": 6
+      },
+      "form": "poetry.free_verse",
+      "planned_full_banks": 6,
+      "repeat": 0,
+      "statuses": {
+        "SCORED": 6
+      }
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.8333333333333335,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 6,
+          "planned": 6
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 3,
+          "floor_count": 0,
+          "maximum": 6,
+          "mean": 4.833333333333333,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 6,
+          "planned": 6
+        },
+        "poemetric": {
+          "ceiling_count": 1,
+          "distinct_values": 3,
+          "floor_count": 0,
+          "maximum": 5,
+          "mean": 4,
+          "minimum": 3,
+          "missing_or_ineligible": 1,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 5,
+          "planned": 6
+        }
+      },
+      "complete_full_banks": 5,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 3,
+        "floor_count": 0,
+        "maximum": 98.0,
+        "mean": 92.64044,
+        "minimum": 73.1222,
+        "missing_or_ineligible": 1,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 5,
+        "planned": 6
+      },
+      "form": "poetry.free_verse",
+      "planned_full_banks": 6,
+      "repeat": 1,
+      "statuses": {
+        "SCORED": 5,
+        "UNAVAILABLE_COMPLETE_BANK": 1
+      }
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.8333333333333335,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 6,
+          "planned": 6
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 3,
+          "floor_count": 0,
+          "maximum": 6,
+          "mean": 4.833333333333333,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 6,
+          "planned": 6
+        },
+        "poemetric": {
+          "ceiling_count": 1,
+          "distinct_values": 3,
+          "floor_count": 0,
+          "maximum": 5,
+          "mean": 4,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 6,
+          "planned": 6
+        }
+      },
+      "complete_full_banks": 6,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 4,
+        "floor_count": 0,
+        "maximum": 98.0,
+        "mean": 93.26536666666667,
+        "minimum": 75.5122,
+        "missing_or_ineligible": 0,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 6,
+        "planned": 6
+      },
+      "form": "poetry.free_verse",
+      "planned_full_banks": 6,
+      "repeat": 2,
+      "statuses": {
+        "SCORED": 6
+      }
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.6666666666666665,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 6,
+          "mean": 5.333333333333333,
+          "minimum": 4,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "poemetric": {
+          "ceiling_count": 0,
+          "distinct_values": 1,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 4,
+          "minimum": 4,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        }
+      },
+      "complete_full_banks": 3,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 2,
+        "floor_count": 0,
+        "maximum": 97.3846,
+        "mean": 96.9304,
+        "minimum": 96.4762,
+        "missing_or_ineligible": 1,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 2,
+        "planned": 3
+      },
+      "form": "poetry.sonnet.contemporary",
+      "planned_full_banks": 3,
+      "repeat": 0,
+      "statuses": {
+        "INELIGIBLE": 1,
+        "SCORED": 2
+      }
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.6666666666666665,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 6,
+          "mean": 5.333333333333333,
+          "minimum": 4,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "poemetric": {
+          "ceiling_count": 0,
+          "distinct_values": 1,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 4,
+          "minimum": 4,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        }
+      },
+      "complete_full_banks": 3,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 2,
+        "floor_count": 0,
+        "maximum": 97.0526,
+        "mean": 96.7644,
+        "minimum": 96.4762,
+        "missing_or_ineligible": 1,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 2,
+        "planned": 3
+      },
+      "form": "poetry.sonnet.contemporary",
+      "planned_full_banks": 3,
+      "repeat": 1,
+      "statuses": {
+        "INELIGIBLE": 1,
+        "SCORED": 2
+      }
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.6666666666666665,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 6,
+          "mean": 5.333333333333333,
+          "minimum": 4,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "poemetric": {
+          "ceiling_count": 0,
+          "distinct_values": 1,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 4,
+          "minimum": 4,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        }
+      },
+      "complete_full_banks": 3,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 2,
+        "floor_count": 0,
+        "maximum": 98.0,
+        "mean": 97.6767,
+        "minimum": 97.3534,
+        "missing_or_ineligible": 1,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 2,
+        "planned": 3
+      },
+      "form": "poetry.sonnet.contemporary",
+      "planned_full_banks": 3,
+      "repeat": 2,
+      "statuses": {
+        "INELIGIBLE": 1,
+        "SCORED": 2
+      }
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.6666666666666665,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 3,
+          "floor_count": 0,
+          "maximum": 6,
+          "mean": 5,
+          "minimum": 4,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "poemetric": {
+          "ceiling_count": 0,
+          "distinct_values": 1,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 4,
+          "minimum": 4,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        }
+      },
+      "complete_full_banks": 3,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 2,
+        "floor_count": 0,
+        "maximum": 98.0,
+        "mean": 96.73685,
+        "minimum": 95.4737,
+        "missing_or_ineligible": 1,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 2,
+        "planned": 3
+      },
+      "form": "poetry.sonnet.petrarchan",
+      "planned_full_banks": 3,
+      "repeat": 0,
+      "statuses": {
+        "INELIGIBLE": 1,
+        "SCORED": 2
+      }
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.6666666666666665,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 5,
+          "mean": 4.666666666666667,
+          "minimum": 4,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "poemetric": {
+          "ceiling_count": 0,
+          "distinct_values": 1,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 4,
+          "minimum": 4,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        }
+      },
+      "complete_full_banks": 3,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 2,
+        "floor_count": 0,
+        "maximum": 98.0,
+        "mean": 96.73685,
+        "minimum": 95.4737,
+        "missing_or_ineligible": 1,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 2,
+        "planned": 3
+      },
+      "form": "poetry.sonnet.petrarchan",
+      "planned_full_banks": 3,
+      "repeat": 1,
+      "statuses": {
+        "INELIGIBLE": 1,
+        "SCORED": 2
+      }
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.6666666666666665,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 3,
+          "floor_count": 0,
+          "maximum": 6,
+          "mean": 4.666666666666667,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "poemetric": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.5,
+          "minimum": 3,
+          "missing_or_ineligible": 1,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 2,
+          "planned": 3
+        }
+      },
+      "complete_full_banks": 3,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 2,
+        "floor_count": 0,
+        "maximum": 95.7895,
+        "mean": 95.29475,
+        "minimum": 94.8,
+        "missing_or_ineligible": 1,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 2,
+        "planned": 3
+      },
+      "form": "poetry.sonnet.petrarchan",
+      "planned_full_banks": 3,
+      "repeat": 2,
+      "statuses": {
+        "INELIGIBLE": 1,
+        "SCORED": 2
+      }
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.6666666666666665,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 3,
+          "floor_count": 0,
+          "maximum": 6,
+          "mean": 4.666666666666667,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "poemetric": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.6666666666666665,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        }
+      },
+      "complete_full_banks": 0,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 0,
+        "floor_count": 0,
+        "maximum": null,
+        "mean": null,
+        "minimum": null,
+        "missing_or_ineligible": 0,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 0,
+        "planned": 0
+      },
+      "form": "poetry.sonnet.shakespearean",
+      "planned_full_banks": 0,
+      "repeat": 0,
+      "statuses": {}
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 0,
+          "floor_count": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 0,
+          "planned": 0
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 0,
+          "floor_count": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 0,
+          "planned": 0
+        },
+        "poemetric": {
+          "ceiling_count": 0,
+          "distinct_values": 0,
+          "floor_count": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 0,
+          "planned": 0
+        }
+      },
+      "complete_full_banks": 0,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 0,
+        "floor_count": 0,
+        "maximum": null,
+        "mean": null,
+        "minimum": null,
+        "missing_or_ineligible": 0,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 0,
+        "planned": 0
+      },
+      "form": "poetry.sonnet.shakespearean",
+      "planned_full_banks": 0,
+      "repeat": 1,
+      "statuses": {}
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 0,
+          "floor_count": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 0,
+          "planned": 0
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 0,
+          "floor_count": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 0,
+          "planned": 0
+        },
+        "poemetric": {
+          "ceiling_count": 0,
+          "distinct_values": 0,
+          "floor_count": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 0,
+          "planned": 0
+        }
+      },
+      "complete_full_banks": 0,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 0,
+        "floor_count": 0,
+        "maximum": null,
+        "mean": null,
+        "minimum": null,
+        "missing_or_ineligible": 0,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 0,
+        "planned": 0
+      },
+      "form": "poetry.sonnet.shakespearean",
+      "planned_full_banks": 0,
+      "repeat": 2,
+      "statuses": {}
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.6666666666666665,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 5,
+          "mean": 4,
+          "minimum": 3,
+          "missing_or_ineligible": 1,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 2,
+          "planned": 3
+        },
+        "poemetric": {
+          "ceiling_count": 0,
+          "distinct_values": 2,
+          "floor_count": 0,
+          "maximum": 4,
+          "mean": 3.6666666666666665,
+          "minimum": 3,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 3,
+          "planned": 3
+        }
+      },
+      "complete_full_banks": 0,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 0,
+        "floor_count": 0,
+        "maximum": null,
+        "mean": null,
+        "minimum": null,
+        "missing_or_ineligible": 0,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 0,
+        "planned": 0
+      },
+      "form": "poetry.sonnet.spenserian",
+      "planned_full_banks": 0,
+      "repeat": 0,
+      "statuses": {}
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 0,
+          "floor_count": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 0,
+          "planned": 0
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 0,
+          "floor_count": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 0,
+          "planned": 0
+        },
+        "poemetric": {
+          "ceiling_count": 0,
+          "distinct_values": 0,
+          "floor_count": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 0,
+          "planned": 0
+        }
+      },
+      "complete_full_banks": 0,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 0,
+        "floor_count": 0,
+        "maximum": null,
+        "mean": null,
+        "minimum": null,
+        "missing_or_ineligible": 0,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 0,
+        "planned": 0
+      },
+      "form": "poetry.sonnet.spenserian",
+      "planned_full_banks": 0,
+      "repeat": 1,
+      "statuses": {}
+    },
+    {
+      "comparators": {
+        "compact": {
+          "ceiling_count": 0,
+          "distinct_values": 0,
+          "floor_count": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 0,
+          "planned": 0
+        },
+        "holistic": {
+          "ceiling_count": 0,
+          "distinct_values": 0,
+          "floor_count": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            7
+          ],
+          "observed": 0,
+          "planned": 0
+        },
+        "poemetric": {
+          "ceiling_count": 0,
+          "distinct_values": 0,
+          "floor_count": 0,
+          "maximum": null,
+          "mean": null,
+          "minimum": null,
+          "missing_or_ineligible": 0,
+          "native_scale": [
+            1,
+            5
+          ],
+          "observed": 0,
+          "planned": 0
+        }
+      },
+      "complete_full_banks": 0,
+      "eligible_hbq": {
+        "ceiling_count": 0,
+        "distinct_values": 0,
+        "floor_count": 0,
+        "maximum": null,
+        "mean": null,
+        "minimum": null,
+        "missing_or_ineligible": 0,
+        "native_scale": [
+          0,
+          100
+        ],
+        "observed": 0,
+        "planned": 0
+      },
+      "form": "poetry.sonnet.spenserian",
+      "planned_full_banks": 0,
+      "repeat": 2,
+      "statuses": {}
+    }
+  ],
+  "frozen_cohort_rule": "Four prespecified sentinel families, three variants each: two free-verse families, one contemporary-sonnet family and one Petrarchan-sonnet family. These12 poems receive full HBQ banks in three cycles; the other12 receive targeted diagnostic-pool subsets, never full-bank scalars. Comparators cover all24 initially and the12 sentinels in cycles1/2. No scope overlay or gate was changed.",
+  "full_bank_eligibility": {
+    "complete": 35,
+    "planned": 36,
+    "statuses": {
+      "INELIGIBLE": 6,
+      "SCORED": 29,
+      "UNAVAILABLE_COMPLETE_BANK": 1
+    }
+  },
+  "full_research_goal_complete": false,
+  "historical_native_boundary": {
+    "joined_job_tuples": 5,
+    "native_headers": 450,
+    "qualification": "Inherited saved five-job450-header lineage; no fresh native replay, current-state guard or provider-quiescence assertion."
+  },
+  "human_alignment_claimed": false,
+  "limits": [
+    "24 AI poems/eight designed families; no human labels, accepted quality oracle, human alignment, method winner or candidate promotion.",
+    "HBQ prespecified12 sentinel poems/36 full-bank profiles; other12 poems have targeted HBQ subsets. Comparators cover24 initial poems/48 slots per arm. Same-form marginal cohorts can differ. Zero-planned full-bank forms are not compilation failures: targeted diagnostics and comparators remain separate from unmeasured full-bank scalars.",
+    "Concordance uses only same-form/same-repeat artifacts with both eligible HBQ and comparator scores; availability-selected cohorts differ by comparator/repeat. Minimum three pairs; null remains undefined, including possible ties.",
+    "Complete full banks and weighted coverage do not imply eligible scalar scores. INELIGIBLE remains distinct from unavailable/missing. Assessment bounds concern missing rubric assessments, not sampling confidence intervals.",
+    "Historical native qualifications, cached qualifications and current85 native acceptances remain different scopes. No fresh provider quiescence, historical tool equivalence or all642 current-runtime/tool attestation is claimed.",
+    "Repeat contrasts share artifacts/families and may differ in contract/configuration; descriptive changes are not independent trials or controlled same-runtime population reliability.",
+    "The original final analysis guard did not execute. The separate recovery closed-input/source guard passed; original failure and saved qualifications are retained without native replay/requalification.",
+    "Private retained inputs are needed for regeneration. This aggregate projection does not reconstruct native envelopes, re-admit returns, repair source data or establish human validity. Full research Goal remains incomplete."
+  ],
+  "native_attestation_scope": {
+    "all_32_features_disabled_for_current_tail": true,
+    "current_tail_requests": 85,
+    "qualification": "Inherited completed amended strict-replay commitment in the closed1396 report; not replayed here. Mixed historical qualification categories remain separate; no all642 current-tool attestation."
+  },
+  "native_or_scientific_replays": 0,
+  "new_judge_votes": 0,
+  "policy": "closed_poetry_native_descriptive_aggregate1398_v1",
+  "provider_calls": 0,
+  "qualification_categories": {
+    "cached_qualified": 57,
+    "qualified": 578,
+    "retained_failed_or_ambiguous_no_resend": 5,
+    "semantic_rejected": 1,
+    "unadmitted_no_resend": 1
+  },
+  "report_recovery": {
+    "cached_packets_requalified_or_rescored": 0,
+    "cached_packets_reused": 57,
+    "canonical_global_state_reread": false,
+    "family_lookup_fix": "Exact075 opaque family key from design-family SHA256 prefix; original075/074 identities unchanged; original failed1378 analysis remains failed.",
+    "native_replay_calls": 0,
+    "new_closed_input_and_source_guard_executed": true,
+    "new_model_requests": 0,
+    "old_final_guard_executed": false,
+    "requalification_calls": 0,
+    "state": "PASS"
+  },
+  "sampling_confidence_intervals": null,
+  "scalar_repeat_summaries": [
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 6
+      },
+      "arm": "compact",
+      "form": "poetry.free_verse",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 6,
+      "planned_artifact_pairs": 6,
+      "right_repeat": 1,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 6
+      },
+      "unchanged_pairs": 6
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 6
+      },
+      "arm": "compact",
+      "form": "poetry.free_verse",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 6,
+      "planned_artifact_pairs": 6,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 6
+      },
+      "unchanged_pairs": 6
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 6
+      },
+      "arm": "compact",
+      "form": "poetry.free_verse",
+      "left_repeat": 1,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 6,
+      "planned_artifact_pairs": 6,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 6
+      },
+      "unchanged_pairs": 6
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 6
+      },
+      "arm": "holistic",
+      "form": "poetry.free_verse",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 6,
+      "planned_artifact_pairs": 6,
+      "right_repeat": 1,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 6
+      },
+      "unchanged_pairs": 6
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 6
+      },
+      "arm": "holistic",
+      "form": "poetry.free_verse",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 6,
+      "planned_artifact_pairs": 6,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 6
+      },
+      "unchanged_pairs": 6
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 6
+      },
+      "arm": "holistic",
+      "form": "poetry.free_verse",
+      "left_repeat": 1,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 6,
+      "planned_artifact_pairs": 6,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 6
+      },
+      "unchanged_pairs": 6
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 4
+      },
+      "arm": "poemetric",
+      "form": "poetry.free_verse",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 2,
+      "observed_artifact_pairs": 4,
+      "planned_artifact_pairs": 6,
+      "right_repeat": 1,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 4
+      },
+      "unchanged_pairs": 4
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 5
+      },
+      "arm": "poemetric",
+      "form": "poetry.free_verse",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 1,
+      "observed_artifact_pairs": 5,
+      "planned_artifact_pairs": 6,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 5
+      },
+      "unchanged_pairs": 5
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 5
+      },
+      "arm": "poemetric",
+      "form": "poetry.free_verse",
+      "left_repeat": 1,
+      "missing_artifact_pairs": 1,
+      "observed_artifact_pairs": 5,
+      "planned_artifact_pairs": 6,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 5
+      },
+      "unchanged_pairs": 5
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "compact",
+      "form": "poetry.sonnet.contemporary",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 1,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "compact",
+      "form": "poetry.sonnet.contemporary",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "compact",
+      "form": "poetry.sonnet.contemporary",
+      "left_repeat": 1,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "holistic",
+      "form": "poetry.sonnet.contemporary",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 1,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "holistic",
+      "form": "poetry.sonnet.contemporary",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "holistic",
+      "form": "poetry.sonnet.contemporary",
+      "left_repeat": 1,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "poemetric",
+      "form": "poetry.sonnet.contemporary",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 1,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "poemetric",
+      "form": "poetry.sonnet.contemporary",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "poemetric",
+      "form": "poetry.sonnet.contemporary",
+      "left_repeat": 1,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "compact",
+      "form": "poetry.sonnet.petrarchan",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 1,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "compact",
+      "form": "poetry.sonnet.petrarchan",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "compact",
+      "form": "poetry.sonnet.petrarchan",
+      "left_repeat": 1,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 1,
+        "mean": 0.3333333333333333,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "holistic",
+      "form": "poetry.sonnet.petrarchan",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 1,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": -0.3333333333333333,
+        "minimum": -1,
+        "observed": 3
+      },
+      "unchanged_pairs": 2
+    },
+    {
+      "absolute_change": {
+        "maximum": 1,
+        "mean": 1,
+        "minimum": 1,
+        "observed": 3
+      },
+      "arm": "holistic",
+      "form": "poetry.sonnet.petrarchan",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 1,
+        "mean": -0.3333333333333333,
+        "minimum": -1,
+        "observed": 3
+      },
+      "unchanged_pairs": 0
+    },
+    {
+      "absolute_change": {
+        "maximum": 1,
+        "mean": 0.6666666666666666,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "holistic",
+      "form": "poetry.sonnet.petrarchan",
+      "left_repeat": 1,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 1,
+        "mean": 0,
+        "minimum": -1,
+        "observed": 3
+      },
+      "unchanged_pairs": 1
+    },
+    {
+      "absolute_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "arm": "poemetric",
+      "form": "poetry.sonnet.petrarchan",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 0,
+      "observed_artifact_pairs": 3,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 1,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": 0,
+        "minimum": 0,
+        "observed": 3
+      },
+      "unchanged_pairs": 3
+    },
+    {
+      "absolute_change": {
+        "maximum": 1,
+        "mean": 0.5,
+        "minimum": 0,
+        "observed": 2
+      },
+      "arm": "poemetric",
+      "form": "poetry.sonnet.petrarchan",
+      "left_repeat": 0,
+      "missing_artifact_pairs": 1,
+      "observed_artifact_pairs": 2,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": -0.5,
+        "minimum": -1,
+        "observed": 2
+      },
+      "unchanged_pairs": 1
+    },
+    {
+      "absolute_change": {
+        "maximum": 1,
+        "mean": 0.5,
+        "minimum": 0,
+        "observed": 2
+      },
+      "arm": "poemetric",
+      "form": "poetry.sonnet.petrarchan",
+      "left_repeat": 1,
+      "missing_artifact_pairs": 1,
+      "observed_artifact_pairs": 2,
+      "planned_artifact_pairs": 3,
+      "right_repeat": 2,
+      "signed_right_minus_left_change": {
+        "maximum": 0,
+        "mean": -0.5,
+        "minimum": -1,
+        "observed": 2
+      },
+      "unchanged_pairs": 1
+    }
+  ],
+  "schema_version": 1,
+  "scope": {
+    "AI_created_poems": 24,
+    "Grok_held_logical_request_slots": 642,
+    "HBQ_targeted_subset_only_poems": 12,
+    "Sol_logical_request_slots": 642,
+    "comparator_slots_per_arm": 48,
+    "designed_families": 8,
+    "initial_HBQ_full_bank_sentinel_poems": 12,
+    "initial_comparator_poems": 24
+  },
+  "source_commitments": {
+    "actual_closed_lineage": {
+      "bytes": 19576,
+      "sha256": "667c998d24cb9329387fe52f89ae60faafeaebe8a1b825cfb032b592b040fa8a"
+    },
+    "closed_input_readback": {
+      "bytes": 24867,
+      "sha256": "a6ca8769a0ae5fe46c6cac8e36f53291d7363c7502877562220a37d0515193eb"
+    },
+    "closed_report": {
+      "bytes": 5426453,
+      "sha256": "4fea1950e29aad7442d37ae0ce9dbdbfc091069e53131261e7455f2e85cc46d7"
+    },
+    "original_failure": {
+      "bytes": 1439,
+      "sha256": "aea99faa935feb626c2dae28a81a3911f5e1f22fe30d71a6f06ce1797c08175e"
+    },
+    "original_terminal": {
+      "bytes": 1681,
+      "sha256": "bf8b46837347075a0304a9ba6e309ce6a13d8bfb89398da9fa07588b2cd31005"
+    },
+    "recovery_receipt": {
+      "bytes": 1218,
+      "sha256": "526bc1c16e9bac69a0806b67eb235d42573b36d3c74b901971e52512c8a90492"
+    },
+    "saved_amended_strict_replay": {
+      "bytes": 496789,
+      "sha256": "50ff51fc01c46a878b74858b9f3f797c273d8be51889fb0a93ad3b34c0f85a2c"
+    },
+    "saved_qualification": {
+      "bytes": 14500405,
+      "sha256": "9b6ca9f760446616b582bbd1e0e9a2a7d67c31ced662e9e5e17dc13732ba093c"
+    },
+    "source_packet1396": {
+      "bytes": 16053,
+      "sha256": "594b04af45797a4b536276a86c108a0190f07ce663ce505c7e75990fde023964"
+    }
+  },
+  "within_form_same_data_scalar_concordance": [
+    {
+      "comparator": "holistic",
+      "form": "poetry.free_verse",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 0,
+      "observed_eligible_pairs": 6,
+      "planned_full_bank_pairs": 6,
+      "repeat": 0,
+      "spearman_rho": 0.7184212081070996
+    },
+    {
+      "comparator": "compact",
+      "form": "poetry.free_verse",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 0,
+      "observed_eligible_pairs": 6,
+      "planned_full_bank_pairs": 6,
+      "repeat": 0,
+      "spearman_rho": 0.6956083436402525
+    },
+    {
+      "comparator": "poemetric",
+      "form": "poetry.free_verse",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 5,
+      "planned_full_bank_pairs": 6,
+      "repeat": 0,
+      "spearman_rho": 0.75
+    },
+    {
+      "comparator": "holistic",
+      "form": "poetry.free_verse",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 5,
+      "planned_full_bank_pairs": 6,
+      "repeat": 1,
+      "spearman_rho": 0.75
+    },
+    {
+      "comparator": "compact",
+      "form": "poetry.free_verse",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 5,
+      "planned_full_bank_pairs": 6,
+      "repeat": 1,
+      "spearman_rho": 0.7905694150420948
+    },
+    {
+      "comparator": "poemetric",
+      "form": "poetry.free_verse",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 2,
+      "observed_eligible_pairs": 4,
+      "planned_full_bank_pairs": 6,
+      "repeat": 1,
+      "spearman_rho": 0.8333333333333334
+    },
+    {
+      "comparator": "holistic",
+      "form": "poetry.free_verse",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 0,
+      "observed_eligible_pairs": 6,
+      "planned_full_bank_pairs": 6,
+      "repeat": 2,
+      "spearman_rho": 0.7184212081070996
+    },
+    {
+      "comparator": "compact",
+      "form": "poetry.free_verse",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 0,
+      "observed_eligible_pairs": 6,
+      "planned_full_bank_pairs": 6,
+      "repeat": 2,
+      "spearman_rho": 0.6956083436402525
+    },
+    {
+      "comparator": "poemetric",
+      "form": "poetry.free_verse",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 0,
+      "observed_eligible_pairs": 6,
+      "planned_full_bank_pairs": 6,
+      "repeat": 2,
+      "spearman_rho": 0.7184212081070996
+    },
+    {
+      "comparator": "holistic",
+      "form": "poetry.sonnet.contemporary",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 0,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "compact",
+      "form": "poetry.sonnet.contemporary",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 0,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "poemetric",
+      "form": "poetry.sonnet.contemporary",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 0,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "holistic",
+      "form": "poetry.sonnet.contemporary",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 1,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "compact",
+      "form": "poetry.sonnet.contemporary",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 1,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "poemetric",
+      "form": "poetry.sonnet.contemporary",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 1,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "holistic",
+      "form": "poetry.sonnet.contemporary",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 2,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "compact",
+      "form": "poetry.sonnet.contemporary",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 2,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "poemetric",
+      "form": "poetry.sonnet.contemporary",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 2,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "holistic",
+      "form": "poetry.sonnet.petrarchan",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 0,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "compact",
+      "form": "poetry.sonnet.petrarchan",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 0,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "poemetric",
+      "form": "poetry.sonnet.petrarchan",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 0,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "holistic",
+      "form": "poetry.sonnet.petrarchan",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 1,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "compact",
+      "form": "poetry.sonnet.petrarchan",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 1,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "poemetric",
+      "form": "poetry.sonnet.petrarchan",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 1,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "holistic",
+      "form": "poetry.sonnet.petrarchan",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 2,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "compact",
+      "form": "poetry.sonnet.petrarchan",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 1,
+      "observed_eligible_pairs": 2,
+      "planned_full_bank_pairs": 3,
+      "repeat": 2,
+      "spearman_rho": null
+    },
+    {
+      "comparator": "poemetric",
+      "form": "poetry.sonnet.petrarchan",
+      "human_alignment": false,
+      "minimum_three_pairs_for_descriptive_rho": true,
+      "missing_or_ineligible_pairs": 2,
+      "observed_eligible_pairs": 1,
+      "planned_full_bank_pairs": 3,
+      "repeat": 2,
+      "spearman_rho": null
+    }
+  ]
+}
