@@ -2,14 +2,15 @@
 
 ## Unreleased
 
-- Added pre-contact retry disclosure and guarded native development/evidence paths after the 1.2.3 release; the README now pins a tested Git revision instead of installing floating main.
-- Added focused local test lanes, installed-wheel book/CLI smoke checks, and public v2 descendant/resume coverage. Packaged evidence documentation links resolve to immutable public Git paths.
-- Published completed multisample and development-only DSPy/Optuna evidence, including the negative three-family weighting fit and standalone V17 Sol rank replication. V17 Grok is incomplete after quota exhaustion. The later WPB collection stopped with 89 successful cells, one ambiguous terminal cell, and 39 unstarted cells; its failure has no established narrower cause and permits no subset metrics or automatic resend.
-- Audited the supplied Dryad corpus and froze TRAIN/DEV targets and a full-HBQ qualification plan. Added governed cohort execution, native evidence replay, the fixed 128-trial TRAIN optimizer, and conditional DEV comparison. These implementation checks are not live Dryad alignment results.
-- Added append-only cohort approval renewal with preserved native receipts and executor history. The first Dryad qualification attempt is terminal: five accepted checkpoints, one semantically rejected response, and 255 unstarted requests. It yields no cap or alignment result and will not be automatically resent.
-- Added opt-in batch question-ID schemas, persisted schema commitments, guarded initialization recovery, and offline verification. A prospective Dryad v2 qualification retains the original stories, prompts and scientific thresholds while constraining response IDs; the failed predecessor remains preserved.
-- The Dryad v2 attempt retained 27 accepted checkpoints and one replayed 178-question pass before an ambiguous post-launch contact lacked a native result. Its evidence is quarantined with no cap, alignment metrics, or automatic resend; the transport cause remains unclassified.
-- No new rubric version, runtime profile promotion, general literary-validity claim, or native Linux proof is implied by these development checkpoints.
+- Added opt-in `strict_import_v1` admission for new normalized imports while preserving historical permissive replay and original verdicts.
+- Added descriptive decision-readiness reports and interval comparisons; missing assessments and eligibility remain separate from canonical score semantics.
+- Added opt-in uncertainty-preserving ladder scoring and Unicode-whitespace quote grounding with offsets into unchanged source text. Historical defaults and raw judgments remain unchanged.
+- Published matched TTCW expert and Dryad/Kyoto reader comparisons, selected repeats, floor/ceiling distributions and a portable measurement matrix. Availability-selected cohorts, original scales and negative or uncertain findings remain explicit.
+- Published bounded cross-form, poetry, long-form saved-state and revision-utility diagnostics. Synthetic reviews do not supply human labels; historical qualification categories, failed attempts and missing observations remain retained.
+- Retired routine unit/integration suites and broad verification runner lanes. Current local acceptance exercises the affected shipped command and inspects release artifacts when packaging changes; historical study obligations remain separately scoped.
+- Bound packaged results-page evidence links to immutable public Git paths. Private worklogs, ownership records, credentials and research state remain outside release archives.
+- Applied the CWR Community License to new original CWR application content, retaining earlier Apache grants and Apache-2.0 for HBQ-RS. Distribution metadata and packaged component licenses describe the mixed scope.
+- HBQ-RS content and identity remain at 1.2.1. These application and evidence updates do not promote a candidate, claim general literary validity or complete the ongoing research program.
 
 ## 1.2.3 — 2026-08-26
 

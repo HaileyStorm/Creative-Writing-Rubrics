@@ -286,15 +286,18 @@ print(report["status"], report["final_score"])
 
 ## Verification, license, and support
 
-Local checks cover wheel installation in a separate directory, packaged-book
-validation and the installed CLI, Python APIs, strict schemas, local endpoint transport, public-result verifiers,
-and provider-adapter/evidence-validation paths. Actual remote-execution
-evidence is package-specific and explicitly labeled. The
-public case studies preserve their own contracts, manifests, aggregate outputs,
-and privacy checks; private manuscript prose and raw model responses are not
-distributed. The wheel smoke test reuses installed third-party dependencies;
-it is not clean-machine proof. See [focused local checks](docs/LOCAL_VALIDATION.md)
-for the separate core, package, and historical-study commands.
+There is no routine unit or integration suite. Use the affected shipped command
+for a change to local execution, and build and inspect the distribution when
+packaging inputs change or a release is prepared. See [local acceptance](docs/LOCAL_VALIDATION.md)
+for the current commands and the limits of each check.
+
+Retained package acceptance covers an isolated wheel's packaged-book resolution,
+CLI version and registry validation using existing third-party dependencies;
+it does not establish a fresh installation or clean-machine compatibility.
+Historical studies retain their own contracts, manifests, aggregate outputs and
+acceptance evidence. Provider execution and human-alignment results require their
+separate named evidence. Private manuscripts and raw model responses are not
+distributed.
 
 HBQ-RS remains Apache-2.0. New original CWR application content uses the
 CWR Community License: free commercial use and resale below US $10 million

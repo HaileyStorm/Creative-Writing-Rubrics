@@ -14,12 +14,12 @@ their populations, reference constructs and available cohorts remain separate.
 
 | Evidence | Matched scope | Descriptive result and limit |
 | --- | --- | --- |
-| [TTCW initial expert comparison](../evaluation-results/hbq-sol-ttcw-initial-development-20261026/README.md) | Same 28 stories across all five scalar methods; all 12 plot groups. | HBQ Spearman `0.712` versus TTCW14 `0.423` on this shared set. HBQ has 29 numeric banks among 36 planned stories; the registered 33-shared-story requirement is unmet. No HBQ superiority interval or winner claim follows. |
-| [Dryad reader comparison](../evaluation-results/hbq-reader-reference-descriptive-v1/README.md#dryad-selected-exposed-dev30) | Same availability-selected 27 stories from DEV30. | HBQ rho is `0.064` for well written and `0.197` for enjoyed; Oregon is `0.469` and `0.443` on those same stories. Missingness and reader reuse limit inference; pair-specific contrasts use their own separately reported cohorts. |
-| [Kyoto reader comparison](../evaluation-results/hbq-reader-reference-descriptive-v1/README.md#kyoto-fixed-12-stories-across-three-topics) | Fixed 12 stories across three topics. | HBQ rho is `-0.007` for enjoyment and `-0.074` for pleasing style; TTCW14 is `0.223` and `0.188`. These full-12 points are available, with no estimated confidence interval. Secondary 11-story diagnostics cannot replace missing full-12 comparator results. The ladder projection establishes no gain. |
-| [Selected TTCW repeats](../evaluation-results/hbq-sol-ttcw-selected-repeats-20261026/README.md) | Two complete HBQ banks; scalar comparisons across three stories overall. | Raw leaf agreement is `338/356` (`94.94%`), kappa `0.914`; all seven available comparator scalar comparisons are unchanged. Leaves within a bank are dependent, and exact evidence sets match for only `9/356` leaf pairs. This supports a scoped repeat description, not population reliability or human validity. |
+| [TTCW initial expert comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-sol-ttcw-initial-development-20261026/README.md) | Same 28 stories across all five scalar methods; all 12 plot groups. | HBQ Spearman `0.712` versus TTCW14 `0.423` on this shared set. HBQ has 29 numeric banks among 36 planned stories; the registered 33-shared-story requirement is unmet. No HBQ superiority interval or winner claim follows. |
+| [Dryad reader comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-reader-reference-descriptive-v1/README.md#dryad-selected-exposed-dev30) | Same availability-selected 27 stories from DEV30. | HBQ rho is `0.064` for well written and `0.197` for enjoyed; Oregon is `0.469` and `0.443` on those same stories. Missingness and reader reuse limit inference; pair-specific contrasts use their own separately reported cohorts. |
+| [Kyoto reader comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-reader-reference-descriptive-v1/README.md#kyoto-fixed-12-stories-across-three-topics) | Fixed 12 stories across three topics. | HBQ rho is `-0.007` for enjoyment and `-0.074` for pleasing style; TTCW14 is `0.223` and `0.188`. These full-12 points are available, with no estimated confidence interval. Secondary 11-story diagnostics cannot replace missing full-12 comparator results. The ladder projection establishes no gain. |
+| [Selected TTCW repeats](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-sol-ttcw-selected-repeats-20261026/README.md) | Two complete HBQ banks; scalar comparisons across three stories overall. | Raw leaf agreement is `338/356` (`94.94%`), kappa `0.914`; all seven available comparator scalar comparisons are unchanged. Leaves within a bank are dependent, and exact evidence sets match for only `9/356` leaf pairs. This supports a scoped repeat description, not population reliability or human validity. |
 
-The [portable measurement matrix](../evaluation-results/hbq-measurement-matrix-v1/README.md)
+The [portable measurement matrix](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-measurement-matrix-v1/README.md)
 projects these existing results into 199 metric-family rows with source pointers,
 cohort denominators, distributions, uncertainty status and provenance. Its command
 regenerates the matrix from public aggregates and metadata, without private stories,
@@ -28,7 +28,7 @@ bounds remain distinct from confidence intervals, and missing operational counte
 remain missing. Canonical scoring and candidate promotion are unchanged; the wider
 alignment, cross-form and release program remains in progress.
 
-The separate [accepted-request operations snapshot](../evaluation-results/hbq-reader-repeat-operations-v1/README.md)
+The separate [accepted-request operations snapshot](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-reader-repeat-operations-v1/README.md)
 reports saved token and native timing counters for 808 Dryad, 321 Kyoto and 56
 selected-repeat requests. It excludes failures and resource waits, counts shared
 ladder parents once, and supplies no full-cost, throughput or quality-efficiency
@@ -36,7 +36,7 @@ claim. The earlier matrix retains its original efficiency-not-reported snapshot.
 
 ## Retained cross-form diagnostics
 
-The [completed descriptive campaign](../evaluation-results/hbq-retained-crossform-descriptive-v1/README.md)
+The [completed descriptive campaign](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-retained-crossform-descriptive-v1/README.md)
 retains eight AI-generated families and 24 variants across short narratives,
 bounded work segments and free-verse poems. Initial Sol HBQ scalar coverage is
 10/12 narratives, 6/6 segments and 6/6 poems. Complete three-cycle HBQ results
@@ -50,7 +50,7 @@ Historical admission qualifications remain separate from current native
 attestation; physical-contact cardinality is unproven. These are completed
 descriptive diagnostics, with no rubric or candidate promotion.
 
-The [native poetry diagnostics](../evaluation-results/hbq-poetry-native-descriptive-20261101/README.md)
+The [native poetry diagnostics](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-poetry-native-descriptive-20261101/README.md)
 extend this descriptive coverage to 24 AI-created poems in eight designed families.
 Twelve prespecified sentinel poems supply 36 full-bank profiles across three
 cycles: 35 banks are complete, 29 supply eligible HBQ scalars, six remain
@@ -60,6 +60,26 @@ Undefined correlations stay undefined. Repeat contrasts share poems and retain
 their historical configuration differences. The package preserves the original
 local report failure and its closed-input recovery, with no new judgments,
 human-quality oracle, human-alignment claim or candidate promotion.
+
+The [long-form saved-state comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-sol-longform-saved-state-contrast-20261029/README.md)
+compares two retained passes on one novella: 132 of 139 matched leaf states agree
+(94.96%; kappa 0.8272). The planned tail has 155 leaves; 16 unmatched leaves remain
+missing. Its 85.16%–95.48% agreement bounds describe missing outcomes, not sampling
+uncertainty. Historical runtime and transport differ, so this is a descriptive
+saved-state contrast with no identical-runtime or human-quality claim.
+
+## Revision utility
+
+The [later-cycle revision diagnostics](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-revision-utility-later-cycles-v1/README.md)
+show no consistent CWR-feedback advantage over strong generic feedback on the two
+clean development roots. The qualification-selected subset covers three roots
+(story, excerpt and poem), three arms and two dependent cycles: 18 complete banks
+and 432 saved Sol requests. The excerpt's six banks retain a separate execution
+exception; they supply no clean replication. On the clean story/poem roots,
+CWR-minus-generic HBQ, holistic and compact means are zero. Mean direct choice is
+0.5, but AB/BA orders disagree in both cycles, so that mean is not stable ties.
+The original twelve-root program remains incomplete. This result is neither
+held-out confirmation nor evidence of human utility or a promoted feedback method.
 
 ## Headline findings
 
@@ -90,7 +110,7 @@ The [V17 standalone Sol replication](#v17-standalone-sol-replication)
 is complete; its paired Grok run remains incomplete after quota exhaustion.
 The later [WPB collection](#wpb-terminal-collection) has all 129 Grok
 measurements and a reproduced frozen selection. The bounded [matched Sol
-completion](../evaluation-results/hbq-human-alignment-wpb-sol-completed-result-v1/README.md)
+completion](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-wpb-sol-completed-result-v1/README.md)
 now settles all 129 Sol cells (125 new and four preserved) against that
 unchanged selection. Its Sol macro chosen-over-rejected accuracy is `0.580952`
 on 105 TRAIN pairs and `0.458333` on 24 DEV pairs. This remains
@@ -357,24 +377,24 @@ confirmation, generalization, canonical full-HBQ, or runtime-promotion claim.
 The later [WPB Grok settlement](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/87ae86b1cde49177b43d5791483421888f2d5ec6/evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/grok-incomplete.json)
 records the historical 89 successful cells, one ambiguous terminal cell, and 39
 unstarted cells. The original campaign remains terminal, and the owner
-separately [authorized recovery](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/recovery-authorization-v1.json)
-while preserving that evidence. The [2026-09-10 checkpoint](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260910-v2.json)
+separately [authorized recovery](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/recovery-authorization-v1.json)
+while preserving that evidence. The [2026-09-10 checkpoint](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/collection-progress-20260910-v2.json)
 recognizes 127 native cells plus two owner-adopted local-session recoveries:
 **129/129**. The v5 runtime resolved the earlier precontact size failure and collected
 26 native results. Cell `0918` retains a documented source-equivalent generated-cache
 provenance exception; later `-B` launches preserved the clean source package.
-The [local schema-recovery proposal](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-proposal-v1.md)
-and [adopted projection](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json)
+The [local schema-recovery proposal](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-proposal-v1.md)
+and [adopted projection](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-adoption-v1.json)
 account for recovered cell `0843`, whose native CLI-envelope binding remains
 missing. Collection subsequently stopped at `1088` on a structured-output
 validation failure. Its retained answer exceeds one evidence-note length limit
 by one character. A separately reviewed projection preserves every score,
-winner and coverage value; the owner has [adopted that projection](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-1088-adoption-v1.json)
+winner and coverage value; the owner has [adopted that projection](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/schema-recovery-1088-adoption-v1.json)
 without another model call. All eleven later cells completed native admission and
 replay. There is no confirmed
 billing/quota failure. The original evidence remains preserved. Automatic
 resends, subset alignment metrics, and incomplete-campaign fits remain prohibited.
-The [complete mixed selection freeze](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/grok-selection-summary-v1.json)
+The [complete mixed selection freeze](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/grok-selection-summary-v1.json)
 was recorded at `2026-09-10T16:45:43Z`, after full input replay, the fixed 128-trial
 TRAIN fit, and a second input-stability check. Independent replay reproduced the
 same measurements and complete fit.
@@ -384,7 +404,7 @@ multipliers won 9/24 DEV pairs (37.5%). DEV selected between these two profiles,
 so the one-pair difference does not establish independent generalization. The
 historical summary retains `sol_validation_completed: false`; its predecessor
 status and all earlier stopped attempts remain immutable. The later [matched Sol
-completion](../evaluation-results/hbq-human-alignment-wpb-sol-completed-result-v1/README.md)
+completion](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-wpb-sol-completed-result-v1/README.md)
 settles the full 129-cell Sol stage: 125 new measurements plus the four
 preserved completions, with the frozen Grok choice unchanged. Sol records 61
 wins/39 losses/5 ties over 105 TRAIN pairs and 11 wins/10 losses/3 ties over 24
@@ -394,7 +414,7 @@ provider-contact-cardinality claim. Its `provider_calls_made: 0` value applies
 only to offline report replay; it is not a collection contact count.
 
 The current broker companion and strict-schema successor passed their bounded
-reviews. The [September 12 partial checkpoint](../evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/sol-partial-checkpoint-20260912-v1.json)
+reviews. The [September 12 partial checkpoint](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-wpb-compact-family-native-v1/sol-partial-checkpoint-20260912-v1.json)
 and both preserved local results remain predecessor provenance; no contacted
 cell was resent. This coarse family comparison is not a full-HBQ alignment
 result.
@@ -405,7 +425,7 @@ The [Dryad source audit](https://github.com/HaileyStorm/Creative-Writing-Rubrics
 reconciles 293 stories and 3,519 blinded evaluations from 600 evaluators. The
 [frozen analysis protocol and implementation](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/87ae86b1cde49177b43d5791483421888f2d5ec6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md)
 originally used 176 TRAIN and 60 DEV stories; 57 confirmation stories remain closed.
-The [100-story budget amendment](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-budget-amendment-100-v1.json)
+The [100-story budget amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-budget-amendment-100-v1.json)
 selects the first 70 TRAIN and 30 DEV stories in that frozen order, retaining all
 178 criteria and identical endpoint payloads. It requires 2,300 baseline requests
 per endpoint and preserves earlier evidence classes. The amendment followed
@@ -414,7 +434,7 @@ Source-defined novelty and usefulness are separate co-primary targets, with
 all twelve raw axes also reported separately. There is no invented twelve-axis
 human composite or sampled-leaf substitute for the full 178-question rubric.
 
-The [September 12 Grok recovery checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/runtime-data-recovery-checkpoint-20260912-v1.json)
+The [September 12 Grok recovery checkpoint](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/runtime-data-recovery-checkpoint-20260912-v1.json)
 verifies 279 logical requests and 2,160 verdicts: 277 native results plus the
 local recoveries for 70 and 254. Request 266's separately authorized first contact
 passed replay. Request 279 completed its provider contact before a historical
@@ -424,13 +444,13 @@ contact or response edit occurred. The current schema and original ambiguous
 terminal remain preserved. This check replays 17 recent native results and
 verifies 259 earlier identity commitments; it does not claim a fresh full replay
 of that earlier prefix. Exactly 2,021 requests remain.
-The [complete Sol collection](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v3.json)
+The [complete Sol collection](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v3.json)
 contains all 2,300 requests and 17,800 verdicts, including 26 complete messages
 with unknown process exits. Stories 19 and 42 remain below the fixed 0.88 coverage
 floor (0.8607 and 0.8648); no story filtering or coverage waiver was applied.
 Grok fitting and comparison remain incomplete.
 
-The earlier [selected-100 collection snapshot](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v1.json)
+The earlier [selected-100 collection snapshot](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v1.json)
 independently replays 1,857 Sol requests and 14,376 verdicts. Ten connection-failed
 requests have no saved answer; one replacement attempt per failed request is
 owner-authorized, with 433 further requests untouched at that snapshot. The
@@ -439,12 +459,12 @@ review, including complete synthetic optimization and comparison. No empirical
 alignment fit or comparison has been produced, and the preserved coverage
 rejections remain in force.
 
-All [ten authorized replacements subsequently passed independent replay](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/selected100-recovery-native-checkpoint-v1.json),
+All [ten authorized replacements subsequently passed independent replay](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/selected100-recovery-native-checkpoint-v1.json),
 adding 74 verdicts and establishing at least 1,867 recognized requests and 14,450
 verdicts. Collection then entered the 433 previously untouched requests. The
 original failures and their uncertainty remain preserved.
 
-The [subsequent stopped-and-reconciled snapshot](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v2.json)
+The [subsequent stopped-and-reconciled snapshot](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v2.json)
 recognizes 2,068 requests and 16,010 verdicts, leaving 232 requests untouched.
 Seven complete, unchanged final messages passed native evidence checks without
 new model calls. Their process exits remain unknown, bringing that separately
@@ -478,28 +498,28 @@ retains all 236 TRAIN/DEV stories and 178 criteria: 5,428 logical requests per
 endpoint. Eight is an operating setting, not a qualified empirical batch cap.
 As of 2026-09-08 UTC, independent prefix verification admits 80 requests and
 622 verdicts: 79 admitted native requests plus one owner-adopted [study recovery
-for request 70](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json).
+for request 70](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok70-quote-repair-adoption-v1.json).
 Cohort eight is settled. Its recovered request lacks native CLI-envelope/request-ID
-binding. The [contact-51 recovery](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-contact-51-recovery-v1.json),
+binding. The [contact-51 recovery](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-contact-51-recovery-v1.json),
 request-70 adoption, original 51/70 attempts, and prior 69 commitments remain
 preserved as historical evidence. The full baseline is incomplete; the owner's
 standing continuation authority remains, but this admission record does not
 authorize a next cohort by itself. At that snapshot, request 81 had not started;
 terminal contacted records are not automatically resent.
 
-The [subsequent v5 canary](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/selected100-grok-v5-canary-v1.json)
+The [subsequent v5 canary](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/selected100-grok-v5-canary-v1.json)
 completed request 81 and passed native replay against all 79 protected native
 identities. Its eight verdicts bring the recognized prefix to 81 requests and
 630 verdicts, with adopted request 70 still separately classified. Reviewed
 ten-request waves have started for the selected 100-story schedule. This is
 collection evidence; no full-study admission or alignment result is claimed.
 
-The [next checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v3.json)
+The [next checkpoint](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v3.json)
 records the first wave's stop at request 88, an unknown post-launch wrapper
 failure with no retained complete answer. Nine completed peers passed individual
 native replay, bringing recognized Grok collection to 90 requests and 702
 verdicts; the full wave is not admitted. The owner subsequently
-[approved one unchanged-payload replacement for 88](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok88-replacement-adoption-v1.json);
+[approved one unchanged-payload replacement for 88](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/grok88-replacement-adoption-v1.json);
 its original unknown outcome remains preserved. Sol collection separately reached
 all 100 selected stories, 2,300 requests and 17,800 verdicts and passed complete
 collection replay. It preserves 26 unknown-process-exit completions and all
@@ -507,14 +527,14 @@ earlier transport/replacement deviations. Stories 19 and 42 still fail the
 unchanged coverage floor; full-study admission and comparative analysis remain
 blocked.
 
-The [replacement checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v4.json)
+The [replacement checkpoint](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v4.json)
 records one new request-88 attempt with its exact original prompt and schema.
 It passed native replay, bringing Grok to 91 recognized requests, 710 verdicts
 and 90 native identities plus the separate request-70 recovery. The original
 failed attempt remains unchanged. The remaining 2,209 requests begin at 92;
 this checkpoint grants no full-study admission or alignment result.
 
-The [post-WPB continuation checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v5.json)
+The [post-WPB continuation checkpoint](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v5.json)
 adds seven native ten-request waves, each followed by source-bound replay. Grok
 has 161 recognized requests, 1,246 criterion verdicts and 160 distinct native
 identities plus the separate request-70 recovery. The remaining 2,139 requests
@@ -522,7 +542,7 @@ are outside this completed prefix; later in-flight work is not counted. The
 checkpoint retains every wave replay hash and the renewed route/controller
 bindings. Full collection, coverage admission and analysis remain open.
 
-The [next stopped-and-reconciled checkpoint](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v6.json)
+The [next stopped-and-reconciled checkpoint](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v6.json)
 records 208 recognized requests, 1,610 verdicts and 207 distinct native identities
 plus request 70. Eleven full waves after WPB passed replay. In wave 202–211,
 seven peers passed individual replay; requests 203, 205 and 211 ended with unknown
@@ -532,12 +552,12 @@ failed wave is not admitted. The three preserved failures and 2,089 untouched
 requests await the new source-bound continuation; no billing/quota cause is established.
 
 The [sequencing amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e367e2ea7a26aafb848a8f26471240db070a0b74/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-proposal-v1.md)
-was [approved by the owner](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-v1.json)
+was [approved by the owner](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-sequencing-amendment-v1.json)
 after partial Sol observation. It preserves the first 120 requests, which remain
 ineligible under the original ordering rule, and requires a Grok TRAIN winner and
 DEV freeze before comparative analysis. As of 2026-09-08 UTC, Sol has 400 requests,
 3,098 verdicts, and 400 unique threads. Only ordinal 221 uses the
-[owner-adopted recovered transport](../evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json);
+[owner-adopted recovered transport](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/sol-recovered-transport-adoption-v1.json);
 native endpoint contact cardinality and internal retry cardinality remain unproven.
 Independent admission covers requests 1–400; later collection is outside this
 checkpoint. These are incomplete collection counts, not alignment metrics or
@@ -548,7 +568,7 @@ are [implemented and locally tested](https://github.com/HaileyStorm/Creative-Wri
 They do not establish a complete Dryad baseline, fitted improvement, Sol
 validation, alignment, selection, promotion, or release claim.
 
-A later [selected-82 development aggregate](../evaluation-results/hbq-human-alignment-dryad-selected82-development-v1/)
+A later [selected-82 development aggregate](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-selected82-development-v1/)
 summarizes a private continuation that completed provider-free frozen
 70-TRAIN/12-DEV analysis and unchanged-fit Sol validation, retaining the
 original 100-story collection and exactly 18 owner-excluded low-coverage DEV
@@ -583,7 +603,7 @@ the old pin and present schema must not be silently rewritten to make it green.
 
 ## TTCW creative-writing expert comparison — baseline retained
 
-The [aggregate-only development result](../evaluation-results/hbq-human-alignment-ttcw-expert-v1/)
+The [aggregate-only development result](https://github.com/HaileyStorm/Creative-Writing-Rubrics/tree/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-ttcw-expert-v1/)
 uses the exact author-released TTCW annotations for 36 AI stories in twelve
 matched plot groups. Unlike Dryad's regular readers, these are
 creative-writing expert judgments. The baseline story-level expert-target
