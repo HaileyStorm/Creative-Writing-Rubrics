@@ -1,0 +1,690 @@
+{
+  "arms": {
+    "candidate": {
+      "association": {
+        "expert_mean2": {
+          "correlation_undefined": false,
+          "missing_from_planned_n": 7,
+          "paired_n": 25,
+          "planned_n": 32,
+          "score_available_n": 27,
+          "signed_spearman": 0.16418595327639562,
+          "target_available_n": 29
+        },
+        "nonexpert_median": {
+          "correlation_undefined": false,
+          "missing_from_planned_n": 9,
+          "paired_n": 23,
+          "planned_n": 32,
+          "score_available_n": 27,
+          "signed_spearman": 0.3727473559654678,
+          "target_available_n": 28
+        }
+      },
+      "ceiling_count": 0,
+      "distinct_scores": 27,
+      "floor_count": 0,
+      "items_in_ties": 0,
+      "native_range": [
+        0,
+        100
+      ],
+      "planned_n": 32,
+      "recorded_coverage_summary": {
+        "maximum": 0.9609,
+        "minimum": 0.0,
+        "n": 32,
+        "unweighted_mean": 0.8008375
+      },
+      "score_available_n": 27,
+      "score_state_counts": {
+        "SCORED": 27,
+        "incomplete_or_unadmitted": 5
+      }
+    },
+    "historical": {
+      "association": {
+        "expert_mean2": {
+          "correlation_undefined": false,
+          "missing_from_planned_n": 7,
+          "paired_n": 25,
+          "planned_n": 32,
+          "score_available_n": 27,
+          "signed_spearman": 0.16418595327639562,
+          "target_available_n": 29
+        },
+        "nonexpert_median": {
+          "correlation_undefined": false,
+          "missing_from_planned_n": 9,
+          "paired_n": 23,
+          "planned_n": 32,
+          "score_available_n": 27,
+          "signed_spearman": 0.3727473559654678,
+          "target_available_n": 28
+        }
+      },
+      "ceiling_count": 0,
+      "distinct_scores": 27,
+      "floor_count": 0,
+      "items_in_ties": 0,
+      "native_range": [
+        0,
+        100
+      ],
+      "planned_n": 32,
+      "recorded_coverage_summary": {
+        "maximum": 0.9609,
+        "minimum": 0.0,
+        "n": 32,
+        "unweighted_mean": 0.8008375
+      },
+      "score_available_n": 27,
+      "score_state_counts": {
+        "SCORED": 27,
+        "incomplete_or_unadmitted": 5
+      }
+    },
+    "ttcw14": {
+      "association": {
+        "expert_mean2": {
+          "correlation_undefined": false,
+          "missing_from_planned_n": 9,
+          "paired_n": 23,
+          "planned_n": 32,
+          "score_available_n": 26,
+          "signed_spearman": 0.12617108250413353,
+          "target_available_n": 29
+        },
+        "nonexpert_median": {
+          "correlation_undefined": false,
+          "missing_from_planned_n": 8,
+          "paired_n": 24,
+          "planned_n": 32,
+          "score_available_n": 26,
+          "signed_spearman": 0.3981768783452516,
+          "target_available_n": 28
+        }
+      },
+      "ceiling_count": 0,
+      "distinct_scores": 6,
+      "floor_count": 0,
+      "items_in_ties": 25,
+      "native_range": [
+        0,
+        1
+      ],
+      "planned_n": 32,
+      "recorded_coverage_summary": {
+        "maximum": 1.0,
+        "minimum": 0.8571428571428571,
+        "n": 32,
+        "unweighted_mean": 0.9799107142857143
+      },
+      "score_available_n": 26,
+      "score_state_counts": {
+        "assessed": 26,
+        "partial_abstention_no_complete_score": 6
+      }
+    }
+  },
+  "candidate_trigger_summary": {
+    "banks_with_changes": 0,
+    "changed_verdict_records": 0,
+    "complete_banks": 27,
+    "incomplete_banks": 5
+  },
+  "conditional_sensitivity": {
+    "cluster_aware_uncertainty": null,
+    "draws_planned": 2000,
+    "label": "CONDITIONAL_WORK_EXCHANGEABILITY_SENSITIVITY_ONLY",
+    "percentiles": [
+      0.025,
+      0.975
+    ],
+    "population_confidence_intervals": null,
+    "seed": 20261030,
+    "views": {
+      "candidate__ttcw14": {
+        "expert_mean2": {
+          "contrasts": {
+            "candidate__minus__ttcw14": {
+              "defined_draws": 2000,
+              "draws_attempted": 2000,
+              "draws_planned": 2000,
+              "estimand": "signed_spearman_left_minus_right_on_original_common_subset",
+              "left": "candidate",
+              "point": 0.060608049090075305,
+              "range_2_5_97_5": [
+                -0.38890666786012856,
+                0.5491262232592312
+              ],
+              "range_null_reason": null,
+              "right": "ttcw14",
+              "silently_discarded_draws": 0,
+              "undefined_draws": 0
+            }
+          },
+          "label": "CONDITIONAL_WORK_EXCHANGEABILITY_SENSITIVITY_ONLY",
+          "original_view": {
+            "missing_from_fixed32_n": 13,
+            "paired_n": 19,
+            "planned_n": 32,
+            "score_common_n": 21,
+            "signed_spearman": {
+              "candidate": 0.293140141246496,
+              "ttcw14": 0.2325320921564207
+            }
+          }
+        },
+        "nonexpert_median": {
+          "contrasts": {
+            "candidate__minus__ttcw14": {
+              "defined_draws": 2000,
+              "draws_attempted": 2000,
+              "draws_planned": 2000,
+              "estimand": "signed_spearman_left_minus_right_on_original_common_subset",
+              "left": "candidate",
+              "point": 0.025724434594935175,
+              "range_2_5_97_5": [
+                -0.34942146226803406,
+                0.41470670852315394
+              ],
+              "range_null_reason": null,
+              "right": "ttcw14",
+              "silently_discarded_draws": 0,
+              "undefined_draws": 0
+            }
+          },
+          "label": "CONDITIONAL_WORK_EXCHANGEABILITY_SENSITIVITY_ONLY",
+          "original_view": {
+            "missing_from_fixed32_n": 13,
+            "paired_n": 19,
+            "planned_n": 32,
+            "score_common_n": 21,
+            "signed_spearman": {
+              "candidate": 0.39041176034122,
+              "ttcw14": 0.3646873257462848
+            }
+          }
+        }
+      },
+      "historical__candidate": {
+        "expert_mean2": {
+          "contrasts": {
+            "historical__minus__candidate": {
+              "defined_draws": 2000,
+              "draws_attempted": 2000,
+              "draws_planned": 2000,
+              "estimand": "signed_spearman_left_minus_right_on_original_common_subset",
+              "left": "historical",
+              "point": 0.0,
+              "range_2_5_97_5": [
+                0.0,
+                0.0
+              ],
+              "range_null_reason": null,
+              "right": "candidate",
+              "silently_discarded_draws": 0,
+              "undefined_draws": 0
+            }
+          },
+          "label": "CONDITIONAL_WORK_EXCHANGEABILITY_SENSITIVITY_ONLY",
+          "original_view": {
+            "missing_from_fixed32_n": 7,
+            "paired_n": 25,
+            "planned_n": 32,
+            "score_common_n": 27,
+            "signed_spearman": {
+              "candidate": 0.16418595327639562,
+              "historical": 0.16418595327639562
+            }
+          }
+        },
+        "nonexpert_median": {
+          "contrasts": {
+            "historical__minus__candidate": {
+              "defined_draws": 2000,
+              "draws_attempted": 2000,
+              "draws_planned": 2000,
+              "estimand": "signed_spearman_left_minus_right_on_original_common_subset",
+              "left": "historical",
+              "point": 0.0,
+              "range_2_5_97_5": [
+                0.0,
+                0.0
+              ],
+              "range_null_reason": null,
+              "right": "candidate",
+              "silently_discarded_draws": 0,
+              "undefined_draws": 0
+            }
+          },
+          "label": "CONDITIONAL_WORK_EXCHANGEABILITY_SENSITIVITY_ONLY",
+          "original_view": {
+            "missing_from_fixed32_n": 9,
+            "paired_n": 23,
+            "planned_n": 32,
+            "score_common_n": 27,
+            "signed_spearman": {
+              "candidate": 0.3727473559654678,
+              "historical": 0.3727473559654678
+            }
+          }
+        }
+      },
+      "historical__candidate__ttcw14": {
+        "expert_mean2": {
+          "contrasts": {
+            "candidate__minus__ttcw14": {
+              "defined_draws": 2000,
+              "draws_attempted": 2000,
+              "draws_planned": 2000,
+              "estimand": "signed_spearman_left_minus_right_on_original_common_subset",
+              "left": "candidate",
+              "point": 0.060608049090075305,
+              "range_2_5_97_5": [
+                -0.4103905055724693,
+                0.540865298597061
+              ],
+              "range_null_reason": null,
+              "right": "ttcw14",
+              "silently_discarded_draws": 0,
+              "undefined_draws": 0
+            },
+            "historical__minus__candidate": {
+              "defined_draws": 2000,
+              "draws_attempted": 2000,
+              "draws_planned": 2000,
+              "estimand": "signed_spearman_left_minus_right_on_original_common_subset",
+              "left": "historical",
+              "point": 0.0,
+              "range_2_5_97_5": [
+                0.0,
+                0.0
+              ],
+              "range_null_reason": null,
+              "right": "candidate",
+              "silently_discarded_draws": 0,
+              "undefined_draws": 0
+            },
+            "historical__minus__ttcw14": {
+              "defined_draws": 2000,
+              "draws_attempted": 2000,
+              "draws_planned": 2000,
+              "estimand": "signed_spearman_left_minus_right_on_original_common_subset",
+              "left": "historical",
+              "point": 0.060608049090075305,
+              "range_2_5_97_5": [
+                -0.4103905055724693,
+                0.540865298597061
+              ],
+              "range_null_reason": null,
+              "right": "ttcw14",
+              "silently_discarded_draws": 0,
+              "undefined_draws": 0
+            }
+          },
+          "label": "CONDITIONAL_WORK_EXCHANGEABILITY_SENSITIVITY_ONLY",
+          "original_view": {
+            "missing_from_fixed32_n": 13,
+            "paired_n": 19,
+            "planned_n": 32,
+            "score_common_n": 21,
+            "signed_spearman": {
+              "candidate": 0.293140141246496,
+              "historical": 0.293140141246496,
+              "ttcw14": 0.2325320921564207
+            }
+          }
+        },
+        "nonexpert_median": {
+          "contrasts": {
+            "candidate__minus__ttcw14": {
+              "defined_draws": 2000,
+              "draws_attempted": 2000,
+              "draws_planned": 2000,
+              "estimand": "signed_spearman_left_minus_right_on_original_common_subset",
+              "left": "candidate",
+              "point": 0.025724434594935175,
+              "range_2_5_97_5": [
+                -0.32464829881714674,
+                0.3981695726557587
+              ],
+              "range_null_reason": null,
+              "right": "ttcw14",
+              "silently_discarded_draws": 0,
+              "undefined_draws": 0
+            },
+            "historical__minus__candidate": {
+              "defined_draws": 2000,
+              "draws_attempted": 2000,
+              "draws_planned": 2000,
+              "estimand": "signed_spearman_left_minus_right_on_original_common_subset",
+              "left": "historical",
+              "point": 0.0,
+              "range_2_5_97_5": [
+                0.0,
+                0.0
+              ],
+              "range_null_reason": null,
+              "right": "candidate",
+              "silently_discarded_draws": 0,
+              "undefined_draws": 0
+            },
+            "historical__minus__ttcw14": {
+              "defined_draws": 2000,
+              "draws_attempted": 2000,
+              "draws_planned": 2000,
+              "estimand": "signed_spearman_left_minus_right_on_original_common_subset",
+              "left": "historical",
+              "point": 0.025724434594935175,
+              "range_2_5_97_5": [
+                -0.32464829881714674,
+                0.3981695726557587
+              ],
+              "range_null_reason": null,
+              "right": "ttcw14",
+              "silently_discarded_draws": 0,
+              "undefined_draws": 0
+            }
+          },
+          "label": "CONDITIONAL_WORK_EXCHANGEABILITY_SENSITIVITY_ONLY",
+          "original_view": {
+            "missing_from_fixed32_n": 13,
+            "paired_n": 19,
+            "planned_n": 32,
+            "score_common_n": 21,
+            "signed_spearman": {
+              "candidate": 0.39041176034122,
+              "historical": 0.39041176034122,
+              "ttcw14": 0.3646873257462848
+            }
+          }
+        }
+      },
+      "historical__ttcw14": {
+        "expert_mean2": {
+          "contrasts": {
+            "historical__minus__ttcw14": {
+              "defined_draws": 2000,
+              "draws_attempted": 2000,
+              "draws_planned": 2000,
+              "estimand": "signed_spearman_left_minus_right_on_original_common_subset",
+              "left": "historical",
+              "point": 0.060608049090075305,
+              "range_2_5_97_5": [
+                -0.38951530561951275,
+                0.5353174832085021
+              ],
+              "range_null_reason": null,
+              "right": "ttcw14",
+              "silently_discarded_draws": 0,
+              "undefined_draws": 0
+            }
+          },
+          "label": "CONDITIONAL_WORK_EXCHANGEABILITY_SENSITIVITY_ONLY",
+          "original_view": {
+            "missing_from_fixed32_n": 13,
+            "paired_n": 19,
+            "planned_n": 32,
+            "score_common_n": 21,
+            "signed_spearman": {
+              "historical": 0.293140141246496,
+              "ttcw14": 0.2325320921564207
+            }
+          }
+        },
+        "nonexpert_median": {
+          "contrasts": {
+            "historical__minus__ttcw14": {
+              "defined_draws": 2000,
+              "draws_attempted": 2000,
+              "draws_planned": 2000,
+              "estimand": "signed_spearman_left_minus_right_on_original_common_subset",
+              "left": "historical",
+              "point": 0.025724434594935175,
+              "range_2_5_97_5": [
+                -0.3265787849879062,
+                0.4396702640290818
+              ],
+              "range_null_reason": null,
+              "right": "ttcw14",
+              "silently_discarded_draws": 0,
+              "undefined_draws": 0
+            }
+          },
+          "label": "CONDITIONAL_WORK_EXCHANGEABILITY_SENSITIVITY_ONLY",
+          "original_view": {
+            "missing_from_fixed32_n": 13,
+            "paired_n": 19,
+            "planned_n": 32,
+            "score_common_n": 21,
+            "signed_spearman": {
+              "historical": 0.39041176034122,
+              "ttcw14": 0.3646873257462848
+            }
+          }
+        }
+      }
+    }
+  },
+  "coverage_aggregation": "Unweighted minimum/maximum/arithmetic mean of32 existing recorded coverage values, including their recorded missing-bank values; no new score or eligibility decision.",
+  "limits": [
+    "Fixed32 descriptive pilot, not a population study or independent human validation.",
+    "Historical/candidate reuse the same admitted raw bank. Complete bank, eligible numeric scalar, missing bank and ineligible state are distinct.",
+    "Marginal correlations can use different available works. Compare same-input common views with exact paired/missing counts; undefined correlations remain null.",
+    "Expert mean-of-two and nonexpert median are separate constructs. Rating counts, questions and requests are not independent work or rater units.",
+    "Assessment bounds concern missing rubric assessments. Conditional work-tuple ranges are not population confidence intervals or cluster-aware uncertainty.",
+    "Conditional draws preserve duplicate multiplicity and fixed signed left-minus-right order. Any undefined draw nulls its range; none is silently discarded or replaced.",
+    "No random/length or other simple baseline is asserted measured. TTCW14 is the recorded comparator; no unmatched leaderboard, winner, superiority, promotion or causal claim.",
+    "Private retained inputs and exact actual invocation receipts are required for regeneration. No source/replay/scorer/provider imports occur in this projection."
+  ],
+  "native_or_scientific_replay_calls": 0,
+  "new_judge_votes": 0,
+  "new_model_requests": 0,
+  "population_confidence_intervals": null,
+  "promotion_claimed": false,
+  "qualification_scope": "Aggregate projection of the actual closed1382 DIRECT API return and one saved1385 supplement. Original native/scientific qualifications remain their owning consumers responsibility; historical contexts are not recertified as current32-off native execution.",
+  "request_attrition_by_arm": {
+    "hbq": {
+      "accepted": 698,
+      "unadmitted_no_resend": 6
+    },
+    "ttcw14": {
+      "accepted": 32
+    }
+  },
+  "request_disposition_counts": {
+    "accepted": 730,
+    "unadmitted_no_resend": 6
+  },
+  "reviewed_implementation_commitments": {
+    "analysis1382": {
+      "bytes": 111824,
+      "sha256": "bde8874073d5cead702703659d05f472be314db42b166966b3685b806f659496"
+    },
+    "analysis768": {
+      "bytes": 10624,
+      "sha256": "ca77a13952e53d499232694c6da1fa07d5d85c5bc654205358635b8d6d507695"
+    },
+    "consumer1385": {
+      "bytes": 12729,
+      "sha256": "7213000d0cb8f69e37e7cc26f8b1e6d9357eb4d060574dcb903dba0fc9f6cbf2"
+    },
+    "consumer902": {
+      "bytes": 8408,
+      "sha256": "cceca371d95ca015354bdb7e1a87f66009fd04701d28b33a56224cb8aed4de48"
+    },
+    "invoker1382": {
+      "bytes": 8367,
+      "sha256": "38691151833c09050b062b20909c09e60a69c2899d3e309a1dd13968d411b92f"
+    },
+    "packet1382": {
+      "bytes": 104744,
+      "sha256": "590ded633cedfcd79d73539f02ddcb59f4d167c96153ffd76c505c9d4160ab31"
+    },
+    "packet1385": {
+      "bytes": 2912,
+      "sha256": "4eb4307cc6eb85fefe4746c2f18b53493bedfa475bb597d92eda16df01c9f415"
+    },
+    "recipe1385": {
+      "bytes": 8389,
+      "sha256": "545635e4eeff510dee1d173d7b807726d16f7de88dade4632bedcfac2a83ecea"
+    }
+  },
+  "same_hbq_bank_common_availability_rank": {
+    "expert_mean2": {
+      "candidate": 0.16418595327639562,
+      "historical": 0.16418595327639562,
+      "paired_n": 25,
+      "planned_n": 32
+    },
+    "nonexpert_median": {
+      "candidate": 0.3727473559654678,
+      "historical": 0.3727473559654678,
+      "paired_n": 23,
+      "planned_n": 32
+    }
+  },
+  "same_input_common_views": {
+    "candidate__ttcw14": {
+      "expert_mean2": {
+        "missing_from_fixed32_n": 13,
+        "paired_n": 19,
+        "planned_n": 32,
+        "score_common_n": 21,
+        "signed_spearman": {
+          "candidate": 0.293140141246496,
+          "ttcw14": 0.2325320921564207
+        }
+      },
+      "nonexpert_median": {
+        "missing_from_fixed32_n": 13,
+        "paired_n": 19,
+        "planned_n": 32,
+        "score_common_n": 21,
+        "signed_spearman": {
+          "candidate": 0.39041176034122,
+          "ttcw14": 0.3646873257462848
+        }
+      }
+    },
+    "historical__candidate": {
+      "expert_mean2": {
+        "missing_from_fixed32_n": 7,
+        "paired_n": 25,
+        "planned_n": 32,
+        "score_common_n": 27,
+        "signed_spearman": {
+          "candidate": 0.16418595327639562,
+          "historical": 0.16418595327639562
+        }
+      },
+      "nonexpert_median": {
+        "missing_from_fixed32_n": 9,
+        "paired_n": 23,
+        "planned_n": 32,
+        "score_common_n": 27,
+        "signed_spearman": {
+          "candidate": 0.3727473559654678,
+          "historical": 0.3727473559654678
+        }
+      }
+    },
+    "historical__candidate__ttcw14": {
+      "expert_mean2": {
+        "missing_from_fixed32_n": 13,
+        "paired_n": 19,
+        "planned_n": 32,
+        "score_common_n": 21,
+        "signed_spearman": {
+          "candidate": 0.293140141246496,
+          "historical": 0.293140141246496,
+          "ttcw14": 0.2325320921564207
+        }
+      },
+      "nonexpert_median": {
+        "missing_from_fixed32_n": 13,
+        "paired_n": 19,
+        "planned_n": 32,
+        "score_common_n": 21,
+        "signed_spearman": {
+          "candidate": 0.39041176034122,
+          "historical": 0.39041176034122,
+          "ttcw14": 0.3646873257462848
+        }
+      }
+    },
+    "historical__ttcw14": {
+      "expert_mean2": {
+        "missing_from_fixed32_n": 13,
+        "paired_n": 19,
+        "planned_n": 32,
+        "score_common_n": 21,
+        "signed_spearman": {
+          "historical": 0.293140141246496,
+          "ttcw14": 0.2325320921564207
+        }
+      },
+      "nonexpert_median": {
+        "missing_from_fixed32_n": 13,
+        "paired_n": 19,
+        "planned_n": 32,
+        "score_common_n": 21,
+        "signed_spearman": {
+          "historical": 0.39041176034122,
+          "ttcw14": 0.3646873257462848
+        }
+      }
+    }
+  },
+  "schema_version": 1,
+  "scope": {
+    "HBQ_leaves_per_complete_bank": 170,
+    "HBQ_requests_per_work": 22,
+    "TTCW14_requests_per_work": 1,
+    "historical_and_candidate_share_one_raw_HBQ_bank": true,
+    "pairwise_native_judgments": "not_planned",
+    "planned_human_referenced_works": 32,
+    "planned_logical_requests": 736,
+    "required_header_gate_in_original_consumer": 734,
+    "these_are_not_independent_vote_totals": true
+  },
+  "source_commitments": {
+    "conditional_invocation_receipt": {
+      "bytes": 2683,
+      "sha256": "8d99f91921b3bb6e9aeb0c0f4f3b3e4ecfd9b60d032f89c8e2986bab56c678e6"
+    },
+    "conditional_result": {
+      "bytes": 105321,
+      "sha256": "e1d221a2206b65a9b6c2d6cf27bac9a4cdfa18cf447d89d102b8ac62fc4337e2"
+    },
+    "direct_invocation_receipt": {
+      "bytes": 1547,
+      "sha256": "e830973aabe7ed523c3fa0cda85d85ec3bafebe18c7435e2fcdf864ade019119"
+    },
+    "direct_result": {
+      "bytes": 14245046,
+      "sha256": "e8bfc8cb83c91f4f26c4f901bc0f9fef9e993072b509c175baccafcddaad9fe7"
+    }
+  },
+  "state": "CLOSED_HF32_PUBLIC_DESCRIPTIVE_AGGREGATES",
+  "superiority_claimed": false,
+  "target_availability": {
+    "expert_mean2": {
+      "available_n": 29,
+      "missing_n": 3,
+      "planned_n": 32
+    },
+    "nonexpert_median": {
+      "available_n": 28,
+      "missing_n": 4,
+      "planned_n": 32
+    }
+  },
+  "target_constructs": {
+    "expert_mean2": "CREATIVITY arithmetic mean only when exactly two finite expert ratings",
+    "nonexpert_median": "CREATIVITY median of available finite nonexpert ratings"
+  },
+  "winner_claimed": false
+}
