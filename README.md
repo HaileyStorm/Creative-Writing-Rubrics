@@ -154,10 +154,10 @@ The live release-facing work is narrower than the historical experiment log:
 
 ## Install and try it
 
-From a checkout of this release:
+Install the exact CWR 1.3.0 source revision:
 
 ```bash
-pip install .
+pip install "git+https://github.com/HaileyStorm/Creative-Writing-Rubrics.git@3d8ebcd7ff5682b9ed117c5c198fb810a9083f35"
 ```
 
 From a clone, install development dependencies with `pip install -e ".[dev]"`.
