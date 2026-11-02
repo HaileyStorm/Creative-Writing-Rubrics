@@ -5,15 +5,14 @@ type: software
 authors:
   - family-names: Collet
     given-names: Hailey
-license: Apache-2.0
-version: 1.2.3
-date-released: "2026-08-26"
+version: 1.3.0
+date-released: "2026-11-02"
 abstract: >
-  Creative-Writing-Rubrics 1.2.3, distributing the unchanged HBQ-RS 1.2.1
-  rubric standard — a composable
-  hierarchical binary-question rubric stack for creative writing, multimedia
-  narrative, draft judging, benchmarking, and synthetic-data generation, with
-  deterministic score aggregation.
+  Creative-Writing-Rubrics 1.3.0 application release, distributing the unchanged
+  Apache-2.0 HBQ-RS 1.2.1 rubric standard, with deterministic score aggregation
+  and opt-in admission and decision-readiness tools. The application distribution
+  has mixed licensing; the linked LICENSE defines component scope and preserves
+  earlier grants.
 keywords:
   - creative writing
   - rubrics
@@ -22,3 +21,4 @@ keywords:
   - synthetic data
   - HBQ-RS
 repository-code: https://github.com/HaileyStorm/Creative-Writing-Rubrics
+license-url: https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/e7ba25362eec21b63b129a5107570fa96d7d3c14/LICENSE

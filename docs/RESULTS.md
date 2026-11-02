@@ -34,6 +34,31 @@ selected-repeat requests. It excludes failures and resource waits, counts shared
 ladder parents once, and supplies no full-cost, throughput or quality-efficiency
 claim. The earlier matrix retains its original efficiency-not-reported snapshot.
 
+## HF32 frozen-candidate human-reference pilot
+
+The [closed HF32 aggregate](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/f4a0891f1e7e8ad531414607bac0288dbb51453a/evaluation-results/hbq-hf32-frozen708-human-reference-v1/README.md)
+retains 32 human-referenced works and all 736 planned request positions: 730
+accepted and six unadmitted/no-resend. HBQ has 27 complete, scored banks and five
+incomplete banks; TTCW14 has 26 complete numeric scores and six partial-abstention
+cases. The previously frozen candidate changes no verdicts in the 27 complete HBQ
+banks, so its scores equal the historical projection of those same raw banks.
+
+All three methods share 19 paired works on each human-reference axis. Expert
+creativity mean-of-two Spearman rho is `0.293140` for historical/candidate HBQ and
+`0.232532` for TTCW14. Nonexpert creativity median rho is `0.390412` and `0.364687`
+respectively. These paired subsets are missing 13 of the fixed 32 works; marginal
+correlations retain their different available cohorts.
+
+The HBQ-minus-TTCW14 differences are `0.060608` for the expert axis and `0.025724`
+for the nonexpert axis. Their conditional work-tuple sensitivity ranges are
+`[-0.410391, 0.540865]` and `[-0.324648, 0.398170]`, both crossing zero. The 2,000
+joint draws preserve duplicate multiplicity; all draws were defined and none were discarded.
+These are conditional sensitivity ranges, not population confidence intervals
+or cluster-aware uncertainty. The pilot supports no candidate promotion,
+superiority, causal or general winner claim. Historical native qualifications
+and retained failures remain explicit; no new human labels or independent human
+validation are inferred.
+
 ## Retained cross-form diagnostics
 
 The [completed descriptive campaign](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-retained-crossform-descriptive-v1/README.md)

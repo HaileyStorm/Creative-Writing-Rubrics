@@ -1,11 +1,12 @@
 # Changelog
 
-## Unreleased
+## 1.3.0 — 2026-11-02
 
 - Added opt-in `strict_import_v1` admission for new normalized imports while preserving historical permissive replay and original verdicts.
 - Added descriptive decision-readiness reports and interval comparisons; missing assessments and eligibility remain separate from canonical score semantics.
 - Added opt-in uncertainty-preserving ladder scoring and Unicode-whitespace quote grounding with offsets into unchanged source text. Historical defaults and raw judgments remain unchanged.
 - Published matched TTCW expert and Dryad/Kyoto reader comparisons, selected repeats, floor/ceiling distributions and a portable measurement matrix. Availability-selected cohorts, original scales and negative or uncertain findings remain explicit.
+- Added the closed HF32 frozen-candidate human-reference pilot: 27 complete HBQ banks produced no candidate changes. The matched 19-work HBQ/TTCW14 comparisons and conditional sensitivity ranges do not support promotion or a general winner claim. Six failed request positions remain retained without resend.
 - Published bounded cross-form, poetry, long-form saved-state and revision-utility diagnostics. Synthetic reviews do not supply human labels; historical qualification categories, failed attempts and missing observations remain retained.
 - Retired routine unit/integration suites and broad verification runner lanes. Current local acceptance exercises the affected shipped command and inspects release artifacts when packaging changes; historical study obligations remain separately scoped.
 - Bound packaged results-page evidence links to immutable public Git paths. Private worklogs, ownership records, credentials and research state remain outside release archives.

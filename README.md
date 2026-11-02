@@ -1,15 +1,15 @@
 # Creative-Writing-Rubrics
 
-**CWR 1.2.3 ships HBQ-RS 1.2.1**: a local-first toolkit for turning a review
+**CWR 1.3.0 ships HBQ-RS 1.2.1**: a local-first toolkit for turning a review
 brief into small, inspectable questions about creative work, then aggregating
 the answers deterministically. It supports draft review, critique, model and
 dataset evaluation, benchmarking, and synthetic-data workflows without hiding
 the rubric, coverage, or uncertainty behind one opaque score. It does not turn
 a literary judgment into an unquestionable truth.
 
-This is the development tree, including unreleased changes after the 1.2.3
-release. Use the exact revision below for a reproducible installation; study
-packages retain their own frozen runtime pins.
+This application and evidence release adds opt-in import admission,
+decision-readiness tools and bounded alignment diagnostics. Study packages
+retain their own frozen runtime pins.
 
 The current HBQ-RS content contains **278 modules**, **2,145 atomic leaves**,
 and **85 bundle presets**. A judge answers one yes/no leaf at a time;
@@ -19,6 +19,8 @@ and bundle IDs are the public contract.
 ## What the public evidence says
 
 The strongest public evidence is deliberately bounded:
+
+- The [HF32 frozen-candidate pilot](evaluation-results/hbq-hf32-frozen708-human-reference-v1/) closes the 32-work human-reference evaluation. The candidate changed none of the 27 complete HBQ banks. Matched HBQ/TTCW14 correlations use the same 19 works on each separate expert and nonexpert axis; the small signed differences have conditional sensitivity ranges crossing zero. These findings do not support promotion, superiority or a general winner claim.
 
 - The [October Sol measurement matrix](evaluation-results/hbq-measurement-matrix-v1/) brings together the completed contemporary TTCW expert comparison, Dryad and Kyoto reader comparisons, and selected TTCW repeats. These reports distinguish expert references, reader outcomes and model repeatability; availability limits prevent a general winner or alignment-gain claim. The [current results summary](docs/RESULTS.md#october-sol-comparisons-and-selected-repeats) gives matched denominators and links to each report. The matrix regenerates from public aggregates without private texts or ratings.
 
@@ -152,8 +154,10 @@ The live release-facing work is narrower than the historical experiment log:
 
 ## Install and try it
 
+From a checkout of this release:
+
 ```bash
-pip install "git+https://github.com/HaileyStorm/Creative-Writing-Rubrics.git@bc551f0758b12138fd83809833a98d762621e240"
+pip install .
 ```
 
 From a clone, install development dependencies with `pip install -e ".[dev]"`.
