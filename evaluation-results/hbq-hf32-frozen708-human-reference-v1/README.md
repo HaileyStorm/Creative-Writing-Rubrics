@@ -53,6 +53,20 @@ discarded draws. Historical-minus-candidate ranges are [0, 0]. These are
 confidence intervals, nominal coverage results or cluster-aware uncertainty.
 They do not establish superiority, causation or generalization.
 
+## Inference budget held constant for policy rescoring
+
+Historical CWR scoring and frozen708 use identical native verdict banks and share
+the same inference history, including retained failures. The candidate adds no
+model judgments. This holds inference expenditure constant by identity of the
+underlying evidence, rather than by equating request counts across methods.
+
+All 27 complete banks from the fixed 32-work cohort are included; five incomplete
+banks remain unavailable. The candidate changed no eligible bank. This is a
+paired scoring-policy result with 27 underlying banks, without additional native
+replication. Equal-budget comparisons between CWR and external judging methods
+remain unmeasured. Absolute token totals and deterministic processing costs are
+not newly measured by this interpretation.
+
 ## Coverage and retained failures
 
 The frozen plan has 736 logical request positions: 22 HBQ requests and one TTCW14
