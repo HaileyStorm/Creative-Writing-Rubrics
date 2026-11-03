@@ -1,0 +1,693 @@
+{
+  "candidate_promotion": false,
+  "cohorts": [
+    {
+      "cohort": "HBQ_numeric_29",
+      "fixed_works": 29,
+      "generators": [
+        {
+          "arms": {
+            "compact": {
+              "available": 10,
+              "constant": true,
+              "distinct_values": 1,
+              "largest_tie_group": 10,
+              "missing": 0,
+              "planned": 10,
+              "rho": null,
+              "status": "constant_method_vector",
+              "tie_groups": 1,
+              "tied_observations": 10
+            },
+            "hbq": {
+              "available": 10,
+              "constant": false,
+              "distinct_values": 10,
+              "largest_tie_group": 0,
+              "missing": 0,
+              "planned": 10,
+              "rho": -0.2119213177352503,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 0,
+              "tied_observations": 0
+            },
+            "holistic": {
+              "available": 10,
+              "constant": true,
+              "distinct_values": 1,
+              "largest_tie_group": 10,
+              "missing": 0,
+              "planned": 10,
+              "rho": null,
+              "status": "constant_method_vector",
+              "tie_groups": 1,
+              "tied_observations": 10
+            },
+            "oregon": {
+              "available": 10,
+              "constant": false,
+              "distinct_values": 3,
+              "largest_tie_group": 4,
+              "missing": 0,
+              "planned": 10,
+              "rho": -0.1386750490563073,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 3,
+              "tied_observations": 10
+            },
+            "ttcw14": {
+              "available": 10,
+              "constant": false,
+              "distinct_values": 3,
+              "largest_tie_group": 5,
+              "missing": 0,
+              "planned": 10,
+              "rho": 0.16239958858823003,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 3,
+              "tied_observations": 10
+            }
+          },
+          "expert_mean": {
+            "available": 10,
+            "constant": false,
+            "distinct_values": 5,
+            "largest_tie_group": 3,
+            "missing": 0,
+            "tie_groups": 3,
+            "tied_observations": 8
+          },
+          "generator": "Claude",
+          "hbq_minus_comparator_rho": {
+            "compact": {
+              "available_comparator": 10,
+              "available_hbq": 10,
+              "planned_same_cohort": 10,
+              "point": null,
+              "status": "undefined_constancy_missingness_or_insufficient_n"
+            },
+            "holistic": {
+              "available_comparator": 10,
+              "available_hbq": 10,
+              "planned_same_cohort": 10,
+              "point": null,
+              "status": "undefined_constancy_missingness_or_insufficient_n"
+            },
+            "oregon": {
+              "available_comparator": 10,
+              "available_hbq": 10,
+              "planned_same_cohort": 10,
+              "point": -0.07324626867894302,
+              "status": "defined_on_exact_fixed_generator_members"
+            },
+            "ttcw14": {
+              "available_comparator": 10,
+              "available_hbq": 10,
+              "planned_same_cohort": 10,
+              "point": -0.37432090632348036,
+              "status": "defined_on_exact_fixed_generator_members"
+            }
+          },
+          "planned_works": 10,
+          "plot_count": 10
+        },
+        {
+          "arms": {
+            "compact": {
+              "available": 11,
+              "constant": true,
+              "distinct_values": 1,
+              "largest_tie_group": 11,
+              "missing": 0,
+              "planned": 11,
+              "rho": null,
+              "status": "constant_method_vector",
+              "tie_groups": 1,
+              "tied_observations": 11
+            },
+            "hbq": {
+              "available": 11,
+              "constant": false,
+              "distinct_values": 11,
+              "largest_tie_group": 0,
+              "missing": 0,
+              "planned": 11,
+              "rho": 0.17932219104996414,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 0,
+              "tied_observations": 0
+            },
+            "holistic": {
+              "available": 11,
+              "constant": true,
+              "distinct_values": 1,
+              "largest_tie_group": 11,
+              "missing": 0,
+              "planned": 11,
+              "rho": null,
+              "status": "constant_method_vector",
+              "tie_groups": 1,
+              "tied_observations": 11
+            },
+            "oregon": {
+              "available": 11,
+              "constant": false,
+              "distinct_values": 3,
+              "largest_tie_group": 6,
+              "missing": 0,
+              "planned": 11,
+              "rho": 0.14950638604567545,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 2,
+              "tied_observations": 10
+            },
+            "ttcw14": {
+              "available": 10,
+              "constant": false,
+              "distinct_values": 4,
+              "largest_tie_group": 3,
+              "missing": 1,
+              "planned": 11,
+              "rho": null,
+              "status": "missing_value_on_fixed_generator_cohort_no_reselection",
+              "tie_groups": 4,
+              "tied_observations": 10
+            }
+          },
+          "expert_mean": {
+            "available": 11,
+            "constant": false,
+            "distinct_values": 8,
+            "largest_tie_group": 3,
+            "missing": 0,
+            "tie_groups": 2,
+            "tied_observations": 5
+          },
+          "generator": "GPT3.5",
+          "hbq_minus_comparator_rho": {
+            "compact": {
+              "available_comparator": 11,
+              "available_hbq": 11,
+              "planned_same_cohort": 11,
+              "point": null,
+              "status": "undefined_constancy_missingness_or_insufficient_n"
+            },
+            "holistic": {
+              "available_comparator": 11,
+              "available_hbq": 11,
+              "planned_same_cohort": 11,
+              "point": null,
+              "status": "undefined_constancy_missingness_or_insufficient_n"
+            },
+            "oregon": {
+              "available_comparator": 11,
+              "available_hbq": 11,
+              "planned_same_cohort": 11,
+              "point": 0.02981580500428868,
+              "status": "defined_on_exact_fixed_generator_members"
+            },
+            "ttcw14": {
+              "available_comparator": 10,
+              "available_hbq": 11,
+              "planned_same_cohort": 11,
+              "point": null,
+              "status": "undefined_constancy_missingness_or_insufficient_n"
+            }
+          },
+          "planned_works": 11,
+          "plot_count": 11
+        },
+        {
+          "arms": {
+            "compact": {
+              "available": 8,
+              "constant": true,
+              "distinct_values": 1,
+              "largest_tie_group": 8,
+              "missing": 0,
+              "planned": 8,
+              "rho": null,
+              "status": "constant_method_vector",
+              "tie_groups": 1,
+              "tied_observations": 8
+            },
+            "hbq": {
+              "available": 8,
+              "constant": false,
+              "distinct_values": 8,
+              "largest_tie_group": 0,
+              "missing": 0,
+              "planned": 8,
+              "rho": 0.5714285714285714,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 0,
+              "tied_observations": 0
+            },
+            "holistic": {
+              "available": 8,
+              "constant": false,
+              "distinct_values": 2,
+              "largest_tie_group": 7,
+              "missing": 0,
+              "planned": 8,
+              "rho": -0.08247860988423225,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 1,
+              "tied_observations": 7
+            },
+            "oregon": {
+              "available": 8,
+              "constant": false,
+              "distinct_values": 4,
+              "largest_tie_group": 4,
+              "missing": 0,
+              "planned": 8,
+              "rho": 0.0,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 2,
+              "tied_observations": 6
+            },
+            "ttcw14": {
+              "available": 8,
+              "constant": false,
+              "distinct_values": 5,
+              "largest_tie_group": 3,
+              "missing": 0,
+              "planned": 8,
+              "rho": 0.5033043315437422,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 2,
+              "tied_observations": 5
+            }
+          },
+          "expert_mean": {
+            "available": 8,
+            "constant": false,
+            "distinct_values": 8,
+            "largest_tie_group": 0,
+            "missing": 0,
+            "tie_groups": 0,
+            "tied_observations": 0
+          },
+          "generator": "GPT4",
+          "hbq_minus_comparator_rho": {
+            "compact": {
+              "available_comparator": 8,
+              "available_hbq": 8,
+              "planned_same_cohort": 8,
+              "point": null,
+              "status": "undefined_constancy_missingness_or_insufficient_n"
+            },
+            "holistic": {
+              "available_comparator": 8,
+              "available_hbq": 8,
+              "planned_same_cohort": 8,
+              "point": 0.6539071813128037,
+              "status": "defined_on_exact_fixed_generator_members"
+            },
+            "oregon": {
+              "available_comparator": 8,
+              "available_hbq": 8,
+              "planned_same_cohort": 8,
+              "point": 0.5714285714285714,
+              "status": "defined_on_exact_fixed_generator_members"
+            },
+            "ttcw14": {
+              "available_comparator": 8,
+              "available_hbq": 8,
+              "planned_same_cohort": 8,
+              "point": 0.06812423988482919,
+              "status": "defined_on_exact_fixed_generator_members"
+            }
+          },
+          "planned_works": 8,
+          "plot_count": 8
+        }
+      ]
+    },
+    {
+      "cohort": "all_five_28",
+      "fixed_works": 28,
+      "generators": [
+        {
+          "arms": {
+            "compact": {
+              "available": 10,
+              "constant": true,
+              "distinct_values": 1,
+              "largest_tie_group": 10,
+              "missing": 0,
+              "planned": 10,
+              "rho": null,
+              "status": "constant_method_vector",
+              "tie_groups": 1,
+              "tied_observations": 10
+            },
+            "hbq": {
+              "available": 10,
+              "constant": false,
+              "distinct_values": 10,
+              "largest_tie_group": 0,
+              "missing": 0,
+              "planned": 10,
+              "rho": -0.2119213177352503,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 0,
+              "tied_observations": 0
+            },
+            "holistic": {
+              "available": 10,
+              "constant": true,
+              "distinct_values": 1,
+              "largest_tie_group": 10,
+              "missing": 0,
+              "planned": 10,
+              "rho": null,
+              "status": "constant_method_vector",
+              "tie_groups": 1,
+              "tied_observations": 10
+            },
+            "oregon": {
+              "available": 10,
+              "constant": false,
+              "distinct_values": 3,
+              "largest_tie_group": 4,
+              "missing": 0,
+              "planned": 10,
+              "rho": -0.1386750490563073,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 3,
+              "tied_observations": 10
+            },
+            "ttcw14": {
+              "available": 10,
+              "constant": false,
+              "distinct_values": 3,
+              "largest_tie_group": 5,
+              "missing": 0,
+              "planned": 10,
+              "rho": 0.16239958858823003,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 3,
+              "tied_observations": 10
+            }
+          },
+          "expert_mean": {
+            "available": 10,
+            "constant": false,
+            "distinct_values": 5,
+            "largest_tie_group": 3,
+            "missing": 0,
+            "tie_groups": 3,
+            "tied_observations": 8
+          },
+          "generator": "Claude",
+          "hbq_minus_comparator_rho": {
+            "compact": {
+              "available_comparator": 10,
+              "available_hbq": 10,
+              "planned_same_cohort": 10,
+              "point": null,
+              "status": "undefined_constancy_missingness_or_insufficient_n"
+            },
+            "holistic": {
+              "available_comparator": 10,
+              "available_hbq": 10,
+              "planned_same_cohort": 10,
+              "point": null,
+              "status": "undefined_constancy_missingness_or_insufficient_n"
+            },
+            "oregon": {
+              "available_comparator": 10,
+              "available_hbq": 10,
+              "planned_same_cohort": 10,
+              "point": -0.07324626867894302,
+              "status": "defined_on_exact_fixed_generator_members"
+            },
+            "ttcw14": {
+              "available_comparator": 10,
+              "available_hbq": 10,
+              "planned_same_cohort": 10,
+              "point": -0.37432090632348036,
+              "status": "defined_on_exact_fixed_generator_members"
+            }
+          },
+          "planned_works": 10,
+          "plot_count": 10
+        },
+        {
+          "arms": {
+            "compact": {
+              "available": 10,
+              "constant": true,
+              "distinct_values": 1,
+              "largest_tie_group": 10,
+              "missing": 0,
+              "planned": 10,
+              "rho": null,
+              "status": "constant_method_vector",
+              "tie_groups": 1,
+              "tied_observations": 10
+            },
+            "hbq": {
+              "available": 10,
+              "constant": false,
+              "distinct_values": 10,
+              "largest_tie_group": 0,
+              "missing": 0,
+              "planned": 10,
+              "rho": 0.22771925831176554,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 0,
+              "tied_observations": 0
+            },
+            "holistic": {
+              "available": 10,
+              "constant": true,
+              "distinct_values": 1,
+              "largest_tie_group": 10,
+              "missing": 0,
+              "planned": 10,
+              "rho": null,
+              "status": "constant_method_vector",
+              "tie_groups": 1,
+              "tied_observations": 10
+            },
+            "oregon": {
+              "available": 10,
+              "constant": false,
+              "distinct_values": 3,
+              "largest_tie_group": 6,
+              "missing": 0,
+              "planned": 10,
+              "rho": -0.07747247335011402,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 2,
+              "tied_observations": 9
+            },
+            "ttcw14": {
+              "available": 10,
+              "constant": false,
+              "distinct_values": 4,
+              "largest_tie_group": 3,
+              "missing": 0,
+              "planned": 10,
+              "rho": 0.28575028575042866,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 4,
+              "tied_observations": 10
+            }
+          },
+          "expert_mean": {
+            "available": 10,
+            "constant": false,
+            "distinct_values": 7,
+            "largest_tie_group": 3,
+            "missing": 0,
+            "tie_groups": 2,
+            "tied_observations": 5
+          },
+          "generator": "GPT3.5",
+          "hbq_minus_comparator_rho": {
+            "compact": {
+              "available_comparator": 10,
+              "available_hbq": 10,
+              "planned_same_cohort": 10,
+              "point": null,
+              "status": "undefined_constancy_missingness_or_insufficient_n"
+            },
+            "holistic": {
+              "available_comparator": 10,
+              "available_hbq": 10,
+              "planned_same_cohort": 10,
+              "point": null,
+              "status": "undefined_constancy_missingness_or_insufficient_n"
+            },
+            "oregon": {
+              "available_comparator": 10,
+              "available_hbq": 10,
+              "planned_same_cohort": 10,
+              "point": 0.3051917316618796,
+              "status": "defined_on_exact_fixed_generator_members"
+            },
+            "ttcw14": {
+              "available_comparator": 10,
+              "available_hbq": 10,
+              "planned_same_cohort": 10,
+              "point": -0.05803102743866312,
+              "status": "defined_on_exact_fixed_generator_members"
+            }
+          },
+          "planned_works": 10,
+          "plot_count": 10
+        },
+        {
+          "arms": {
+            "compact": {
+              "available": 8,
+              "constant": true,
+              "distinct_values": 1,
+              "largest_tie_group": 8,
+              "missing": 0,
+              "planned": 8,
+              "rho": null,
+              "status": "constant_method_vector",
+              "tie_groups": 1,
+              "tied_observations": 8
+            },
+            "hbq": {
+              "available": 8,
+              "constant": false,
+              "distinct_values": 8,
+              "largest_tie_group": 0,
+              "missing": 0,
+              "planned": 8,
+              "rho": 0.5714285714285714,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 0,
+              "tied_observations": 0
+            },
+            "holistic": {
+              "available": 8,
+              "constant": false,
+              "distinct_values": 2,
+              "largest_tie_group": 7,
+              "missing": 0,
+              "planned": 8,
+              "rho": -0.08247860988423225,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 1,
+              "tied_observations": 7
+            },
+            "oregon": {
+              "available": 8,
+              "constant": false,
+              "distinct_values": 4,
+              "largest_tie_group": 4,
+              "missing": 0,
+              "planned": 8,
+              "rho": 0.0,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 2,
+              "tied_observations": 6
+            },
+            "ttcw14": {
+              "available": 8,
+              "constant": false,
+              "distinct_values": 5,
+              "largest_tie_group": 3,
+              "missing": 0,
+              "planned": 8,
+              "rho": 0.5033043315437422,
+              "status": "defined_fixed_cohort_average_tie_spearman",
+              "tie_groups": 2,
+              "tied_observations": 5
+            }
+          },
+          "expert_mean": {
+            "available": 8,
+            "constant": false,
+            "distinct_values": 8,
+            "largest_tie_group": 0,
+            "missing": 0,
+            "tie_groups": 0,
+            "tied_observations": 0
+          },
+          "generator": "GPT4",
+          "hbq_minus_comparator_rho": {
+            "compact": {
+              "available_comparator": 8,
+              "available_hbq": 8,
+              "planned_same_cohort": 8,
+              "point": null,
+              "status": "undefined_constancy_missingness_or_insufficient_n"
+            },
+            "holistic": {
+              "available_comparator": 8,
+              "available_hbq": 8,
+              "planned_same_cohort": 8,
+              "point": 0.6539071813128037,
+              "status": "defined_on_exact_fixed_generator_members"
+            },
+            "oregon": {
+              "available_comparator": 8,
+              "available_hbq": 8,
+              "planned_same_cohort": 8,
+              "point": 0.5714285714285714,
+              "status": "defined_on_exact_fixed_generator_members"
+            },
+            "ttcw14": {
+              "available_comparator": 8,
+              "available_hbq": 8,
+              "planned_same_cohort": 8,
+              "point": 0.06812423988482919,
+              "status": "defined_on_exact_fixed_generator_members"
+            }
+          },
+          "planned_works": 8,
+          "plot_count": 8
+        }
+      ]
+    }
+  ],
+  "freeze_commitment": {
+    "bytes": 11829,
+    "sha256": "917522aedc84c045ae01fef9dcf3bb36a0f016c3449187f89dcc64c570141442"
+  },
+  "full_goal_complete": false,
+  "limits": [
+    "Already-opened availability-conditioned TTCW development evidence; not unused confirmation.",
+    "Generators/cohorts remain separate; small subgroup n, ties, range restriction and plot/condition dependence limit interpretation.",
+    "Original33-shared-work requirement unmet; no general reliability/alignment gain, winner, causal inference or candidate promotion.",
+    "Existing expert means derive from42 binary ballots per story, not42 independent experts or direct preference votes.",
+    "No model training, raw ballots, story bodies, new human labels, bootstrap/CI or overall/within-plot recomputation.",
+    "Public candidate contains only generator names, aggregate counts/statistics and hash/size commitments; private rows/paths/individual means/scores excluded."
+  ],
+  "method": "Unadjusted average-tie Spearman within each generator separately; exact437 ranks/rho bodies. HBQ minus comparator is a point difference only when both are defined on identical fixed members.",
+  "native_calls": 0,
+  "new_labels": 0,
+  "overall_or_within_plot_recomputed": false,
+  "provider_calls": 0,
+  "rho_calculations": 19,
+  "schema_version": 1,
+  "scorer_calls": 0,
+  "source_commitments": {
+    "analysis_source": {
+      "bytes": 9868,
+      "sha256": "d8a3e8c0d8f770059dc1a51c2b5ab0894a129c3e5fe2c42544a6d361b7999133"
+    },
+    "arithmetic_source": {
+      "bytes": 14619,
+      "sha256": "7acc2955d058fd08bbbffe1f909d909da4b914e7a93a73a4bec22626f4f2223e"
+    },
+    "original_manifest": {
+      "bytes": 4481093,
+      "sha256": "b1868f8b6dee6daba3125b73628e6276b34f7049fad049f17262cbe3c859b7b7"
+    },
+    "private_features437": {
+      "bytes": 18737,
+      "sha256": "4c68971294cdac2696cd39e4161c7cf02e764fe1741978661966aafd264aecf8"
+    }
+  },
+  "state": "DESCRIPTIVE_OPENED_TTCW_WITHIN_GENERATOR_FIXED437_COHORTS1526"
+}

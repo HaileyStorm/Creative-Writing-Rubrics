@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "study": "longform representation-access saved matched comparisons",
+  "source_commitment": {
+    "sha256": "46fd41ccc1028d48052216f353aa8305ee15a6d0d42925c67ef3290b8b9a0317",
+    "bytes": 279465
+  },
+  "matched_comparisons": [
+    {
+      "comparison": [
+        "representation_access",
+        "unscored_dependency_diagnostic",
+        "sol",
+        "hbq",
+        "anchored_map",
+        "summary_only"
+      ],
+      "native_leaf_agreement": {
+        "cohen_kappa": null,
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 33,
+        "paired_observed_units": 21,
+        "planned_paired_units": 54,
+        "raw_agreement": 1.0
+      },
+      "native_rating_difference": {
+        "exact_agreement": null,
+        "mean_absolute_native_difference": null,
+        "mean_signed_right_minus_left": null,
+        "missing_pairs": 18,
+        "observed_pairs": 0,
+        "planned_pairs": 18
+      },
+      "native_state_transitions": [
+        {
+          "count": 21,
+          "left": "CANNOT_ASSESS",
+          "right": "CANNOT_ASSESS"
+        }
+      ],
+      "planned_paired_items": 18
+    },
+    {
+      "comparison": [
+        "representation_access",
+        "unscored_dependency_diagnostic",
+        "sol",
+        "hbq",
+        "raw_full",
+        "anchored_map"
+      ],
+      "native_leaf_agreement": {
+        "cohen_kappa": 0.0,
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 33,
+        "paired_observed_units": 21,
+        "planned_paired_units": 54,
+        "raw_agreement": 0.0
+      },
+      "native_rating_difference": {
+        "exact_agreement": null,
+        "mean_absolute_native_difference": null,
+        "mean_signed_right_minus_left": null,
+        "missing_pairs": 18,
+        "observed_pairs": 0,
+        "planned_pairs": 18
+      },
+      "native_state_transitions": [
+        {
+          "count": 4,
+          "left": "NO",
+          "right": "CANNOT_ASSESS"
+        },
+        {
+          "count": 17,
+          "left": "YES",
+          "right": "CANNOT_ASSESS"
+        }
+      ],
+      "planned_paired_items": 18
+    },
+    {
+      "comparison": [
+        "representation_access",
+        "unscored_dependency_diagnostic",
+        "sol",
+        "hbq",
+        "raw_full",
+        "summary_only"
+      ],
+      "native_leaf_agreement": {
+        "cohen_kappa": 0.0,
+        "kappa_limit": "Unavailable with no paired observations or degenerate chance agreement; descriptive only",
+        "missing_pairs": 36,
+        "paired_observed_units": 18,
+        "planned_paired_units": 54,
+        "raw_agreement": 0.0
+      },
+      "native_rating_difference": {
+        "exact_agreement": null,
+        "mean_absolute_native_difference": null,
+        "mean_signed_right_minus_left": null,
+        "missing_pairs": 18,
+        "observed_pairs": 0,
+        "planned_pairs": 18
+      },
+      "native_state_transitions": [
+        {
+          "count": 3,
+          "left": "NO",
+          "right": "CANNOT_ASSESS"
+        },
+        {
+          "count": 15,
+          "left": "YES",
+          "right": "CANNOT_ASSESS"
+        }
+      ],
+      "planned_paired_items": 18
+    },
+    {
+      "comparison": [
+        "representation_access",
+        "unscored_dependency_diagnostic",
+        "sol",
+        "holistic",
+        "anchored_map",
+        "summary_only"
+      ],
+      "native_leaf_agreement": null,
+      "native_rating_difference": {
+        "exact_agreement": 0.25,
+        "mean_absolute_native_difference": 0.75,
+        "mean_signed_right_minus_left": -0.25,
+        "missing_pairs": 14,
+        "observed_pairs": 4,
+        "planned_pairs": 18
+      },
+      "native_state_transitions": [],
+      "planned_paired_items": 18
+    },
+    {
+      "comparison": [
+        "representation_access",
+        "unscored_dependency_diagnostic",
+        "sol",
+        "holistic",
+        "raw_full",
+        "anchored_map"
+      ],
+      "native_leaf_agreement": null,
+      "native_rating_difference": {
+        "exact_agreement": 0.7142857142857143,
+        "mean_absolute_native_difference": 0.2857142857142857,
+        "mean_signed_right_minus_left": -0.2857142857142857,
+        "missing_pairs": 11,
+        "observed_pairs": 7,
+        "planned_pairs": 18
+      },
+      "native_state_transitions": [],
+      "planned_paired_items": 18
+    },
+    {
+      "comparison": [
+        "representation_access",
+        "unscored_dependency_diagnostic",
+        "sol",
+        "holistic",
+        "raw_full",
+        "summary_only"
+      ],
+      "native_leaf_agreement": null,
+      "native_rating_difference": {
+        "exact_agreement": 0.25,
+        "mean_absolute_native_difference": 0.75,
+        "mean_signed_right_minus_left": -0.25,
+        "missing_pairs": 14,
+        "observed_pairs": 4,
+        "planned_pairs": 18
+      },
+      "native_state_transitions": [],
+      "planned_paired_items": 18
+    }
+  ],
+  "scope_and_limits": {
+    "unit": "Six dependent cases in two novellas, each repeated across three cycles; not independent observations.",
+    "planned_per_contrast": {
+      "case_cycle_pairs": 18,
+      "hbq_leaf_pairs": 54
+    },
+    "availability": "All cycle-0 Sol conditions admitted; cycle 1 partial; cycle 2 untouched. All 108 Grok positions not_supplied; this supplement selects Sol only.",
+    "interpretation": "Descriptive representation access and abstention; uneven availability, model familiarity and post-prefix exploratory grounding limit interpretation.",
+    "not_established": [
+      "human validity",
+      "causal effects",
+      "literary correctness",
+      "whole-work scoring",
+      "physical contact total"
+    ],
+    "method": "Saved aggregate fields copied without recomputation, scoring, replay, scientific-module import or new provider contact.",
+    "sign": "Native rating differences are the saved right-minus-left values; nulls and missing counts are preserved."
+  }
+}
