@@ -26,7 +26,7 @@ from .core import (
     walk_tree,
     write_data,
 )
-from .scoring_v2 import score_bundle as score_bundle_v2, validate_import_admission
+from .scoring_v2 import admitted_artifact_id, score_bundle as score_bundle_v2, validate_import_admission
 from .pack import pack_book
 from .paths import book_root, bundles_path, prompts_dir, registry_path, schema_dir
 from .runner_v2 import run_judge
@@ -271,7 +271,7 @@ def _cmd_score(args: argparse.Namespace) -> int:
         modules,
         bundle,
         verdicts,
-        artifact_id=args.artifact_id,
+        artifact_id=admitted_artifact_id(args.artifact_id, task_contract, admission),
         task_contract=task_contract,
     )
     if admission is not None:
@@ -630,9 +630,9 @@ def build_parser() -> argparse.ArgumentParser:
     score.add_argument("--weight-profile", help="strict scoring-weight profile JSON/YAML")
     score.add_argument(
         "--admission-policy",
-        choices=("historical_permissive_v1", "strict_import_v1"),
+        choices=("historical_permissive_v1", "strict_import_v1", "strict_import_v2"),
         default="historical_permissive_v1",
-        help="use strict_import_v1 for new normalized imports; checks structure and declared "
+        help="use strict_import_v2 for new normalized imports; checks structure and declared "
         "evidence, not quotation grounding; default preserves historical replay",
     )
     score.add_argument(

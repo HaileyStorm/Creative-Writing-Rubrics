@@ -96,6 +96,23 @@ def test_omitted_prerequisite_is_uncertainty_not_a_synthetic_failure(ladder):
     assert records == before
 
 
+def test_empty_strict_candidate_keeps_parent_contract_identity(modules, bundle_by_id):
+    contract = _task_contract()
+    contract["artifact_id"] = "contract-artifact"
+    result = score_bundle(modules, bundle_by_id["prose.scene"], [], task_contract=contract,
+                          admission_policy="strict_import_v2")
+    assert result["historical_report"]["artifact_id"] == "contract-artifact"
+    assert result["candidate_report"]["artifact_id"] == "contract-artifact"
+    assert result["candidate_report"]["ladder_projection"]["historical_parent_report_sha256"] == canonical_json_sha256(result["historical_report"])
+    permissive = score_bundle(modules, bundle_by_id["prose.scene"], [], task_contract=contract,
+                              admission_policy="historical_permissive_v1")
+    assert permissive["historical_report"]["artifact_id"] == "artifact"
+    assert permissive["candidate_report"]["artifact_id"] == "artifact"
+    legacy = score_bundle(modules, bundle_by_id["prose.scene"], [], task_contract=contract,
+                          admission_policy="strict_import_v1")
+    assert legacy["historical_report"]["artifact_id"] == legacy["candidate_report"]["artifact_id"] == "artifact"
+
+
 def test_explicit_no_dominates_an_earlier_unavailable_prerequisite(ladder):
     modules, bundle = ladder
     third = deepcopy(modules[0]["tree"][1])

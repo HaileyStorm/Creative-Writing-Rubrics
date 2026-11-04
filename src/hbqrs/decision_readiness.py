@@ -54,7 +54,7 @@ def _assessment(groups: Sequence[Mapping[str, Any]], name: str) -> dict[str, Any
                 unassessed_count += 1
                 unassessed_items.append({
                     "question_id": question.get("question_id"),
-                    "module_id": question.get("module_id"),
+                    "module_id": question.get("module_id", group.get("module_id")),
                     "weight": weight,
                 })
             else:

@@ -42,6 +42,16 @@ def test_real_unknown_penalties_are_not_a_fully_assessed_point(modules, bundle_b
         assert result["positive"]["complete"]
         assert result["penalties"]["assessed_coverage"] == 0
         assert not result["penalties"]["complete"]
+        expected_modules = {
+            question["question_id"]: group["module_id"]
+            for group in scored["penalties"] for question in group["questions"]
+        }
+        assert expected_modules
+        assert {item["question_id"] for item in result["penalties"]["unassessed_items"]} == set(expected_modules)
+        assert all(
+            item["module_id"] == expected_modules[item["question_id"]]
+            for item in result["penalties"]["unassessed_items"]
+        )
         assert result["scalar_interval"]["width"] == 18
         assert not result["fully_assessed_point_score"]
         assert result["threshold"]["relation"] == "UNRESOLVED"

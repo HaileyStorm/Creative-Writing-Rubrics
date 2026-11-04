@@ -1,0 +1,170 @@
+{
+  "expert_higher_story_position": [
+    {
+      "expert_higher_story_position": "first",
+      "matches": 31,
+      "mismatches": 5,
+      "orders": 36
+    },
+    {
+      "expert_higher_story_position": "second",
+      "matches": 30,
+      "mismatches": 6,
+      "orders": 36
+    }
+  ],
+  "format_version": 2,
+  "implementation_sha256": "15e4e7fc48c041438e8f87b6722aea65d97791bb540742c44cfdf89473874f3f",
+  "limits": [
+    "Expert direction derives from pre-existing creativity-test ratings, not direct preference ballots.",
+    "The 36 pairs share stories and cluster in 12 plots; neither orders nor ballots are independent works or people.",
+    "The reference-position split is post-hoc and supplies no population significance or causal position-effect claim.",
+    "The word-count baseline is post-hoc on the same dependent development pairs; comparisons are descriptive, not held-out evaluation.",
+    "Fixed-cohort and within-generator length correlations are exploratory, use the opened 28-work cohort, and do not establish causation or model superiority.",
+    "Within-plot scoring comparisons use the same availability-conditioned work pairs and count score ties as half only in the summary; direct judgments use two dependent presentation orders.",
+    "Shorter was selected after observing the data; the paired plot-resampling range is conditional on the selected incomplete cohort, not a prospective test or a remedy for missing works.",
+    "Same-order repeats were not collected; historical client versions and missing fields limit current-contract equivalence.",
+    "Saved admission is reused; prompt and source bytes are checked, but native or semantic admission is not replayed.",
+    "No provider calls, new votes, human labels or candidate promotion occur."
+  ],
+  "pair_outcomes": {
+    "first_in_both_orders": 2,
+    "first_then_second_same_work": 18,
+    "second_in_both_orders": 1,
+    "second_then_first_same_work": 15
+  },
+  "pairs_with_reversed_presentation": 36,
+  "position_selections": {
+    "first": 37,
+    "second": 35
+  },
+  "posthoc_fixed28_length_associations": [
+    {
+      "group": "all_five_28",
+      "hbq_expert_rho": 0.7119170412541377,
+      "length_distinct_values": 26,
+      "length_expert_rho": -0.6000558159965773,
+      "plots": 12,
+      "ttcw14_expert_rho": 0.4225446019940552,
+      "works": 28
+    },
+    {
+      "group": "Claude",
+      "hbq_expert_rho": -0.2119213177352503,
+      "length_distinct_values": 9,
+      "length_expert_rho": -0.4063770126652887,
+      "plots": 10,
+      "ttcw14_expert_rho": 0.16239958858823003,
+      "works": 10
+    },
+    {
+      "group": "GPT3.5",
+      "hbq_expert_rho": 0.22771925831176554,
+      "length_distinct_values": 10,
+      "length_expert_rho": -0.5292934112111307,
+      "plots": 10,
+      "ttcw14_expert_rho": 0.28575028575042866,
+      "works": 10
+    },
+    {
+      "group": "GPT4",
+      "hbq_expert_rho": 0.5714285714285714,
+      "length_distinct_values": 8,
+      "length_expert_rho": -0.2857142857142857,
+      "plots": 8,
+      "ttcw14_expert_rho": 0.5033043315437422,
+      "works": 8
+    }
+  ],
+  "posthoc_fixed28_within_plot_agreement": {
+    "cohort": "all_five_28",
+    "direct_judge": {
+      "matches": 40,
+      "mismatches": 4,
+      "ordered_judgments": 44
+    },
+    "expert_ties_excluded": 0,
+    "informative_pairs": 22,
+    "plots_with_informative_pairs": 10,
+    "scoring_rules": {
+      "compact": {
+        "matches": 0,
+        "mismatches": 0,
+        "tie_half_credit_agreement": 0.5,
+        "ties": 22
+      },
+      "hbq": {
+        "matches": 20,
+        "mismatches": 2,
+        "tie_half_credit_agreement": 0.9090909090909091,
+        "ties": 0
+      },
+      "holistic": {
+        "matches": 2,
+        "mismatches": 0,
+        "tie_half_credit_agreement": 0.5454545454545454,
+        "ties": 20
+      },
+      "oregon": {
+        "matches": 8,
+        "mismatches": 5,
+        "tie_half_credit_agreement": 0.5681818181818182,
+        "ties": 9
+      },
+      "shorter": {
+        "matches": 14,
+        "mismatches": 7,
+        "tie_half_credit_agreement": 0.6590909090909091,
+        "ties": 1
+      },
+      "ttcw14": {
+        "matches": 15,
+        "mismatches": 6,
+        "tie_half_credit_agreement": 0.7045454545454546,
+        "ties": 1
+      }
+    }
+  },
+  "posthoc_plot_clustered_shorter_baseline_sensitivity": {
+    "baseline_direction": "shorter story; chosen after observing these development data",
+    "cluster_unit": "plot",
+    "conditional_percentile_2_5": -0.11142260385891516,
+    "conditional_percentile_97_5": 0.37390449119481023,
+    "contrast": "HBQ rho minus shorter-story rho on the same sampled works",
+    "defined_draws": 2000,
+    "draws": 2000,
+    "observed_difference": 0.11186122525756037,
+    "observed_plots": 12,
+    "percentile_rule": "linear interpolation of sorted defined draws; undefined count retained",
+    "python_version": "3.14.2",
+    "random_sampling": "Python random.Random.choices with replacement",
+    "seed": 20261103,
+    "undefined_draws": 0
+  },
+  "posthoc_whitespace_word_count_baseline": {
+    "comparable_pairs": 35,
+    "judge_matches_expert_on_those_orders": 59,
+    "judge_selects_longer_on_those_orders": 19,
+    "longer_matches_expert": 10,
+    "ordered_judgments_on_comparable_pairs": 70,
+    "rule": "select the story with more whitespace-separated UTF-8 decoded tokens; abstain on ties",
+    "tied_length_pairs": 1
+  },
+  "scope": {
+    "ordered_judgments": 72,
+    "pairs": 36,
+    "plot_clusters": 12,
+    "population": "existing expert-reference development",
+    "same_order_repeat_judgments": 0,
+    "works": 36
+  },
+  "source_commitments": {
+    "existing_labels_sha256": "1916ec27eaa8810a8427ed7000e2aefa3535fd2a33b2ae1d372cccdab3fc6516",
+    "fixed_cohort_freeze_sha256": "917522aedc84c045ae01fef9dcf3bb36a0f016c3449187f89dcc64c570141442",
+    "frozen_manifest_sha256": "b1868f8b6dee6daba3125b73628e6276b34f7049fad049f17262cbe3c859b7b7",
+    "saved_features_sha256": "4c68971294cdac2696cd39e4161c7cf02e764fe1741978661966aafd264aecf8",
+    "saved_joined_sha256": "cbf6192a025521990b17cb3c3f4d2c56e9443eb0ac3084a85eba8fcee9be96f4",
+    "scientific_condition_sha256": "219d1388e13bd796d13b93a7511ed7ee55d0cf120479783debf022a622d83dde"
+  },
+  "state": "RETAINED_TTCW_POSITION_DESCRIPTIVE_DEVELOPMENT"
+}

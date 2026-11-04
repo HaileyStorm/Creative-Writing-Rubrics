@@ -16,8 +16,16 @@ their populations, reference constructs and available cohorts remain separate.
 | --- | --- | --- |
 | [TTCW initial expert comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-sol-ttcw-initial-development-20261026/README.md) | Same 28 stories across all five scalar methods; all 12 plot groups. | HBQ Spearman `0.712` versus TTCW14 `0.423` on this shared set. HBQ has 29 numeric banks among 36 planned stories; the registered 33-shared-story requirement is unmet. No HBQ superiority interval or winner claim follows. |
 | [Dryad reader comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-reader-reference-descriptive-v1/README.md#dryad-selected-exposed-dev30) | Same availability-selected 27 stories from DEV30. | HBQ rho is `0.064` for well written and `0.197` for enjoyed; Oregon is `0.469` and `0.443` on those same stories. Missingness and reader reuse limit inference; pair-specific contrasts use their own separately reported cohorts. |
-| [Kyoto reader comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-reader-reference-descriptive-v1/README.md#kyoto-fixed-12-stories-across-three-topics) | Fixed 12 stories across three topics. | HBQ rho is `-0.007` for enjoyment and `-0.074` for pleasing style; TTCW14 is `0.223` and `0.188`. These full-12 points are available, with no estimated confidence interval. Secondary 11-story diagnostics cannot replace missing full-12 comparator results. The ladder projection establishes no gain. |
+| [Kyoto reader comparison](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-reader-reference-descriptive-v1/README.md#kyoto-fixed-12-stories-across-three-topics) | Fixed 12 stories across three topics. | HBQ rho is `-0.007` for enjoyment and `-0.074` for pleasing style; TTCW14 is `0.223` and `0.188`. The lexical-token-count control is `0.821` and `0.627`. These full-12 points are available, with no estimated confidence interval. Secondary 11-story diagnostics cannot replace missing full-12 comparator results. The ladder projection establishes no gain. |
 | [Selected TTCW repeats](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-sol-ttcw-selected-repeats-20261026/README.md) | Two complete HBQ banks; scalar comparisons across three stories overall. | Raw leaf agreement is `338/356` (`94.94%`), kappa `0.914`; all seven available comparator scalar comparisons are unchanged. Leaves within a bank are dependent, and exact evidence sets match for only `9/356` leaf pairs. This supports a scoped repeat description, not population reliability or human validity. |
+
+The [within-generator TTCW supplement](../evaluation-results/hbq-ttcw-within-generator-association-v1/README.md)
+qualifies the overall result. Within the same 28-story cohort, HBQ's expert-reference
+rho was `-0.212` for Claude stories (10 works), `0.228` for GPT-3.5 (10), and
+`0.571` for GPT-4 (8); TTCW14's respective values were `0.162`, `0.286`, and
+`0.503`. These small, availability-conditioned subgroups have ties and shared plots,
+with no estimated confidence intervals. They do not establish a uniform
+within-generator signal, method superiority, or an explanation for the overall rho.
 
 The [portable measurement matrix](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-measurement-matrix-v1/README.md)
 projects these existing results into 199 metric-family rows with source pointers,
@@ -27,6 +35,30 @@ individual ratings or runtime stores. It estimates no new statistics. Missing-ou
 bounds remain distinct from confidence intervals, and missing operational counters
 remain missing. Canonical scoring and candidate promotion are unchanged; the wider
 alignment, cross-form and release program remains in progress.
+
+The [retained TTCW position description](../evaluation-results/hbq-retained-position-descriptive-v1/README.md)
+finds 37 first-position and 35 second-position selections among 72 saved judgments.
+The expert-higher story was selected 31/36 times when first and 30/36 when second.
+This post-hoc split uses the same 36 pairs across 12 plots; it does not establish
+a causal or general position effect. The reference comes from existing test ratings,
+not direct human preference ballots, and same-order repeats remain unavailable.
+An exploratory longer-story baseline matched the expert-derived direction in 10
+of 35 non-tied pairs; the judge matched that direction in 59 of 70 corresponding ordered
+judgments. Those repeated orders and shared plots are dependent development data.
+On the fixed 28-story cohort shared by all five scoring methods, an exploratory
+whitespace word-count baseline has expert-reference rho `-0.600`. This association
+does not establish a causal length effect, and the cohort contains shared plots.
+Selecting shorter stories post hoc gives rho `0.600` versus HBQ's `0.712`; a
+paired plot-resampling sensitivity range for the difference is `[-0.111, 0.374]`.
+The range is conditional on the incomplete, already-opened cohort and does not
+establish superiority or satisfy the original missing-data gate.
+Within that cohort, the 22 same-plot pairs across 10 plots show HBQ matching the
+expert-derived direction 20 times; TTCW14 matches 15 times with one tie, and the
+post-hoc shorter-story rule matches 14 times with one tie. Pairs share works and
+the comparison remains descriptive.
+Kyoto's positive lexical-count associations and TTCW's negative word-count
+association use different counting rules and different reader and expert-reference
+constructs. Neither direction supports a general rule that length causes quality.
 
 The separate [accepted-request operations snapshot](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-reader-repeat-operations-v1/README.md)
 reports saved token and native timing counters for 808 Dryad, 321 Kyoto and 56
@@ -69,11 +101,13 @@ exist for one sentinel in each form; their sparse coverage limits reliability
 claims. The package reports distributions, method agreement and pair-order
 behavior with the original planned and observed denominators.
 
-The campaign has no accepted synthetic oracle or candidate arm. Its retrospective
-AI intent review supplies no human votes or defect-detection accuracy result.
-Historical admission qualifications remain separate from current native
-attestation; physical-contact cardinality is unproven. These are completed
-descriptive diagnostics, with no rubric or candidate promotion.
+The original campaign has no accepted synthetic oracle or candidate arm. A later
+retrospective AI review narrowly admitted one consequence triad for a future,
+separately frozen diagnostic; seven triads remain unadmitted. That review supplies
+no human votes or defect-detection accuracy result, and does not change the
+original campaign's admission. Historical admission qualifications remain
+separate from current native attestation; physical-contact cardinality is
+unproven. These are descriptive diagnostics, with no rubric or candidate promotion.
 
 The [native poetry diagnostics](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-poetry-native-descriptive-20261101/README.md)
 extend this descriptive coverage to 24 AI-created poems in eight designed families.

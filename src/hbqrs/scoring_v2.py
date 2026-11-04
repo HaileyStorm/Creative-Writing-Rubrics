@@ -17,6 +17,19 @@ from .paths import schema_dir
 V2_SCHEMA = "../schema/hbq_score_report.v2.schema.json"
 
 
+def admitted_artifact_id(
+    artifact_id: str | None, task_contract: Mapping[str, Any] | None,
+    admission: Mapping[str, Any] | None,
+) -> str | None:
+    """Carry a strictly admitted contract identity into the historical scorer."""
+    if (admission is not None and admission.get("policy") == "strict_import_v2"
+            and artifact_id is None and task_contract is not None):
+        contract_artifact = task_contract.get("artifact_id")
+        if isinstance(contract_artifact, str) and contract_artifact.strip():
+            return contract_artifact
+    return artifact_id
+
+
 def validate_import_admission(
     modules: Sequence[dict[str, Any]],
     bundle: dict[str, Any],
@@ -33,7 +46,7 @@ def validate_import_admission(
     """
     if admission_policy == "historical_permissive_v1":
         return None
-    if admission_policy != "strict_import_v1":
+    if admission_policy not in {"strict_import_v1", "strict_import_v2"}:
         raise core.HBQError(f"Unknown import admission policy: {admission_policy}")
     compiled = core.compile_bundle(modules, bundle, task_contract=task_contract)
     schema_bytes = (schema_dir() / "hbq_verdict.schema.json").read_bytes()
@@ -41,41 +54,47 @@ def validate_import_admission(
     selected = {row["question"]["id"]: row["question"] for row in core.compiled_questions(compiled)}
     seen: set[str] = set()
     contract_artifact = task_contract.get("artifact_id") if task_contract else None
+    if admission_policy == "strict_import_v2":
+        for name, value in (("artifact_id", artifact_id), ("task contract artifact_id", contract_artifact)):
+            if value is not None and (not isinstance(value, str) or not value.strip()):
+                raise core.HBQError(f"{admission_policy}: {name} must be a nonblank string")
     if artifact_id is not None and contract_artifact is not None and artifact_id != contract_artifact:
-        raise core.HBQError("strict_import_v1: artifact identity disagrees with task contract")
+        raise core.HBQError(f"{admission_policy}: artifact identity disagrees with task contract")
     imported_artifact = artifact_id if artifact_id is not None else contract_artifact
     for index, record in enumerate(verdicts):
         error = next(validator.iter_errors(record), None)
         if error is not None:
             location = ".".join(map(str, error.path)) or "record"
-            raise core.HBQError(f"strict_import_v1: record {index} violates verdict schema at {location}")
+            raise core.HBQError(f"{admission_policy}: record {index} violates verdict schema at {location}")
         qid = record["question_id"]
         if qid not in selected:
-            raise core.HBQError(f"strict_import_v1: record {index} is not selected by this bundle")
+            raise core.HBQError(f"{admission_policy}: record {index} is not selected by this bundle")
         if qid in seen:
-            raise core.HBQError(f"strict_import_v1: duplicate verdict for {qid}")
+            raise core.HBQError(f"{admission_policy}: duplicate verdict for {qid}")
         seen.add(qid)
         if record["bundle_id"] != bundle["bundle_id"]:
-            raise core.HBQError(f"strict_import_v1: bundle identity mismatch for {qid}")
+            raise core.HBQError(f"{admission_policy}: bundle identity mismatch for {qid}")
         if not record["artifact_id"].strip():
-            raise core.HBQError(f"strict_import_v1: empty artifact identity for {qid}")
+            raise core.HBQError(f"{admission_policy}: empty artifact identity for {qid}")
         if imported_artifact is None:
             imported_artifact = record["artifact_id"]
         if record["artifact_id"] != imported_artifact:
-            raise core.HBQError(f"strict_import_v1: artifact identity mismatch for {qid}")
+            raise core.HBQError(f"{admission_policy}: artifact identity mismatch for {qid}")
         if not math.isfinite(record["confidence"]):
-            raise core.HBQError(f"strict_import_v1: nonfinite confidence for {qid}")
+            raise core.HBQError(f"{admission_policy}: nonfinite confidence for {qid}")
         policy = selected[qid].get("evidence_policy", {})
         required = int(policy.get("minimum_references", 0)) if policy.get("required") else 0
         if record["verdict"] in {"YES", "NO"} and len(record["evidence"]) < required:
-            raise core.HBQError(f"strict_import_v1: {qid} requires {required} evidence references")
+            raise core.HBQError(f"{admission_policy}: {qid} requires {required} evidence references")
         for evidence in record["evidence"]:
             if "quote" in evidence or not ({"exact_quote", "summary"} & evidence.keys()):
-                raise core.HBQError(f"strict_import_v1: {qid} requires typed exact_quote or summary evidence")
+                raise core.HBQError(f"{admission_policy}: {qid} requires typed exact_quote or summary evidence")
         if record["verdict"] == "NOT_APPLICABLE" and not record.get("note", "").strip():
-            raise core.HBQError(f"strict_import_v1: {qid} lacks an activation-condition reason")
+            raise core.HBQError(f"{admission_policy}: {qid} lacks an activation-condition reason")
+    if admission_policy == "strict_import_v2" and imported_artifact is None:
+        raise core.HBQError(f"{admission_policy}: an artifact identity is required")
     return {
-        "policy": "strict_import_v1",
+        "policy": admission_policy,
         "verdict_schema_sha256": hashlib.sha256(schema_bytes).hexdigest(),
         "validation_scope": "structure_and_declared_evidence_only",
         "supplied_questions": len(seen),
@@ -282,7 +301,7 @@ def score_bundle(
             modules,
             bundle,
             verdicts,
-            artifact_id=artifact_id,
+            artifact_id=admitted_artifact_id(artifact_id, task_contract, admission),
             task_contract=task_contract,
         )
     )

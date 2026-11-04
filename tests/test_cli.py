@@ -111,6 +111,49 @@ def test_score_strict_import_rejects_missing_evidence_before_output(
     assert admitted["import_admission"]["omitted_questions"] > 0
 
 
+@pytest.mark.parametrize("report_version", [1, 2])
+def test_score_empty_strict_import_uses_task_contract_identity(tmp_path: Path, report_version) -> None:
+    source = tmp_path / "verdicts.json"
+    contract_path = tmp_path / "contract.json"
+    source.write_text("[]", encoding="utf-8")
+    contract = {
+        "contract_version": 1, "contract_id": "empty-import", "artifact_id": "contract-artifact",
+        "context": {"artifact_kind": "prose", "declared_scope": "scene", "completion_status": "unknown",
+                    "background": [], "constraints": [], "audience": []},
+        "preferences": [], "priorities": [], "weighted_goals": [], "binding_requirements": [],
+    }
+    contract_path.write_text(json.dumps(contract), encoding="utf-8")
+    output = tmp_path / "report.json"
+    args = ["score", "prose.scene", str(source), "--task-contract", str(contract_path),
+            "--report-version", str(report_version), "-o", str(output)]
+    assert main(args) == 0
+    historical = json.loads(output.read_text(encoding="utf-8"))
+    assert historical["artifact_id"] == "artifact"
+    assert main([*args, "--admission-policy", "strict_import_v2"]) == 0
+    strict = json.loads(output.read_text(encoding="utf-8"))
+    assert strict["artifact_id"] == "contract-artifact"
+    admission = strict.pop("import_admission")
+    assert admission["policy"] == "strict_import_v2" and admission["supplied_questions"] == 0
+    strict["artifact_id"] = historical["artifact_id"]
+    assert strict == historical
+    assert main([*args, "--admission-policy", "strict_import_v1"]) == 0
+    legacy = json.loads(output.read_text(encoding="utf-8"))
+    assert legacy.pop("import_admission")["policy"] == "strict_import_v1"
+    assert legacy == historical
+
+
+def test_score_empty_strict_v2_rejects_unidentified_artifact(tmp_path: Path, capsys) -> None:
+    source, output = tmp_path / "verdicts.json", tmp_path / "report.json"
+    source.write_text("[]", encoding="utf-8")
+    args = ["score", "prose.scene", str(source), "--admission-policy", "strict_import_v2", "-o", str(output)]
+    with pytest.raises(SystemExit) as error:
+        main(args)
+    assert error.value.code == 2 and "artifact identity is required" in capsys.readouterr().err
+    assert not output.exists()
+    assert main([*args, "--artifact-id", "identified"]) == 0
+    assert json.loads(output.read_text(encoding="utf-8"))["artifact_id"] == "identified"
+
+
 def test_render_judge(tmp_path: Path) -> None:
     dest = tmp_path / "judge.md"
     assert (

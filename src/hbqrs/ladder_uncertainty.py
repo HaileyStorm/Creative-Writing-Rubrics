@@ -86,7 +86,8 @@ def score_bundle(
     compiled = core.compile_bundle(modules, bundle, task_contract=task_contract)
     projected, changes = _project(compiled, verdicts)
     candidate = scoring_v2.score_bundle(
-        modules, bundle, projected, artifact_id=artifact_id,
+        modules, bundle, projected,
+        artifact_id=historical["artifact_id"] if admission_policy == "strict_import_v2" else artifact_id,
         task_contract=task_contract, admission_policy="historical_permissive_v1",
     )
     if "import_admission" in historical:
@@ -132,7 +133,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--task-contract", type=Path)
     parser.add_argument("--artifact-id")
     parser.add_argument("--admission-policy", default="strict_import_v1",
-                        choices=("strict_import_v1", "historical_permissive_v1"))
+                        choices=("strict_import_v1", "strict_import_v2", "historical_permissive_v1"))
     args = parser.parse_args(argv)
     try:
         modules = core.load_modules(registry_path())

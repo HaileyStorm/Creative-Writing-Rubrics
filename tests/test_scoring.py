@@ -472,6 +472,10 @@ def test_strict_import_preserves_scores_and_omitted_uncertainty(modules, bundle_
         }
         assert admitted == historical
         assert supplied == original
+        corrected = scorer(modules, bundle, supplied, admission_policy="strict_import_v2")
+        assert corrected.pop("import_admission")["policy"] == "strict_import_v2"
+        assert corrected == historical
+        assert supplied == original
 
 
 @pytest.mark.parametrize(
@@ -512,6 +516,52 @@ def test_strict_import_rejects_duplicate_votes_and_unknown_policy(modules, bundl
         score_bundle(modules, bundle, [record, deepcopy(record)], admission_policy="strict_import_v1")
     with pytest.raises(HBQError, match="Unknown import admission policy"):
         score_bundle(modules, bundle, [], admission_policy="future_typo")
+
+
+def test_empty_strict_import_preserves_contract_artifact_identity(modules, bundle_by_id) -> None:
+    bundle = bundle_by_id["prose.scene"]
+    contract = _task_contract()
+    contract["artifact_id"] = "contract-artifact"
+    before = deepcopy(contract)
+    historical = score_bundle(modules, bundle, [], task_contract=contract)
+    legacy = score_bundle(modules, bundle, [], task_contract=contract, admission_policy="strict_import_v1")
+    strict = score_bundle(modules, bundle, [], task_contract=contract, admission_policy="strict_import_v2")
+    assert historical["artifact_id"] == "artifact"
+    assert legacy["artifact_id"] == "artifact"
+    assert legacy.pop("import_admission")["policy"] == "strict_import_v1"
+    assert legacy == historical
+    assert strict["artifact_id"] == "contract-artifact"
+    assert strict["import_admission"]["policy"] == "strict_import_v2"
+    assert strict["import_admission"]["supplied_questions"] == 0
+    assert strict["status"] == historical["status"] == "UNRESOLVED"
+    strict.pop("import_admission")
+    strict["artifact_id"] = historical["artifact_id"]
+    assert strict == historical
+    assert contract == before
+    with pytest.raises(HBQError, match="disagrees with task contract"):
+        score_bundle(modules, bundle, [], artifact_id="different", task_contract=contract,
+                     admission_policy="strict_import_v2")
+    qid = compile_bundle(modules, bundle)["domain_questions"][0]["question"]["id"]
+    record = _verdict(qid)
+    record.update(artifact_id="contract-artifact", bundle_id=bundle["bundle_id"], evidence=[])
+    with pytest.raises(HBQError, match="requires 1 evidence"):
+        score_bundle(modules, bundle, [record], task_contract=contract, admission_policy="strict_import_v2")
+
+
+def test_empty_strict_v2_requires_a_usable_identity(modules, bundle_by_id) -> None:
+    bundle = bundle_by_id["prose.scene"]
+    with pytest.raises(HBQError, match="artifact identity is required"):
+        score_bundle(modules, bundle, [], admission_policy="strict_import_v2")
+    with pytest.raises(HBQError, match="artifact_id must be a nonblank string"):
+        score_bundle(modules, bundle, [], artifact_id="  ", admission_policy="strict_import_v2")
+    contract = _task_contract()
+    contract["artifact_id"] = " "
+    with pytest.raises(HBQError, match="task contract artifact_id must be a nonblank string"):
+        score_bundle(modules, bundle, [], task_contract=contract, admission_policy="strict_import_v2")
+    explicit = score_bundle(modules, bundle, [], artifact_id="identified", admission_policy="strict_import_v2")
+    assert explicit["artifact_id"] == "identified" and explicit["import_admission"]["supplied_questions"] == 0
+    legacy = score_bundle(modules, bundle, [], admission_policy="strict_import_v1")
+    assert legacy["artifact_id"] == "artifact"
 
 
 def test_historical_missing_evidence_vote_remains_scored(modules, bundle_by_id) -> None:
