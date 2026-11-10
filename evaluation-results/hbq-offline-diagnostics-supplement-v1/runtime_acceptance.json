@@ -1,0 +1,88 @@
+{
+  "adapters": {
+    "dryad_influence": {
+      "adapter_sha256": "6152d9513080aa644c1758dc3c5b2d0d4b10ef222e9686eb3ac3bb1dbf4b1026",
+      "byte_equal": true,
+      "input_bytes_rechecked": true,
+      "inputs": {
+        "analysis": {
+          "bytes": 9301,
+          "sha256": "0c91ec3f2c31f40599d74fb250df5a4cbc12b3174ab89b6e743db7f6d1836c28"
+        },
+        "panel": {
+          "bytes": 35354,
+          "sha256": "cbfc8eea8c5855b1e3cd0c30e5c14c3d53db42869ade3faf6e3b84b99c6f7b6c"
+        },
+        "published_aggregate": {
+          "bytes": 6154,
+          "sha256": "43bc7afc5ec7ab389d1dddb965c83ad49d312727e0780dc6eecca4b6881ea505"
+        }
+      },
+      "json_equal": true,
+      "recomputed_aggregate_sha256": "d56438f6fd3d0edc23930dbb115ae78a93a91e8e465b5d5d121710487aaccd3b",
+      "reviewed_aggregate_sha256": "d56438f6fd3d0edc23930dbb115ae78a93a91e8e465b5d5d121710487aaccd3b"
+    },
+    "poetry_order": {
+      "adapter_sha256": "46c309d417d07047d176692d446560590c593a8de7cc339323321b89f819ccf9",
+      "byte_equal": true,
+      "input_bytes_rechecked": true,
+      "inputs": {
+        "eligibility_analysis": {
+          "bytes": 17275,
+          "sha256": "3683a689c7a7d63d069067faf75ded1f1ded1a95856493ff5d944d78a34a501c"
+        },
+        "report": {
+          "bytes": 5426453,
+          "sha256": "4fea1950e29aad7442d37ae0ce9dbdbfc091069e53131261e7455f2e85cc46d7"
+        }
+      },
+      "json_equal": true,
+      "recomputed_aggregate_sha256": "e19a2fbca91ff574f2c7a36ed2b54fd2dbbfd86ddbad74bd85fdb36f632f8a05",
+      "reviewed_aggregate_sha256": "e19a2fbca91ff574f2c7a36ed2b54fd2dbbfd86ddbad74bd85fdb36f632f8a05"
+    },
+    "ttcw_partial": {
+      "adapter_sha256": "5bfb75886a84cf2ab8a1d92f256f3b14a3b6f69c2e39ca0185d3663ca1c51499",
+      "byte_equal": true,
+      "input_bytes_rechecked": true,
+      "inputs": {
+        "report": {
+          "bytes": 9402,
+          "sha256": "f7a2665ef961cc048947ab780271d709e980ddd19aa5035ab3647e7be893d11b"
+        }
+      },
+      "json_equal": true,
+      "recomputed_aggregate_sha256": "743aa2e79d33a4acde2f818db7faccf46ff7cbde4eb7619fa013b026cd52c823",
+      "reviewed_aggregate_sha256": "743aa2e79d33a4acde2f818db7faccf46ff7cbde4eb7619fa013b026cd52c823"
+    },
+    "ttcw_repeat": {
+      "adapter_sha256": "72a618c9c946384c57f2ad9b15ae36890e0c82500dc59ab54378d7fbd8fc775b",
+      "byte_equal": true,
+      "input_bytes_rechecked": true,
+      "inputs": {
+        "initial_saved_view": {
+          "bytes": 26253882,
+          "sha256": "cbf6192a025521990b17cb3c3f4d2c56e9443eb0ac3084a85eba8fcee9be96f4"
+        },
+        "selected_repeat_saved_view": {
+          "bytes": 961821,
+          "sha256": "3755acbab8cb8893563575e976e392b683a44474fac176d6b84cbe1a644104e1"
+        }
+      },
+      "json_equal": true,
+      "recomputed_aggregate_sha256": "2d17e51f0c79e1058f65ba79c44a02f3134a6443d29440e7ac6cf64cf0b118bd",
+      "reviewed_aggregate_sha256": "2d17e51f0c79e1058f65ba79c44a02f3134a6443d29440e7ac6cf64cf0b118bd"
+    }
+  },
+  "limits": [
+    "Same-input regeneration is engineering acceptance, not independent scientific replication.",
+    "Private inputs remain undistributed and require authorized exact-byte access.",
+    "No new provider, sampler, account, human-validation or cross-platform acceptance."
+  ],
+  "new_human_labels": 0,
+  "new_provider_calls": 0,
+  "projection_sha256": "025bfed29cc7aaab67f3c24af5a6277ae77f07972720f66b8e4f08ef506478c0",
+  "promotion": false,
+  "runtime": "Windows, Python3.12, standard-library adapters; exact retained pinned inputs",
+  "state": "RELOCATED_PROJECTION_AND_FOUR_EXPLICIT_INPUT_RECOMPUTATIONS_PASSED",
+  "utc": "2026-11-10T02:08:47.637226+00:00"
+}

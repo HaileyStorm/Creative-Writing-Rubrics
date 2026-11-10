@@ -1,0 +1,123 @@
+{
+  "cohorts": {
+    "HBQ_numeric_29": {
+      "constant_control_partial": null,
+      "constant_control_reason": "Undefined source correlations; constant has no rank variance.",
+      "original_required_shared_works": 33,
+      "original_shared_work_rule_met": false,
+      "reported_plot_groups": 12,
+      "role": "dependent_secondary",
+      "saved_HBQ_expert_rho": "0.6862598695958416",
+      "single_controls": {
+        "lexical_token_count": {
+          "approximate_value": 0.539468426963788,
+          "correlation_matrix_determinant": "0.32676270259988049400699301609943930725837725952",
+          "denominator": "0.678892704339682736919809477999030417458135755461049542928406",
+          "input_coefficients": {
+            "HBQ_control": "-0.5467980295566502",
+            "HBQ_expert": "0.6862598695958416",
+            "expert_control": "-0.585259406600268"
+          },
+          "numerator": "0.3662411792873207009923074977464",
+          "partial_rank_correlation_from_saved_coefficients": "0.539468426963788064570839198245843440257302658851185462280064",
+          "residual_rank_variance_factors": {
+            "HBQ": "0.70101191487296469428522895483996",
+            "expert": "0.657471426985902177398062328176"
+          }
+        },
+        "raw_type_token_ratio": {
+          "approximate_value": 0.5649003458611656,
+          "correlation_matrix_determinant": "0.20154252577205770160457394711986452819548236672",
+          "denominator": "0.544058545536769921743681275547826639532077586390132425194020",
+          "input_coefficients": {
+            "HBQ_control": "0.483743842364532",
+            "HBQ_expert": "0.6862598695958416",
+            "expert_control": "0.7833092142346203"
+          },
+          "numerator": "0.3073388605424440121834327928004",
+          "partial_rank_correlation_from_saved_coefficients": "0.564900345861165543760656267498988495204664485071044700051927",
+          "residual_rank_variance_factors": {
+            "HBQ": "0.765991894974398815443228420976",
+            "expert": "0.38642667489514171838206491482791"
+          }
+        }
+      },
+      "works": 29
+    },
+    "all_five_28": {
+      "constant_control_partial": null,
+      "constant_control_reason": "Undefined source correlations; constant has no rank variance.",
+      "original_required_shared_works": 33,
+      "original_shared_work_rule_met": false,
+      "reported_plot_groups": 12,
+      "role": "primary",
+      "saved_HBQ_expert_rho": "0.7119170412541377",
+      "single_controls": {
+        "lexical_token_count": {
+          "approximate_value": 0.5398363962094791,
+          "correlation_matrix_determinant": "0.27565519112122449382141369184786216127886107572",
+          "denominator": "0.623719992035542276774774534915462657628319752414678366025613",
+          "input_coefficients": {
+            "HBQ_control": "-0.6310892172961139",
+            "HBQ_expert": "0.7119170412541377",
+            "expert_control": "-0.594543969737662"
+          },
+          "numerator": "0.3367067527442721594088449282982",
+          "partial_rank_correlation_from_saved_coefficients": "0.539836396209479116394381623290080707802745546317326706969250",
+          "residual_rank_variance_factors": {
+            "HBQ": "0.60172639981257833232468395822679",
+            "expert": "0.646517468048582051934898773756"
+          }
+        },
+        "raw_type_token_ratio": {
+          "approximate_value": 0.5807118976739485,
+          "correlation_matrix_determinant": "0.190703305423710846671876118002640530519156244372",
+          "denominator": "0.536409523414531208721823823788543917000576111922065156620907",
+          "input_coefficients": {
+            "HBQ_control": "0.5128626163108921",
+            "HBQ_expert": "0.7119170412541377",
+            "expert_control": "0.7807503145032858"
+          },
+          "numerator": "0.31149939227243069916476022073782",
+          "partial_rank_correlation_from_saved_coefficients": "0.580711897673948443869879431040987646553240550998557080960060",
+          "residual_rank_variance_factors": {
+            "HBQ": "0.73697193679074667250387890215759",
+            "expert": "0.39042894640302031098322100351836"
+          }
+        }
+      },
+      "works": 28
+    }
+  },
+  "formula": "(r_XY-r_XZ*r_YZ)/sqrt((1-r_XZ^2)*(1-r_YZ^2)); X=HBQ ranks, Y=expert-mean ranks, Z=one control rank vector.",
+  "held_out_target_reads": 0,
+  "input": {
+    "bytes": 9402,
+    "sha256": "f7a2665ef961cc048947ab780271d709e980ddd19aa5035ab3647e7be893d11b"
+  },
+  "interpretation": "Pearson correlation of standardized average-tie rank residuals after one linear rank control at a time; no reranking of residuals.",
+  "limits": [
+    "Inputs are saved JSON coefficients rounded by the earlier computation; high-precision arithmetic cannot restore lost precision. No raw-rank recomputation.",
+    "Post-hoc descriptive analysis; primary shared28 and dependent HBQ29 are selected available subsets, not independent replications.",
+    "Original shared33 rule remains unmet; seven/eight missing works, plot dependence and selection remain.",
+    "One control at a time; lexical length and raw TTR are related and are not jointly controlled. No nonlinear, latent or plot/condition confounding adjustment.",
+    "No causal explanation, significance test, confidence interval, human-validity gain or candidate promotion follows.",
+    "No adjusted competitor correlations are available here; unadjusted method points must not be compared as adjusted competitors."
+  ],
+  "membership_evidence": "Reported exact-membership source coefficients and pointers checked; raw individual memberships are not reopened or independently reconstructed.",
+  "native_replays": 0,
+  "new_human_labels": 0,
+  "promotion": "none",
+  "provider_calls": 0,
+  "scorer_calls": 0,
+  "source_commitments": {
+    "analysis": "230b9391bc060d375b529cd715f5442424d70f46ba3e27d3ff5292690366f903",
+    "condition": "219d1388e13bd796d13b93a7511ed7ee55d0cf120479783debf022a622d83dde",
+    "helper_source": "c843cb8bfb54a3cc27955c911c1a8e5aa053d6a2f25a9f4dd3b67479fa22ae19",
+    "manifest": "00b4e3cd33a8d9ed3cc24e6e3e8d07ec20511a6dd87c6507f888d43eb59391bc",
+    "original_manifest": "b1868f8b6dee6daba3125b73628e6276b34f7049fad049f17262cbe3c859b7b7",
+    "profiles": "f1ac953b99bbddd96272eb9555e60eb80c9de6d5d30861e2ad7dd2e6fbecd388"
+  },
+  "source_freeze_sha256": "d9863bb5d3677b2091a46fcf2e3ac2072bf3dcbe0ab8a744ffd1c231afa5c78d",
+  "state": "POST_HOC_PARTIAL_RANK_FROM_SAVED_ROUNDED_COEFFICIENTS"
+}

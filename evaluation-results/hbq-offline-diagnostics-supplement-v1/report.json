@@ -1,0 +1,228 @@
+{
+  "candidate_promoted": false,
+  "dryad_delete_one": {
+    "axes": {
+      "enjoyed": {
+        "baseline_rho": 0.3772535428287276,
+        "baseline_stories": 30,
+        "coefficient_sign_counts": {
+          "negative": 0,
+          "positive": 30,
+          "undefined": 0,
+          "zero": 0
+        },
+        "defined_deletions": 30,
+        "maximum_absolute_shift": 0.09835026062200469,
+        "maximum_delete_one_rho": 0.4756038034507323,
+        "minimum_delete_one_rho": 0.31493350301038125,
+        "planned_deletions": 30,
+        "stories_each_deletion": 29,
+        "undefined_deletions": 0
+      },
+      "well_written": {
+        "baseline_rho": 0.3419413051091544,
+        "baseline_stories": 30,
+        "coefficient_sign_counts": {
+          "negative": 0,
+          "positive": 30,
+          "undefined": 0,
+          "zero": 0
+        },
+        "defined_deletions": 30,
+        "maximum_absolute_shift": 0.11381430384363084,
+        "maximum_delete_one_rho": 0.4557556089527852,
+        "minimum_delete_one_rho": 0.275819646521453,
+        "planned_deletions": 30,
+        "stories_each_deletion": 29,
+        "undefined_deletions": 0
+      }
+    }
+  },
+  "human_validity_established": false,
+  "limits": {
+    "dryad_delete_one": [
+      "Observational sensitivity of a previously selected, already-opened30-story development cohort; no held-out or prospective claim.",
+      "One deletion measures local influence only. It does not establish generalization, causal effect, significance or a population confidence interval.",
+      "Story observations and mean human targets may share evaluators, topics and conditions; deletion does not model crossed-rater or cluster dependence.",
+      "The original100-story reduction followed partial model observation; selection and original unmet study/coverage/native-provenance gates remain unchanged.",
+      "No candidate, comparator or winner was selected or promoted. Historical account/model/receipt limitations remain."
+    ],
+    "poetry_scalar_order": [
+      "Four selected synthetic families, shared artifacts and dependent cycle contrasts; not population reliability.",
+      "Unequal availability and tied score compression prevent arm-winner or equivalence claims.",
+      "Scalar-induced ordering is distinct from direct pairwise judgments and from literary correctness.",
+      "Creator variant roles provide no quality oracle; no human alignment, causal improvement or promotion established.",
+      "Historical report qualifications remain; no new current-account, sampler or native-runtime qualification."
+    ],
+    "ttcw_partial_rank": [
+      "Inputs are saved JSON coefficients rounded by the earlier computation; high-precision arithmetic cannot restore lost precision. No raw-rank recomputation.",
+      "Post-hoc descriptive analysis; primary shared28 and dependent HBQ29 are selected available subsets, not independent replications.",
+      "Original shared33 rule remains unmet; seven/eight missing works, plot dependence and selection remain.",
+      "One control at a time; lexical length and raw TTR are related and are not jointly controlled. No nonlinear, latent or plot/condition confounding adjustment.",
+      "No causal explanation, significance test, confidence interval, human-validity gain or candidate promotion follows.",
+      "No adjusted competitor correlations are available here; unadjusted method points must not be compared as adjusted competitors."
+    ],
+    "ttcw_repeat": [
+      "Two selected works; leaves and repeated question identities are dependent, not population replicates.",
+      "Post-hoc stratification and question recurrence add to prior unconditional equality/Jaccard summaries; no new preregistration.",
+      "Exact evidence-object turnover is not semantic reasoning turnover, validity, support quality or causality. A reference or summary edit makes an object unequal.",
+      "The one recurrently changed question is not by itself evidence of a general rubric defect.",
+      "Saved descriptor equality is not fresh native validation, current-account equivalence or sampler/backend attestation."
+    ]
+  },
+  "new_human_labels": 0,
+  "new_provider_calls": 0,
+  "poetry_scalar_order": {
+    "arms": {
+      "compact": {
+        "missing": 0,
+        "observed": 36,
+        "planned": 36,
+        "stable_strict": 18,
+        "stable_tie": 18,
+        "strict_reversal": 0,
+        "tie_change": 0,
+        "tie_entry": 0,
+        "tie_exit": 0
+      },
+      "hbq": {
+        "missing": 16,
+        "observed": 20,
+        "planned": 36,
+        "stable_strict": 15,
+        "stable_tie": 3,
+        "strict_reversal": 2,
+        "tie_change": 0,
+        "tie_entry": 0,
+        "tie_exit": 0
+      },
+      "holistic": {
+        "missing": 0,
+        "observed": 36,
+        "planned": 36,
+        "stable_strict": 21,
+        "stable_tie": 12,
+        "strict_reversal": 1,
+        "tie_change": 2,
+        "tie_entry": 1,
+        "tie_exit": 1
+      },
+      "poemetric": {
+        "missing": 12,
+        "observed": 24,
+        "planned": 36,
+        "stable_strict": 5,
+        "stable_tie": 17,
+        "strict_reversal": 0,
+        "tie_change": 2,
+        "tie_entry": 0,
+        "tie_exit": 2
+      }
+    },
+    "cycles": [
+      0,
+      1,
+      2
+    ],
+    "families": 4,
+    "variants_per_family": 3
+  },
+  "projection_is_scientific_recomputation": false,
+  "prospective_validation_established": false,
+  "reviewed_aggregate_sha256": {
+    "dryad_influence": "d56438f6fd3d0edc23930dbb115ae78a93a91e8e465b5d5d121710487aaccd3b",
+    "poetry_order": "e19a2fbca91ff574f2c7a36ed2b54fd2dbbfd86ddbad74bd85fdb36f632f8a05",
+    "ttcw_partial": "743aa2e79d33a4acde2f818db7faccf46ff7cbde4eb7619fa013b026cd52c823",
+    "ttcw_repeat": "2d17e51f0c79e1058f65ba79c44a02f3134a6443d29440e7ac6cf64cf0b118bd"
+  },
+  "state": "DESCRIPTIVE_OFFLINE_FOUR_DIAGNOSTIC_SUPPLEMENT",
+  "ttcw_partial_rank": {
+    "cohorts": {
+      "HBQ_numeric_29": {
+        "role": "dependent_secondary",
+        "single_controls": {
+          "lexical_token_count": 0.539468426963788,
+          "raw_type_token_ratio": 0.5649003458611656
+        },
+        "unadjusted_rho": "0.6862598695958416",
+        "works": 29
+      },
+      "all_five_28": {
+        "role": "primary",
+        "single_controls": {
+          "lexical_token_count": 0.5398363962094791,
+          "raw_type_token_ratio": 0.5807118976739485
+        },
+        "unadjusted_rho": "0.7119170412541377",
+        "works": 28
+      }
+    },
+    "formula": "(r_XY-r_XZ*r_YZ)/sqrt((1-r_XZ^2)*(1-r_YZ^2)); X=HBQ ranks, Y=expert-mean ranks, Z=one control rank vector."
+  },
+  "ttcw_repeat": {
+    "changes_by_anonymous_bank": [
+      8,
+      10
+    ],
+    "leaf_pairs": 356,
+    "question_recurrence": {
+      "changed_in_both_work_pairs": 1,
+      "changed_in_exactly_one_work_pair": 16,
+      "changed_in_neither_work_pair": 161,
+      "distinct_questions_changed": 17,
+      "matched_question_identities": 178
+    },
+    "state_conditioned_exact_evidence": {
+      "applicability_change": {
+        "empty_evidence_unions": 0,
+        "exact_evidence_sets_equal": 0,
+        "exact_evidence_sets_unequal": 3,
+        "jaccard_defined_pairs": 3,
+        "matched_leaf_pairs": 3,
+        "mean_exact_set_jaccard": 0.0,
+        "mean_exact_set_jaccard_fraction": {
+          "denominator": 1,
+          "numerator": 0
+        },
+        "nonempty_exact_evidence_intersection": 0
+      },
+      "cannot_assess_change": {
+        "empty_evidence_unions": 0,
+        "exact_evidence_sets_equal": 0,
+        "exact_evidence_sets_unequal": 0,
+        "jaccard_defined_pairs": 0,
+        "matched_leaf_pairs": 0,
+        "mean_exact_set_jaccard": null,
+        "mean_exact_set_jaccard_fraction": null,
+        "nonempty_exact_evidence_intersection": 0
+      },
+      "stable": {
+        "empty_evidence_unions": 0,
+        "exact_evidence_sets_equal": 9,
+        "exact_evidence_sets_unequal": 329,
+        "jaccard_defined_pairs": 338,
+        "matched_leaf_pairs": 338,
+        "mean_exact_set_jaccard": 0.06785009861932939,
+        "mean_exact_set_jaccard_fraction": {
+          "denominator": 2535,
+          "numerator": 172
+        },
+        "nonempty_exact_evidence_intersection": 45
+      },
+      "yes_no_flip": {
+        "empty_evidence_unions": 0,
+        "exact_evidence_sets_equal": 0,
+        "exact_evidence_sets_unequal": 15,
+        "jaccard_defined_pairs": 15,
+        "matched_leaf_pairs": 15,
+        "mean_exact_set_jaccard": 0.016666666666666666,
+        "mean_exact_set_jaccard_fraction": {
+          "denominator": 60,
+          "numerator": 1
+        },
+        "nonempty_exact_evidence_intersection": 1
+      }
+    },
+    "work_pairs": 2
+  }
+}

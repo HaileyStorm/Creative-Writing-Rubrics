@@ -1,0 +1,808 @@
+{
+  "arms": {
+    "compact": {
+      "by_cycle_contrast": {
+        "0-1": {
+          "missing": 0,
+          "observed": 12,
+          "planned": 12,
+          "stable_strict": 6,
+          "stable_tie": 6,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "0-2": {
+          "missing": 0,
+          "observed": 12,
+          "planned": 12,
+          "stable_strict": 6,
+          "stable_tie": 6,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "1-2": {
+          "missing": 0,
+          "observed": 12,
+          "planned": 12,
+          "stable_strict": 6,
+          "stable_tie": 6,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        }
+      },
+      "by_form": {
+        "poetry.free_verse": {
+          "missing": 0,
+          "observed": 18,
+          "planned": 18,
+          "stable_strict": 6,
+          "stable_tie": 12,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "poetry.sonnet.contemporary": {
+          "missing": 0,
+          "observed": 9,
+          "planned": 9,
+          "stable_strict": 6,
+          "stable_tie": 3,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "poetry.sonnet.petrarchan": {
+          "missing": 0,
+          "observed": 9,
+          "planned": 9,
+          "stable_strict": 6,
+          "stable_tie": 3,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        }
+      },
+      "by_form_and_cycle_contrast": {
+        "poetry.free_verse": {
+          "0-1": {
+            "missing": 0,
+            "observed": 6,
+            "planned": 6,
+            "stable_strict": 2,
+            "stable_tie": 4,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "0-2": {
+            "missing": 0,
+            "observed": 6,
+            "planned": 6,
+            "stable_strict": 2,
+            "stable_tie": 4,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "1-2": {
+            "missing": 0,
+            "observed": 6,
+            "planned": 6,
+            "stable_strict": 2,
+            "stable_tie": 4,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          }
+        },
+        "poetry.sonnet.contemporary": {
+          "0-1": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 2,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "0-2": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 2,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "1-2": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 2,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          }
+        },
+        "poetry.sonnet.petrarchan": {
+          "0-1": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 2,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "0-2": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 2,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "1-2": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 2,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          }
+        }
+      },
+      "overall": {
+        "missing": 0,
+        "observed": 36,
+        "planned": 36,
+        "stable_strict": 18,
+        "stable_tie": 18,
+        "strict_reversal": 0,
+        "tie_change": 0,
+        "tie_entry": 0,
+        "tie_exit": 0
+      }
+    },
+    "hbq": {
+      "by_cycle_contrast": {
+        "0-1": {
+          "missing": 6,
+          "observed": 6,
+          "planned": 12,
+          "stable_strict": 5,
+          "stable_tie": 1,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "0-2": {
+          "missing": 4,
+          "observed": 8,
+          "planned": 12,
+          "stable_strict": 6,
+          "stable_tie": 1,
+          "strict_reversal": 1,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "1-2": {
+          "missing": 6,
+          "observed": 6,
+          "planned": 12,
+          "stable_strict": 4,
+          "stable_tie": 1,
+          "strict_reversal": 1,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        }
+      },
+      "by_form": {
+        "poetry.free_verse": {
+          "missing": 4,
+          "observed": 14,
+          "planned": 18,
+          "stable_strict": 11,
+          "stable_tie": 3,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "poetry.sonnet.contemporary": {
+          "missing": 6,
+          "observed": 3,
+          "planned": 9,
+          "stable_strict": 3,
+          "stable_tie": 0,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "poetry.sonnet.petrarchan": {
+          "missing": 6,
+          "observed": 3,
+          "planned": 9,
+          "stable_strict": 1,
+          "stable_tie": 0,
+          "strict_reversal": 2,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        }
+      },
+      "by_form_and_cycle_contrast": {
+        "poetry.free_verse": {
+          "0-1": {
+            "missing": 2,
+            "observed": 4,
+            "planned": 6,
+            "stable_strict": 3,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "0-2": {
+            "missing": 0,
+            "observed": 6,
+            "planned": 6,
+            "stable_strict": 5,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "1-2": {
+            "missing": 2,
+            "observed": 4,
+            "planned": 6,
+            "stable_strict": 3,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          }
+        },
+        "poetry.sonnet.contemporary": {
+          "0-1": {
+            "missing": 2,
+            "observed": 1,
+            "planned": 3,
+            "stable_strict": 1,
+            "stable_tie": 0,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "0-2": {
+            "missing": 2,
+            "observed": 1,
+            "planned": 3,
+            "stable_strict": 1,
+            "stable_tie": 0,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "1-2": {
+            "missing": 2,
+            "observed": 1,
+            "planned": 3,
+            "stable_strict": 1,
+            "stable_tie": 0,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          }
+        },
+        "poetry.sonnet.petrarchan": {
+          "0-1": {
+            "missing": 2,
+            "observed": 1,
+            "planned": 3,
+            "stable_strict": 1,
+            "stable_tie": 0,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "0-2": {
+            "missing": 2,
+            "observed": 1,
+            "planned": 3,
+            "stable_strict": 0,
+            "stable_tie": 0,
+            "strict_reversal": 1,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "1-2": {
+            "missing": 2,
+            "observed": 1,
+            "planned": 3,
+            "stable_strict": 0,
+            "stable_tie": 0,
+            "strict_reversal": 1,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          }
+        }
+      },
+      "overall": {
+        "missing": 16,
+        "observed": 20,
+        "planned": 36,
+        "stable_strict": 15,
+        "stable_tie": 3,
+        "strict_reversal": 2,
+        "tie_change": 0,
+        "tie_entry": 0,
+        "tie_exit": 0
+      }
+    },
+    "holistic": {
+      "by_cycle_contrast": {
+        "0-1": {
+          "missing": 0,
+          "observed": 12,
+          "planned": 12,
+          "stable_strict": 7,
+          "stable_tie": 4,
+          "strict_reversal": 0,
+          "tie_change": 1,
+          "tie_entry": 1,
+          "tie_exit": 0
+        },
+        "0-2": {
+          "missing": 0,
+          "observed": 12,
+          "planned": 12,
+          "stable_strict": 7,
+          "stable_tie": 4,
+          "strict_reversal": 1,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "1-2": {
+          "missing": 0,
+          "observed": 12,
+          "planned": 12,
+          "stable_strict": 7,
+          "stable_tie": 4,
+          "strict_reversal": 0,
+          "tie_change": 1,
+          "tie_entry": 0,
+          "tie_exit": 1
+        }
+      },
+      "by_form": {
+        "poetry.free_verse": {
+          "missing": 0,
+          "observed": 18,
+          "planned": 18,
+          "stable_strict": 9,
+          "stable_tie": 9,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "poetry.sonnet.contemporary": {
+          "missing": 0,
+          "observed": 9,
+          "planned": 9,
+          "stable_strict": 6,
+          "stable_tie": 3,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "poetry.sonnet.petrarchan": {
+          "missing": 0,
+          "observed": 9,
+          "planned": 9,
+          "stable_strict": 6,
+          "stable_tie": 0,
+          "strict_reversal": 1,
+          "tie_change": 2,
+          "tie_entry": 1,
+          "tie_exit": 1
+        }
+      },
+      "by_form_and_cycle_contrast": {
+        "poetry.free_verse": {
+          "0-1": {
+            "missing": 0,
+            "observed": 6,
+            "planned": 6,
+            "stable_strict": 3,
+            "stable_tie": 3,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "0-2": {
+            "missing": 0,
+            "observed": 6,
+            "planned": 6,
+            "stable_strict": 3,
+            "stable_tie": 3,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "1-2": {
+            "missing": 0,
+            "observed": 6,
+            "planned": 6,
+            "stable_strict": 3,
+            "stable_tie": 3,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          }
+        },
+        "poetry.sonnet.contemporary": {
+          "0-1": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 2,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "0-2": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 2,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "1-2": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 2,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          }
+        },
+        "poetry.sonnet.petrarchan": {
+          "0-1": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 2,
+            "stable_tie": 0,
+            "strict_reversal": 0,
+            "tie_change": 1,
+            "tie_entry": 1,
+            "tie_exit": 0
+          },
+          "0-2": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 2,
+            "stable_tie": 0,
+            "strict_reversal": 1,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "1-2": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 2,
+            "stable_tie": 0,
+            "strict_reversal": 0,
+            "tie_change": 1,
+            "tie_entry": 0,
+            "tie_exit": 1
+          }
+        }
+      },
+      "overall": {
+        "missing": 0,
+        "observed": 36,
+        "planned": 36,
+        "stable_strict": 21,
+        "stable_tie": 12,
+        "strict_reversal": 1,
+        "tie_change": 2,
+        "tie_entry": 1,
+        "tie_exit": 1
+      }
+    },
+    "poemetric": {
+      "by_cycle_contrast": {
+        "0-1": {
+          "missing": 4,
+          "observed": 8,
+          "planned": 12,
+          "stable_strict": 1,
+          "stable_tie": 7,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "0-2": {
+          "missing": 4,
+          "observed": 8,
+          "planned": 12,
+          "stable_strict": 1,
+          "stable_tie": 6,
+          "strict_reversal": 0,
+          "tie_change": 1,
+          "tie_entry": 0,
+          "tie_exit": 1
+        },
+        "1-2": {
+          "missing": 4,
+          "observed": 8,
+          "planned": 12,
+          "stable_strict": 3,
+          "stable_tie": 4,
+          "strict_reversal": 0,
+          "tie_change": 1,
+          "tie_entry": 0,
+          "tie_exit": 1
+        }
+      },
+      "by_form": {
+        "poetry.free_verse": {
+          "missing": 8,
+          "observed": 10,
+          "planned": 18,
+          "stable_strict": 5,
+          "stable_tie": 5,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "poetry.sonnet.contemporary": {
+          "missing": 0,
+          "observed": 9,
+          "planned": 9,
+          "stable_strict": 0,
+          "stable_tie": 9,
+          "strict_reversal": 0,
+          "tie_change": 0,
+          "tie_entry": 0,
+          "tie_exit": 0
+        },
+        "poetry.sonnet.petrarchan": {
+          "missing": 4,
+          "observed": 5,
+          "planned": 9,
+          "stable_strict": 0,
+          "stable_tie": 3,
+          "strict_reversal": 0,
+          "tie_change": 2,
+          "tie_entry": 0,
+          "tie_exit": 2
+        }
+      },
+      "by_form_and_cycle_contrast": {
+        "poetry.free_verse": {
+          "0-1": {
+            "missing": 4,
+            "observed": 2,
+            "planned": 6,
+            "stable_strict": 1,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "0-2": {
+            "missing": 2,
+            "observed": 4,
+            "planned": 6,
+            "stable_strict": 1,
+            "stable_tie": 3,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "1-2": {
+            "missing": 2,
+            "observed": 4,
+            "planned": 6,
+            "stable_strict": 3,
+            "stable_tie": 1,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          }
+        },
+        "poetry.sonnet.contemporary": {
+          "0-1": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 0,
+            "stable_tie": 3,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "0-2": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 0,
+            "stable_tie": 3,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "1-2": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 0,
+            "stable_tie": 3,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          }
+        },
+        "poetry.sonnet.petrarchan": {
+          "0-1": {
+            "missing": 0,
+            "observed": 3,
+            "planned": 3,
+            "stable_strict": 0,
+            "stable_tie": 3,
+            "strict_reversal": 0,
+            "tie_change": 0,
+            "tie_entry": 0,
+            "tie_exit": 0
+          },
+          "0-2": {
+            "missing": 2,
+            "observed": 1,
+            "planned": 3,
+            "stable_strict": 0,
+            "stable_tie": 0,
+            "strict_reversal": 0,
+            "tie_change": 1,
+            "tie_entry": 0,
+            "tie_exit": 1
+          },
+          "1-2": {
+            "missing": 2,
+            "observed": 1,
+            "planned": 3,
+            "stable_strict": 0,
+            "stable_tie": 0,
+            "strict_reversal": 0,
+            "tie_change": 1,
+            "tie_entry": 0,
+            "tie_exit": 1
+          }
+        }
+      },
+      "overall": {
+        "missing": 12,
+        "observed": 24,
+        "planned": 36,
+        "stable_strict": 5,
+        "stable_tie": 17,
+        "strict_reversal": 0,
+        "tie_change": 2,
+        "tie_entry": 0,
+        "tie_exit": 2
+      }
+    }
+  },
+  "cycles": [
+    0,
+    1,
+    2
+  ],
+  "definitions": {
+    "comparison": "Unordered variant pair within a family, contrasted over two cycles. Both pair members must have eligible scores in both cycles.",
+    "missing": "At least one of the four required eligible saved scores is null; never imputed.",
+    "population": "Exactly the four families represented by saved full_bank_profiles; comparator-only families excluded.",
+    "score": "Saved eligible_scalar for SCORED complete HBQ banks; saved score for assessed comparator rows. Fraction(str(value)) preserves the serialized numeric value.",
+    "strict_reversal": "Both cycles have unequal pair scores and their signs differ.",
+    "tie_entry": "Earlier cycle strict ordering becomes an exact tie.",
+    "tie_exit": "Earlier cycle exact tie becomes strict ordering."
+  },
+  "families": 4,
+  "family_counts_by_form": {
+    "poetry.free_verse": 2,
+    "poetry.sonnet.contemporary": 1,
+    "poetry.sonnet.petrarchan": 1
+  },
+  "held_out_target_reads": 0,
+  "limits": [
+    "Four selected synthetic families, shared artifacts and dependent cycle contrasts; not population reliability.",
+    "Unequal availability and tied score compression prevent arm-winner or equivalence claims.",
+    "Scalar-induced ordering is distinct from direct pairwise judgments and from literary correctness.",
+    "Creator variant roles provide no quality oracle; no human alignment, causal improvement or promotion established.",
+    "Historical report qualifications remain; no new current-account, sampler or native-runtime qualification."
+  ],
+  "native_replays": 0,
+  "promotion": "none",
+  "provider_calls": 0,
+  "scorer_calls": 0,
+  "sources": {
+    "eligibility_analysis": {
+      "bytes": 17275,
+      "sha256": "3683a689c7a7d63d069067faf75ded1f1ded1a95856493ff5d944d78a34a501c"
+    },
+    "report": {
+      "bytes": 5426453,
+      "sha256": "4fea1950e29aad7442d37ae0ce9dbdbfc091069e53131261e7455f2e85cc46d7"
+    }
+  },
+  "state": "POST_HOC_OFFLINE_SELECTED_POETRY_SCALAR_ORDER_DIAGNOSTIC",
+  "variants_per_family": 3
+}

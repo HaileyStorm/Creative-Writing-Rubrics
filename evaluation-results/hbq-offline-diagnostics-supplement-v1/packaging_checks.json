@@ -1,0 +1,34 @@
+{
+  "adapter_runtime_acceptance_claimed": true,
+  "adapters": [
+    {
+      "analysis": "ttcw_repeat",
+      "full_adapter_reexecution": true,
+      "original_function_bodies_preserved": 7,
+      "syntax_passed": true
+    },
+    {
+      "analysis": "poetry_order",
+      "full_adapter_reexecution": true,
+      "original_function_bodies_preserved": 6,
+      "syntax_passed": true
+    },
+    {
+      "analysis": "ttcw_partial",
+      "full_adapter_reexecution": true,
+      "original_function_bodies_preserved": 3,
+      "syntax_passed": true
+    },
+    {
+      "analysis": "dryad_influence",
+      "full_adapter_reexecution": true,
+      "original_function_bodies_preserved": 4,
+      "syntax_passed": true
+    }
+  ],
+  "aggregate_projection_executed": true,
+  "limits": "Structural checks and pinned copies do not replace independent source/privacy review or full recomputation.",
+  "private_local_path_or_known_identity_prefix_hits": 0,
+  "runtime_evidence": "runtime_acceptance.json",
+  "state": "STRUCTURAL_AND_RELOCATED_RUNTIME_ACCEPTANCE_PASSED"
+}

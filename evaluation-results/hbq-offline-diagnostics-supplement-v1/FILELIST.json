@@ -1,0 +1,67 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 6380,
+      "sha256": "410f6b2465785ed68354032933e75573c7891e389b9cfccee8519b4d77fcddd9"
+    },
+    "input_contracts.json": {
+      "bytes": 3105,
+      "sha256": "cced2713d3d9ea3c5732e5b96179f82c9a012a874f1696d20dc99b90a87be202"
+    },
+    "packaging_checks.json": {
+      "bytes": 1054,
+      "sha256": "1aef75685ffb729ac55dac686f352b42e0becc17d1fd8a5b9883367d61e95dd1"
+    },
+    "project.py": {
+      "bytes": 3457,
+      "sha256": "c6c01b5872426124162a01638e00707150f4da6306c46d75fabc5ef6a40f2291"
+    },
+    "recompute/dryad_influence.py": {
+      "bytes": 6590,
+      "sha256": "6152d9513080aa644c1758dc3c5b2d0d4b10ef222e9686eb3ac3bb1dbf4b1026"
+    },
+    "recompute/poetry_order.py": {
+      "bytes": 7758,
+      "sha256": "46c309d417d07047d176692d446560590c593a8de7cc339323321b89f819ccf9"
+    },
+    "recompute/ttcw_partial.py": {
+      "bytes": 7089,
+      "sha256": "5bfb75886a84cf2ab8a1d92f256f3b14a3b6f69c2e39ca0185d3663ca1c51499"
+    },
+    "recompute/ttcw_repeat.py": {
+      "bytes": 9906,
+      "sha256": "72a618c9c946384c57f2ad9b15ae36890e0c82500dc59ab54378d7fbd8fc775b"
+    },
+    "report.json": {
+      "bytes": 8741,
+      "sha256": "025bfed29cc7aaab67f3c24af5a6277ae77f07972720f66b8e4f08ef506478c0"
+    },
+    "reviewed_aggregates/dryad_influence.json": {
+      "bytes": 4901,
+      "sha256": "d56438f6fd3d0edc23930dbb115ae78a93a91e8e465b5d5d121710487aaccd3b"
+    },
+    "reviewed_aggregates/poetry_order.json": {
+      "bytes": 21252,
+      "sha256": "e19a2fbca91ff574f2c7a36ed2b54fd2dbbfd86ddbad74bd85fdb36f632f8a05"
+    },
+    "reviewed_aggregates/ttcw_partial.json": {
+      "bytes": 6505,
+      "sha256": "743aa2e79d33a4acde2f818db7faccf46ff7cbde4eb7619fa013b026cd52c823"
+    },
+    "reviewed_aggregates/ttcw_repeat.json": {
+      "bytes": 13359,
+      "sha256": "2d17e51f0c79e1058f65ba79c44a02f3134a6443d29440e7ac6cf64cf0b118bd"
+    },
+    "runtime_acceptance.json": {
+      "bytes": 3686,
+      "sha256": "bfad91b96019bb6074a5d358f09d185cb87d49f1d2484950eca0657b55cb4c18"
+    },
+    "source_mapping.json": {
+      "bytes": 2375,
+      "sha256": "3ccc70f723f934822802856b1f1969bd6211804d4624b09d69fac042d154da2b"
+    }
+  },
+  "parent_candidate_filelist_sha256": "b4302e98bb93bc4e97f02e19886dbcdc91f3b9e6277dcf251e637b4116c8043a",
+  "self_excluded": true,
+  "state": "PUBLICATION_FILELIST"
+}

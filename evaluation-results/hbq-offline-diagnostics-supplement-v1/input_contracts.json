@@ -1,0 +1,71 @@
+{
+  "contracts": {
+    "dryad_influence": {
+      "command": "python -I -B recompute/dryad_influence.py --private-panel <private-panel> --published-dryad-dir <public-dryad-package-directory> --output-dir <new-directory>",
+      "inputs": {
+        "private_panel": {
+          "access": "private_retained",
+          "bytes": 35354,
+          "sha256": "cbfc8eea8c5855b1e3cd0c30e5c14c3d53db42869ade3faf6e3b84b99c6f7b6c"
+        },
+        "public_aggregate": {
+          "access": "public_repository",
+          "bytes": 6154,
+          "repository_relative_path": "evaluation-results/hbq-dryad-sol-dev30-development-20261023/aggregates.json",
+          "sha256": "43bc7afc5ec7ab389d1dddb965c83ad49d312727e0780dc6eecca4b6881ea505"
+        },
+        "public_analysis": {
+          "access": "public_repository",
+          "bytes": 9301,
+          "repository_relative_path": "evaluation-results/hbq-dryad-sol-dev30-development-20261023/analysis.py",
+          "sha256": "0c91ec3f2c31f40599d74fb250df5a4cbc12b3174ab89b6e743db7f6d1836c28"
+        }
+      }
+    },
+    "poetry_order": {
+      "command": "python -I -B recompute/poetry_order.py --report <private-closed-report> --eligibility-analysis <private-analysis-source> --output-dir <new-directory>",
+      "inputs": {
+        "closed_report": {
+          "access": "private_retained",
+          "bytes": 5426453,
+          "sha256": "4fea1950e29aad7442d37ae0ce9dbdbfc091069e53131261e7455f2e85cc46d7"
+        },
+        "eligibility_analysis": {
+          "access": "private_retained",
+          "bytes": 17275,
+          "sha256": "3683a689c7a7d63d069067faf75ded1f1ded1a95856493ff5d944d78a34a501c"
+        }
+      }
+    },
+    "ttcw_partial": {
+      "command": "python -I -B recompute/ttcw_partial.py --report <public-source-control-report> --output-dir <new-directory>",
+      "inputs": {
+        "source_control_report": {
+          "access": "public_repository",
+          "bytes": 9402,
+          "repository_relative_path": "evaluation-results/hbq-sol-ttcw-source-controls-20261026/report.json",
+          "sha256": "f7a2665ef961cc048947ab780271d709e980ddd19aa5035ab3647e7be893d11b"
+        }
+      }
+    },
+    "ttcw_repeat": {
+      "command": "python -I -B recompute/ttcw_repeat.py --initial-view <private-initial-view> --repeat-view <private-repeat-view> --output-dir <new-directory>",
+      "inputs": {
+        "initial_view": {
+          "access": "private_retained",
+          "bytes": 26253882,
+          "sha256": "cbf6192a025521990b17cb3c3f4d2c56e9443eb0ac3084a85eba8fcee9be96f4"
+        },
+        "repeat_view": {
+          "access": "private_retained",
+          "bytes": 961821,
+          "sha256": "3755acbab8cb8893563575e976e392b683a44474fac176d6b84cbe1a644104e1"
+        }
+      }
+    }
+  },
+  "full_recomputation_in_packaging_step": true,
+  "private_inputs_distributed": false,
+  "rebase_rule": "Package internals remain relative to the script. All raw inputs use explicit CLI paths; byte/hash pins remain fixed. Changing inputs requires a new reviewed analysis identity.",
+  "state": "EXPLICIT_REGENERATION_ACCESS_CONTRACT"
+}

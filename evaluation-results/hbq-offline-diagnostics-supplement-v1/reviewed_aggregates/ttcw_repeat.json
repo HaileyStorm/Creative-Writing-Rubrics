@@ -1,0 +1,379 @@
+{
+  "banks": [
+    {
+      "bank": "bank_01",
+      "matched_leaf_pairs": 178,
+      "matched_packets": 23,
+      "stable_by_state": {
+        "CANNOT_ASSESS": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 0,
+          "exact_evidence_sets_unequal": 0,
+          "jaccard_defined_pairs": 0,
+          "matched_leaf_pairs": 0,
+          "mean_exact_set_jaccard": null,
+          "mean_exact_set_jaccard_fraction": null,
+          "nonempty_exact_evidence_intersection": 0
+        },
+        "NO": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 1,
+          "exact_evidence_sets_unequal": 75,
+          "jaccard_defined_pairs": 76,
+          "matched_leaf_pairs": 76,
+          "mean_exact_set_jaccard": 0.0625,
+          "mean_exact_set_jaccard_fraction": {
+            "denominator": 16,
+            "numerator": 1
+          },
+          "nonempty_exact_evidence_intersection": 11
+        },
+        "NOT_APPLICABLE": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 0,
+          "exact_evidence_sets_unequal": 19,
+          "jaccard_defined_pairs": 19,
+          "matched_leaf_pairs": 19,
+          "mean_exact_set_jaccard": 0.0,
+          "mean_exact_set_jaccard_fraction": {
+            "denominator": 1,
+            "numerator": 0
+          },
+          "nonempty_exact_evidence_intersection": 0
+        },
+        "YES": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 6,
+          "exact_evidence_sets_unequal": 69,
+          "jaccard_defined_pairs": 75,
+          "matched_leaf_pairs": 75,
+          "mean_exact_set_jaccard": 0.14666666666666667,
+          "mean_exact_set_jaccard_fraction": {
+            "denominator": 75,
+            "numerator": 11
+          },
+          "nonempty_exact_evidence_intersection": 17
+        }
+      },
+      "state_changes": 8,
+      "strata": {
+        "applicability_change": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 0,
+          "exact_evidence_sets_unequal": 3,
+          "jaccard_defined_pairs": 3,
+          "matched_leaf_pairs": 3,
+          "mean_exact_set_jaccard": 0.0,
+          "mean_exact_set_jaccard_fraction": {
+            "denominator": 1,
+            "numerator": 0
+          },
+          "nonempty_exact_evidence_intersection": 0
+        },
+        "cannot_assess_change": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 0,
+          "exact_evidence_sets_unequal": 0,
+          "jaccard_defined_pairs": 0,
+          "matched_leaf_pairs": 0,
+          "mean_exact_set_jaccard": null,
+          "mean_exact_set_jaccard_fraction": null,
+          "nonempty_exact_evidence_intersection": 0
+        },
+        "stable": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 7,
+          "exact_evidence_sets_unequal": 163,
+          "jaccard_defined_pairs": 170,
+          "matched_leaf_pairs": 170,
+          "mean_exact_set_jaccard": 0.09264705882352942,
+          "mean_exact_set_jaccard_fraction": {
+            "denominator": 680,
+            "numerator": 63
+          },
+          "nonempty_exact_evidence_intersection": 28
+        },
+        "yes_no_flip": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 0,
+          "exact_evidence_sets_unequal": 5,
+          "jaccard_defined_pairs": 5,
+          "matched_leaf_pairs": 5,
+          "mean_exact_set_jaccard": 0.0,
+          "mean_exact_set_jaccard_fraction": {
+            "denominator": 1,
+            "numerator": 0
+          },
+          "nonempty_exact_evidence_intersection": 0
+        }
+      }
+    },
+    {
+      "bank": "bank_02",
+      "matched_leaf_pairs": 178,
+      "matched_packets": 23,
+      "stable_by_state": {
+        "CANNOT_ASSESS": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 0,
+          "exact_evidence_sets_unequal": 1,
+          "jaccard_defined_pairs": 1,
+          "matched_leaf_pairs": 1,
+          "mean_exact_set_jaccard": 0.0,
+          "mean_exact_set_jaccard_fraction": {
+            "denominator": 1,
+            "numerator": 0
+          },
+          "nonempty_exact_evidence_intersection": 0
+        },
+        "NO": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 0,
+          "exact_evidence_sets_unequal": 63,
+          "jaccard_defined_pairs": 63,
+          "matched_leaf_pairs": 63,
+          "mean_exact_set_jaccard": 0.036243386243386244,
+          "mean_exact_set_jaccard_fraction": {
+            "denominator": 3780,
+            "numerator": 137
+          },
+          "nonempty_exact_evidence_intersection": 6
+        },
+        "NOT_APPLICABLE": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 1,
+          "exact_evidence_sets_unequal": 14,
+          "jaccard_defined_pairs": 15,
+          "matched_leaf_pairs": 15,
+          "mean_exact_set_jaccard": 0.08888888888888889,
+          "mean_exact_set_jaccard_fraction": {
+            "denominator": 45,
+            "numerator": 4
+          },
+          "nonempty_exact_evidence_intersection": 2
+        },
+        "YES": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 1,
+          "exact_evidence_sets_unequal": 88,
+          "jaccard_defined_pairs": 89,
+          "matched_leaf_pairs": 89,
+          "mean_exact_set_jaccard": 0.040074906367041196,
+          "mean_exact_set_jaccard_fraction": {
+            "denominator": 2670,
+            "numerator": 107
+          },
+          "nonempty_exact_evidence_intersection": 9
+        }
+      },
+      "state_changes": 10,
+      "strata": {
+        "applicability_change": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 0,
+          "exact_evidence_sets_unequal": 0,
+          "jaccard_defined_pairs": 0,
+          "matched_leaf_pairs": 0,
+          "mean_exact_set_jaccard": null,
+          "mean_exact_set_jaccard_fraction": null,
+          "nonempty_exact_evidence_intersection": 0
+        },
+        "cannot_assess_change": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 0,
+          "exact_evidence_sets_unequal": 0,
+          "jaccard_defined_pairs": 0,
+          "matched_leaf_pairs": 0,
+          "mean_exact_set_jaccard": null,
+          "mean_exact_set_jaccard_fraction": null,
+          "nonempty_exact_evidence_intersection": 0
+        },
+        "stable": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 2,
+          "exact_evidence_sets_unequal": 166,
+          "jaccard_defined_pairs": 168,
+          "matched_leaf_pairs": 168,
+          "mean_exact_set_jaccard": 0.04275793650793651,
+          "mean_exact_set_jaccard_fraction": {
+            "denominator": 10080,
+            "numerator": 431
+          },
+          "nonempty_exact_evidence_intersection": 17
+        },
+        "yes_no_flip": {
+          "empty_evidence_unions": 0,
+          "exact_evidence_sets_equal": 0,
+          "exact_evidence_sets_unequal": 10,
+          "jaccard_defined_pairs": 10,
+          "matched_leaf_pairs": 10,
+          "mean_exact_set_jaccard": 0.025,
+          "mean_exact_set_jaccard_fraction": {
+            "denominator": 40,
+            "numerator": 1
+          },
+          "nonempty_exact_evidence_intersection": 1
+        }
+      }
+    }
+  ],
+  "combined": {
+    "all_pairs": {
+      "empty_evidence_unions": 0,
+      "exact_evidence_sets_equal": 9,
+      "exact_evidence_sets_unequal": 347,
+      "jaccard_defined_pairs": 356,
+      "matched_leaf_pairs": 356,
+      "mean_exact_set_jaccard": 0.06512172284644195,
+      "mean_exact_set_jaccard_fraction": {
+        "denominator": 21360,
+        "numerator": 1391
+      },
+      "nonempty_exact_evidence_intersection": 46
+    },
+    "matched_leaf_pairs": 356,
+    "stable_by_state": {
+      "CANNOT_ASSESS": {
+        "empty_evidence_unions": 0,
+        "exact_evidence_sets_equal": 0,
+        "exact_evidence_sets_unequal": 1,
+        "jaccard_defined_pairs": 1,
+        "matched_leaf_pairs": 1,
+        "mean_exact_set_jaccard": 0.0,
+        "mean_exact_set_jaccard_fraction": {
+          "denominator": 1,
+          "numerator": 0
+        },
+        "nonempty_exact_evidence_intersection": 0
+      },
+      "NO": {
+        "empty_evidence_unions": 0,
+        "exact_evidence_sets_equal": 1,
+        "exact_evidence_sets_unequal": 138,
+        "jaccard_defined_pairs": 139,
+        "matched_leaf_pairs": 139,
+        "mean_exact_set_jaccard": 0.050599520383693045,
+        "mean_exact_set_jaccard_fraction": {
+          "denominator": 4170,
+          "numerator": 211
+        },
+        "nonempty_exact_evidence_intersection": 17
+      },
+      "NOT_APPLICABLE": {
+        "empty_evidence_unions": 0,
+        "exact_evidence_sets_equal": 1,
+        "exact_evidence_sets_unequal": 33,
+        "jaccard_defined_pairs": 34,
+        "matched_leaf_pairs": 34,
+        "mean_exact_set_jaccard": 0.0392156862745098,
+        "mean_exact_set_jaccard_fraction": {
+          "denominator": 51,
+          "numerator": 2
+        },
+        "nonempty_exact_evidence_intersection": 2
+      },
+      "YES": {
+        "empty_evidence_unions": 0,
+        "exact_evidence_sets_equal": 7,
+        "exact_evidence_sets_unequal": 157,
+        "jaccard_defined_pairs": 164,
+        "matched_leaf_pairs": 164,
+        "mean_exact_set_jaccard": 0.08882113821138211,
+        "mean_exact_set_jaccard_fraction": {
+          "denominator": 4920,
+          "numerator": 437
+        },
+        "nonempty_exact_evidence_intersection": 26
+      }
+    },
+    "strata": {
+      "applicability_change": {
+        "empty_evidence_unions": 0,
+        "exact_evidence_sets_equal": 0,
+        "exact_evidence_sets_unequal": 3,
+        "jaccard_defined_pairs": 3,
+        "matched_leaf_pairs": 3,
+        "mean_exact_set_jaccard": 0.0,
+        "mean_exact_set_jaccard_fraction": {
+          "denominator": 1,
+          "numerator": 0
+        },
+        "nonempty_exact_evidence_intersection": 0
+      },
+      "cannot_assess_change": {
+        "empty_evidence_unions": 0,
+        "exact_evidence_sets_equal": 0,
+        "exact_evidence_sets_unequal": 0,
+        "jaccard_defined_pairs": 0,
+        "matched_leaf_pairs": 0,
+        "mean_exact_set_jaccard": null,
+        "mean_exact_set_jaccard_fraction": null,
+        "nonempty_exact_evidence_intersection": 0
+      },
+      "stable": {
+        "empty_evidence_unions": 0,
+        "exact_evidence_sets_equal": 9,
+        "exact_evidence_sets_unequal": 329,
+        "jaccard_defined_pairs": 338,
+        "matched_leaf_pairs": 338,
+        "mean_exact_set_jaccard": 0.06785009861932939,
+        "mean_exact_set_jaccard_fraction": {
+          "denominator": 2535,
+          "numerator": 172
+        },
+        "nonempty_exact_evidence_intersection": 45
+      },
+      "yes_no_flip": {
+        "empty_evidence_unions": 0,
+        "exact_evidence_sets_equal": 0,
+        "exact_evidence_sets_unequal": 15,
+        "jaccard_defined_pairs": 15,
+        "matched_leaf_pairs": 15,
+        "mean_exact_set_jaccard": 0.016666666666666666,
+        "mean_exact_set_jaccard_fraction": {
+          "denominator": 60,
+          "numerator": 1
+        },
+        "nonempty_exact_evidence_intersection": 1
+      }
+    }
+  },
+  "definitions": {
+    "applicability_change": "Any unequal state pair containing NOT_APPLICABLE and no CANNOT_ASSESS.",
+    "bank_order": "Lexical ordering of private selected work IDs, used only to reproduce the saved anonymous bank order.",
+    "cannot_assess_change": "Any unequal state pair containing CANNOT_ASSESS.",
+    "evidence_set": "Unordered set of exact canonical JSON evidence objects; all fields retained, item order and duplicates ignored; no text normalization.",
+    "jaccard": "Exact evidence-object intersection size / union size. Empty union is undefined/null and excluded from the mean; zero-pair strata have null means."
+  },
+  "human_target_reads": 0,
+  "limits": [
+    "Two selected works; leaves and repeated question identities are dependent, not population replicates.",
+    "Post-hoc stratification and question recurrence add to prior unconditional equality/Jaccard summaries; no new preregistration.",
+    "Exact evidence-object turnover is not semantic reasoning turnover, validity, support quality or causality. A reference or summary edit makes an object unequal.",
+    "The one recurrently changed question is not by itself evidence of a general rubric defect.",
+    "Saved descriptor equality is not fresh native validation, current-account equivalence or sampler/backend attestation."
+  ],
+  "native_replays": 0,
+  "promotion": "none",
+  "provider_calls": 0,
+  "question_recurrence": {
+    "changed_in_both_work_pairs": 1,
+    "changed_in_exactly_one_work_pair": 16,
+    "changed_in_neither_work_pair": 161,
+    "distinct_questions_changed": 17,
+    "matched_question_identities": 178
+  },
+  "score_calls": 0,
+  "semantic_validations": 0,
+  "sources": {
+    "initial_saved_view": {
+      "bytes": 26253882,
+      "sha256": "cbf6192a025521990b17cb3c3f4d2c56e9443eb0ac3084a85eba8fcee9be96f4"
+    },
+    "selected_repeat_saved_view": {
+      "bytes": 961821,
+      "sha256": "3755acbab8cb8893563575e976e392b683a44474fac176d6b84cbe1a644104e1"
+    }
+  },
+  "state": "POST_HOC_OFFLINE_SELECTED_REPEAT_DIAGNOSTIC"
+}
