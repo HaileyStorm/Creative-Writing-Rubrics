@@ -1,0 +1,175 @@
+{
+  "analysis_sha256": "947d3c57780c7fdc5d1e15b14e88c8818f42da8b6e11610017fbb5137e2c5771",
+  "canonical_scores_recomputed": false,
+  "contract_sha256": "17f66d8a7e591907a438dfb6e18a0546ad70620316eeb1dae3a194e3cffecab8",
+  "kind": "retrospective_partial_overlap_development_diagnostic",
+  "limitations": [
+    "The cohort, labels, historical outcomes and candidate leaf wording were previously inspected. This is a retrospective, selected sensitivity comparison, not preregistered independent confirmation.",
+    "A non-arbitrary endpoint and central-pressure resolution or transformation are related to, but do not establish, earned setup and naturalness.",
+    "The human question concerns each character and appropriate complexity, including purposeful simplicity and minor characters; the leaves focus on major-character dimensionality and scope-qualified development. Neither is equivalent to the human criterion.",
+    "Four candidate leaves do not cover the other twelve tests or overall TTCW creativity.",
+    "Ties and shared plot groups limit the interpretation of point comparisons.",
+    "No new provider calls, scorer runs, human labels, independent confirmation, or promotion."
+  ],
+  "new_human_labels": 0,
+  "new_provider_calls": 0,
+  "noncanonical": true,
+  "private_aggregate_sha256": "9d134053f6a1ef5241c73a57a477b79aff3ab2c784741342a185a018cec452b3",
+  "results": {
+    "ttcw_01_HBQ_numeric_29": {
+      "confidence_intervals_estimated": false,
+      "fixed_cohort_complete": true,
+      "full_hbq_rho": 0.5955606581721843,
+      "full_ineligible_works": 0,
+      "full_score_ties": {
+        "distinct_levels": 29,
+        "items_in_ties": 0,
+        "observations": 29,
+        "tied_pairs": 0
+      },
+      "human_target_ties": {
+        "distinct_levels": 4,
+        "items_in_ties": 28,
+        "observations": 29,
+        "tied_pairs": 161
+      },
+      "leaf_verdict_counts": {
+        "NO": 14,
+        "YES": 44
+      },
+      "missing_original_works": 7,
+      "original_works": 36,
+      "overlap_minus_full_rho": 0.11868981699526826,
+      "overlap_rho": 0.7142504751674525,
+      "overlap_ties": {
+        "distinct_levels": 3,
+        "items_in_ties": 28,
+        "observations": 29,
+        "tied_pairs": 186
+      },
+      "paired_works": 29,
+      "planned_works": 29,
+      "plot_groups": 12,
+      "unavailable_works": 0
+    },
+    "ttcw_01_all_five_28": {
+      "confidence_intervals_estimated": false,
+      "fixed_cohort_complete": true,
+      "full_hbq_rho": 0.6328496405371995,
+      "full_ineligible_works": 0,
+      "full_score_ties": {
+        "distinct_levels": 28,
+        "items_in_ties": 0,
+        "observations": 28,
+        "tied_pairs": 0
+      },
+      "human_target_ties": {
+        "distinct_levels": 4,
+        "items_in_ties": 27,
+        "observations": 28,
+        "tied_pairs": 151
+      },
+      "leaf_verdict_counts": {
+        "NO": 14,
+        "YES": 42
+      },
+      "missing_original_works": 8,
+      "original_works": 36,
+      "overlap_minus_full_rho": 0.07459249681750735,
+      "overlap_rho": 0.7074421373547068,
+      "overlap_ties": {
+        "distinct_levels": 3,
+        "items_in_ties": 27,
+        "observations": 28,
+        "tied_pairs": 171
+      },
+      "paired_works": 28,
+      "planned_works": 28,
+      "plot_groups": 12,
+      "unavailable_works": 0
+    },
+    "ttcw_14_HBQ_numeric_29": {
+      "confidence_intervals_estimated": false,
+      "fixed_cohort_complete": true,
+      "full_hbq_rho": 0.0173421993904824,
+      "full_ineligible_works": 0,
+      "full_score_ties": {
+        "distinct_levels": 29,
+        "items_in_ties": 0,
+        "observations": 29,
+        "tied_pairs": 0
+      },
+      "human_target_ties": {
+        "distinct_levels": 2,
+        "items_in_ties": 29,
+        "observations": 29,
+        "tied_pairs": 216
+      },
+      "leaf_verdict_counts": {
+        "NO": 17,
+        "YES": 41
+      },
+      "missing_original_works": 7,
+      "original_works": 36,
+      "overlap_minus_full_rho": 0.2143313708464511,
+      "overlap_rho": 0.2316735702369335,
+      "overlap_ties": {
+        "distinct_levels": 3,
+        "items_in_ties": 29,
+        "observations": 29,
+        "tied_pairs": 163
+      },
+      "paired_works": 29,
+      "planned_works": 29,
+      "plot_groups": 12,
+      "unavailable_works": 0
+    },
+    "ttcw_14_all_five_28": {
+      "confidence_intervals_estimated": false,
+      "fixed_cohort_complete": true,
+      "full_hbq_rho": -0.009227275539304441,
+      "full_ineligible_works": 0,
+      "full_score_ties": {
+        "distinct_levels": 28,
+        "items_in_ties": 0,
+        "observations": 28,
+        "tied_pairs": 0
+      },
+      "human_target_ties": {
+        "distinct_levels": 2,
+        "items_in_ties": 28,
+        "observations": 28,
+        "tied_pairs": 198
+      },
+      "leaf_verdict_counts": {
+        "NO": 15,
+        "YES": 41
+      },
+      "missing_original_works": 8,
+      "original_works": 36,
+      "overlap_minus_full_rho": 0.21214713801766139,
+      "overlap_rho": 0.20291986247835694,
+      "overlap_ties": {
+        "distinct_levels": 3,
+        "items_in_ties": 28,
+        "observations": 28,
+        "tied_pairs": 161
+      },
+      "paired_works": 28,
+      "planned_works": 28,
+      "plot_groups": 12,
+      "unavailable_works": 0
+    }
+  },
+  "source_commitments": {
+    "author_tests_sha256": "1f305d408e3f89bb526023a0f04d58428b096aef66b5d748b81579036f3be5a8",
+    "bank_freeze_sha256": "79c7cc0e7da6e46fefe95720e0e084580346d151c19c77b5a56eb4c657c2bb4c",
+    "cohort_freeze_sha256": "b6ae5dd60d281b1cc23ea67412b7816c14558ad290775b296163b651734c9fd2",
+    "compiled_bundle_sha256": "f11f55e8263e3fcc8a2d4b9a00021cf34f0ba2acac843e530999d1ed845fe2f8",
+    "condition_sha256": "219d1388e13bd796d13b93a7511ed7ee55d0cf120479783debf022a622d83dde",
+    "labels_sha256": "1916ec27eaa8810a8427ed7000e2aefa3535fd2a33b2ae1d372cccdab3fc6516",
+    "original_manifest_sha256": "b1868f8b6dee6daba3125b73628e6276b34f7049fad049f17262cbe3c859b7b7",
+    "private_banks_sha256": "97d0455b4cdfe681c46e6c0d95009ea667570b41251b0525a36a3a21eac5d4b0",
+    "question_payload_sha256": "d66c9a9e8471bb57d9ad80c4780349126464c177663b8dca012f44ff2ce52c11"
+  }
+}
