@@ -493,7 +493,13 @@ result.
 The [Dryad source audit](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/87ae86b1cde49177b43d5791483421888f2d5ec6/evaluation-results/hbq-human-alignment-dryad-source-audit-v1/README.md)
 reconciles 293 stories and 3,519 blinded evaluations from 600 evaluators. The
 [frozen analysis protocol and implementation](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/87ae86b1cde49177b43d5791483421888f2d5ec6/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/README.md)
-originally used 176 TRAIN and 60 DEV stories; 57 confirmation stories remain closed.
+originally used 176 TRAIN and 60 DEV stories; rating outcomes for the 57 confirmation
+stories remain excluded from the reported development comparisons. The pilot source
+freeze computed their human targets in program memory before partitioning, and
+freeze verification reads the confirmation subset. Whether the targets or corpus
+summaries were seen by people or models, or influenced selection, has not been
+established. This history must be considered before using the partition for a new
+confirmation claim.
 The [100-story budget amendment](https://github.com/HaileyStorm/Creative-Writing-Rubrics/blob/3003c8db3cd54124b9125d915156019c99cf833e/evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-budget-amendment-100-v1.json)
 selects the first 70 TRAIN and 30 DEV stories in that frozen order, retaining all
 178 criteria and identical endpoint payloads. It requires 2,300 baseline requests

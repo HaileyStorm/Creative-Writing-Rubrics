@@ -84,7 +84,11 @@ The live release-facing work is narrower than the historical experiment log:
   confirmation split. The [owner-adopted 100-story amendment](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-budget-amendment-100-v1.json)
   now selects 70 TRAIN and 30 DEV stories, with all 178 criteria retained and
   2,300 baseline requests per model. It preserves the original plan and follows
-  partial model observation; the 57 confirmation stories remain closed.
+  partial model observation; rating outcomes for the 57 confirmation stories
+  remain excluded from the reported development comparisons. The source freeze
+  computed their human targets in program memory; whether those targets or
+  related summaries were seen by people or models, or influenced selection, has
+  not been established.
   The [2026-09-10 collection checkpoint](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/collection-progress-20260910-v6.json)
   records complete Sol collection replay: 100 stories, 2,300 requests and 17,800
   verdicts, retaining 26 complete messages with unknown process exits. Stories
