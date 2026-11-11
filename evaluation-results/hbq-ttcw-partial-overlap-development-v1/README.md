@@ -9,8 +9,6 @@ The results are exploratory and do not establish a better rubric.
 | --- | --- | ---: | ---: |
 | 29 historical reports | Ending | 0.714 | 0.596 |
 | 29 historical reports | Character development | 0.232 | 0.017 |
-| 28 shared-method works | Ending | 0.707 | 0.633 |
-| 28 shared-method works | Character development | 0.203 | -0.009 |
 
 These are average-tie Spearman correlations against the fraction of YES among
 three existing ballots for the corresponding TTCW question. They are not
@@ -30,9 +28,8 @@ character and appropriate complexity. The mappings are partial, not equivalent
 human labels for those leaves. Twelve other TTCW questions are unmapped.
 
 All four leaves were binary and all full scores eligible in the included
-reports. Seven or eight of the original 36 works are missing, and neither
-cohort meets the prospective 33-work rule. Each cohort spans twelve plot
-groups; the 28-work cohort is a subset, not an independent replication. Each
+reports. Seven of the original 36 works are missing, and the cohort does not
+meet the prospective 33-work rule. It spans twelve plot groups. Each
 overlap score has only three distinct levels. In the 29-work cohort, 28 or 29
 works tie on the overlap score, depending on criterion; the character target
 has only two observed levels. The aggregate file includes the tie counts.
@@ -43,6 +40,11 @@ independent confirmation. No confidence intervals, causal explanation, winner
 or promotion are claimed. The previously published HANNA overlap diagnostic is
 a separate study. No model requests, new human labels or canonical rescoring
 were made for this analysis.
+
+An earlier version also published a nested 28-work summary. Comparing granular
+counts across the two cohorts could reveal verdicts for one omitted work, so
+the current version suppresses that summary. The earlier commit remains in the
+repository history.
 
 `aggregate.json` contains the point estimates, denominators, tie and missingness
 counts, limitations and source hashes. The underlying private reports, labels,

@@ -14,6 +14,7 @@
   "new_human_labels": 0,
   "new_provider_calls": 0,
   "noncanonical": true,
+  "privacy_correction": "The earlier public commit included a nested 28-work summary; its granular counts allowed differencing for one omitted work. This current version suppresses the nested rows. The earlier commit remains in repository history.",
   "private_aggregate_sha256": "9d134053f6a1ef5241c73a57a477b79aff3ab2c784741342a185a018cec452b3",
   "results": {
     "ttcw_01_HBQ_numeric_29": {
@@ -52,42 +53,6 @@
       "plot_groups": 12,
       "unavailable_works": 0
     },
-    "ttcw_01_all_five_28": {
-      "confidence_intervals_estimated": false,
-      "fixed_cohort_complete": true,
-      "full_hbq_rho": 0.6328496405371995,
-      "full_ineligible_works": 0,
-      "full_score_ties": {
-        "distinct_levels": 28,
-        "items_in_ties": 0,
-        "observations": 28,
-        "tied_pairs": 0
-      },
-      "human_target_ties": {
-        "distinct_levels": 4,
-        "items_in_ties": 27,
-        "observations": 28,
-        "tied_pairs": 151
-      },
-      "leaf_verdict_counts": {
-        "NO": 14,
-        "YES": 42
-      },
-      "missing_original_works": 8,
-      "original_works": 36,
-      "overlap_minus_full_rho": 0.07459249681750735,
-      "overlap_rho": 0.7074421373547068,
-      "overlap_ties": {
-        "distinct_levels": 3,
-        "items_in_ties": 27,
-        "observations": 28,
-        "tied_pairs": 171
-      },
-      "paired_works": 28,
-      "planned_works": 28,
-      "plot_groups": 12,
-      "unavailable_works": 0
-    },
     "ttcw_14_HBQ_numeric_29": {
       "confidence_intervals_estimated": false,
       "fixed_cohort_complete": true,
@@ -121,42 +86,6 @@
       },
       "paired_works": 29,
       "planned_works": 29,
-      "plot_groups": 12,
-      "unavailable_works": 0
-    },
-    "ttcw_14_all_five_28": {
-      "confidence_intervals_estimated": false,
-      "fixed_cohort_complete": true,
-      "full_hbq_rho": -0.009227275539304441,
-      "full_ineligible_works": 0,
-      "full_score_ties": {
-        "distinct_levels": 28,
-        "items_in_ties": 0,
-        "observations": 28,
-        "tied_pairs": 0
-      },
-      "human_target_ties": {
-        "distinct_levels": 2,
-        "items_in_ties": 28,
-        "observations": 28,
-        "tied_pairs": 198
-      },
-      "leaf_verdict_counts": {
-        "NO": 15,
-        "YES": 41
-      },
-      "missing_original_works": 8,
-      "original_works": 36,
-      "overlap_minus_full_rho": 0.21214713801766139,
-      "overlap_rho": 0.20291986247835694,
-      "overlap_ties": {
-        "distinct_levels": 3,
-        "items_in_ties": 28,
-        "observations": 28,
-        "tied_pairs": 161
-      },
-      "paired_works": 28,
-      "planned_works": 28,
       "plot_groups": 12,
       "unavailable_works": 0
     }
