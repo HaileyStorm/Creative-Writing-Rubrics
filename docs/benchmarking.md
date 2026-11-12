@@ -52,6 +52,8 @@ The `cwr score` command emits v2 by default. Use `--report-version 1` only to in
 
 `CANNOT_ASSESS` contributes uncertainty to the reported interval. Historical ladder normalization can make that interval too narrow when an unassessed lower threshold suppresses a higher `YES`, as described above. The optional `uncertainty_preserving_ladder_v1` policy is a separate candidate, not the default or a proven universal bound. If coverage is below the bundle threshold, the result is `PROVISIONAL` and must not drive unattended acceptance. Missing modalities (no audio for an audio leaf) are `CANNOT_ASSESS`, not `NO`.
 
+For example, `synthetic_A` in the [scorer influence aggregate](../evaluation-results/hbq-scorer-verdict-influence-v1/aggregate.json) has a historical upper bound of 39.6799 when `core.holistic_artistic_success.threshold_1_functional` is unassessed. Resolving that one threshold as `YES` yields 41.6799. This is a mechanical counterexample, not an estimate of how often the issue occurs in practice.
+
 ### Inspect decision readiness
 
 Run the optional readiness tool on an existing local v1 or v2 score report:
