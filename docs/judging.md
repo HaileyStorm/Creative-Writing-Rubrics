@@ -123,7 +123,7 @@ remove constraints expressed in the brief. Visible brief compliance and fidelity
 to an unavailable source are different evidence questions; see the
 [saved-context diagnostic](../evaluation-results/hbq-lamp-applicability-development-20261020/README.md#authorization-and-conditional-applicability-follow-up).
 
-Complete score and verdict reports can be published independently of their source text. Before publishing a private evaluation, remove embedded quotes, local paths, and private run metadata while retaining verdicts, notes, references, coverage, confidence, and every score breakdown.
+Before publishing an evaluation of private material, review the entire report and its context for information that could identify or reveal the source. Quotes, notes, evidence summaries, references, task-contract fields, local paths, and run metadata can all contain private details; removing quotes alone is not sufficient. Redact or omit sensitive fields and consider what the remaining verdicts and breakdowns reveal together. Keep the original report private, and publish only the material appropriate for the intended audience.
 
 ## Long-form work
 
