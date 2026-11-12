@@ -8,7 +8,7 @@ Use the stack as a *structured* judge, not as a single scalar disguised as truth
 - **Controls:** `hard_gate_status` reports objective eligibility separately from quality. `VALID` means every applicable binding requirement passed; author preferences and weighted goals can affect score but not this status.
 - **Coverage:** the weighted share of applicable point-bearing criteria resolved `YES` or `NO`. `NOT_APPLICABLE` leaves are excluded; `CANNOT_ASSESS` leaves reduce coverage rather than counting as failures.
 - **Observed score:** the deterministic score from assessed applicable criteria after capped penalties. Report it with coverage and controls, never alone.
-- **Bounds:** `lower` and `upper` are the results if unresolved `CANNOT_ASSESS` criteria resolve adversely or favorably. They are not confidence intervals or error bars.
+- **Bounds:** `lower` and `upper` describe the scorer's sensitivity to unresolved `CANNOT_ASSESS` criteria. They are not confidence intervals or error bars. In the historical scorer, a lower unassessed ladder threshold can suppress a higher `YES` before bounds are computed; resolving the lower threshold may restore that `YES` and produce a score above the reported upper bound. Do not treat these historical bounds as a guaranteed envelope of all resolved scores.
 
 ## Report the control fields
 
@@ -50,7 +50,7 @@ The `cwr score` command emits v2 by default. Use `--report-version 1` only to in
 
 ## Intervals and coverage
 
-`CANNOT_ASSESS` widens the interval. If coverage is below the bundle threshold, the result is `PROVISIONAL` and must not drive unattended acceptance. Missing modalities (no audio for an audio leaf) are `CANNOT_ASSESS`, not `NO`.
+`CANNOT_ASSESS` contributes uncertainty to the reported interval. Historical ladder normalization can make that interval too narrow when an unassessed lower threshold suppresses a higher `YES`, as described above. The optional `uncertainty_preserving_ladder_v1` policy is a separate candidate, not the default or a proven universal bound. If coverage is below the bundle threshold, the result is `PROVISIONAL` and must not drive unattended acceptance. Missing modalities (no audio for an audio leaf) are `CANNOT_ASSESS`, not `NO`.
 
 ### Inspect decision readiness
 
@@ -79,6 +79,9 @@ The threshold convention is inclusive (`score >= threshold`). `ROBUSTLY_MEETS`
 means the lower bound meets it; `ROBUSTLY_BELOW` means the upper bound is below
 it. An interval spanning the threshold is `UNRESOLVED`. This is a scalar-bounds
 diagnostic: check eligibility and report status separately before acting.
+For a historical report affected by the ladder limitation above, a separated
+bound or threshold result is not a guaranteed conclusion about every possible
+resolution of the unassessed verdicts.
 
 Comparison reports `LEFT_ABOVE` or `RIGHT_ABOVE` only for compatible, eligible,
 scored reports with strictly separated bounds. Overlapping or touching bounds
