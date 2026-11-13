@@ -85,6 +85,13 @@ For a historical report affected by the ladder limitation above, a separated
 bound or threshold result is not a guaranteed conclusion about every possible
 resolution of the unassessed verdicts.
 
+To inspect saved HBQ-RS reports for one recognizable ladder-risk pattern, run
+`python -m hbqrs.decision_readiness_advisory score.json --threshold 50`, optionally
+adding `--compare other-score.json`. This recomputes the existing readiness
+diagnostic and adds an advisory; it does not alter the reports or rescore them.
+A potential match is not proof that a bound was violated, and no match does not
+prove that a bound is valid. Missing or unsupported evidence is indeterminate.
+
 Comparison reports `LEFT_ABOVE` or `RIGHT_ABOVE` only for compatible, eligible,
 scored reports with strictly separated bounds. Overlapping or touching bounds
 are inconclusive. Different visible scoring structures, policies, weights or
