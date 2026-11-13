@@ -1,0 +1,64 @@
+{
+  "complete_pair_mean_absolute_difference": {
+    "Coherence": 0.29090909090909095,
+    "Complexity": 0.7000000000000001,
+    "Empathy": 0.47045454545454546,
+    "Engagement": 0.27045454545454545,
+    "Relevance": 0.4,
+    "Surprise": 0.6318181818181818
+  },
+  "complete_pairs": 22,
+  "dimensions": {
+    "Coherence": {
+      "covered": 31,
+      "covered_maximum_absolute_difference": 0.6,
+      "covered_mean_absolute_difference": 0.3225806451612903,
+      "covered_zero_recorded_difference": 4,
+      "missing": 2
+    },
+    "Complexity": {
+      "covered": 27,
+      "covered_maximum_absolute_difference": 1.7,
+      "covered_mean_absolute_difference": 0.612962962962963,
+      "covered_zero_recorded_difference": 3,
+      "missing": 6
+    },
+    "Empathy": {
+      "covered": 29,
+      "covered_maximum_absolute_difference": 1.5,
+      "covered_mean_absolute_difference": 0.48793103448275865,
+      "covered_zero_recorded_difference": 4,
+      "missing": 4
+    },
+    "Engagement": {
+      "covered": 31,
+      "covered_maximum_absolute_difference": 0.8,
+      "covered_mean_absolute_difference": 0.32096774193548383,
+      "covered_zero_recorded_difference": 4,
+      "missing": 2
+    },
+    "Relevance": {
+      "covered": 27,
+      "covered_maximum_absolute_difference": 1.8,
+      "covered_mean_absolute_difference": 0.35555555555555557,
+      "covered_zero_recorded_difference": 10,
+      "missing": 6
+    },
+    "Surprise": {
+      "covered": 27,
+      "covered_maximum_absolute_difference": 2.7,
+      "covered_mean_absolute_difference": 0.5666666666666667,
+      "covered_zero_recorded_difference": 4,
+      "missing": 6
+    }
+  },
+  "item_clusters": 7,
+  "item_covered_mean_absolute_difference_range": [
+    0.2857142857142857,
+    0.5766666666666667
+  ],
+  "limitations": "Descriptive post-result summaries of selected historical pairs. Uncovered dimensions are excluded, not imputed; item/candidate dimensions are dependent. Absolute differences cannot recover signed bias, score ranks or pair-order disagreement. No human alignment, reliability, provider ranking, generalization or native contact cardinality is established.",
+  "pair_dimensions": 198,
+  "pairs": 33,
+  "source_sha256": "3ef7ea2ff8f95484d925f439e0b8e123f2c671d2d4835577bc049abc1bb301ba"
+}

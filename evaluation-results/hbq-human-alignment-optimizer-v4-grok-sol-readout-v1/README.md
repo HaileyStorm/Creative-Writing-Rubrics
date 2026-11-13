@@ -7,3 +7,13 @@ The internal replay recomputes endpoint scores from native evidence. Across the 
 The result binds the frozen-successor, HANNA CSV, analyzer, analyzer contract, and pinned executor/admission code and contract bytes by SHA-256. Publication recomputes aggregates and pair differences from the full verified readout, requires exact false claims and evidence ceilings, and rejects fabricated aggregates, provider/contact reuse, provider/session reuse, duplicate item/candidate pairs, and misassociated roots.
 
 The artifact contains no story text or response-evidence prose and supports no selection, substitution, generalization, provider-quality, or model-ranking claim.
+
+The [dimension coverage summary](dimension-coverage.json) adds covered-only
+absolute differences and the same summaries restricted to the 22 pairs with all
+six dimensions covered. Dimension-specific estimates otherwise use different
+subsets; missing dimensions are never imputed. The seven item clusters and
+candidate/dimension observations are dependent, and these post-result summaries
+do not establish agreement or generalize to new material. The published data
+omit signed scores, so provider offsets, score ranks and ordering reversals cannot
+be recovered. Regenerate the summary from the pinned public result with
+`python evaluation-results/hbq-human-alignment-optimizer-v4-grok-sol-readout-v1/dimension-coverage.py`.
