@@ -145,7 +145,7 @@ cwr longform manuscript.txt \
   --output-dir ../cwr-runs/manuscript
 ```
 
-The runner selects only from the local catalog, validates IDs, compatibility, scope, weights, and scoring rules, then preserves the source while it segments, maps, judges, scores, and reports. The global pass sees the complete source in stable units; every local unit is independently scored by default. Chaptered manuscripts use the chapter-scope bundle locally unless `--local-bundle` overrides it. `--binary-workers` overlaps disjoint run directories (maximum 8) without changing coverage. Synthesis may explain evidence but cannot alter verdicts or scores.
+The runner selects only from the local catalog, validates IDs, compatibility, scope, weights, and scoring rules, then preserves the source while it segments, maps, judges, scores, and reports. The global pass sees the complete source in stable units; every local unit is independently scored by default. For chapter-only substantive units, the automatic local choice uses a unique chapter-only bundle matching the declared artifact type. If there is no such bundle, or the eligible units include a non-chapter, it falls back to the global bundle; multiple matching chapter bundles are rejected as ambiguous. Use `--local-bundle` to select a specific local bundle deliberately and review its scope and criteria. For example, the current `prose.chapter` preset declares `prose_fiction`, so a `manuscript` artifact does not select it automatically. Check the report's local bundle and selection mode. `--binary-workers` overlaps disjoint run directories (maximum 8) without changing coverage. Synthesis may explain evidence but cannot alter verdicts or scores.
 
 Each scope has one canonical result. The manuscript references its existing chapter result; charts and cards do not rejudge it, and scene diagnostics remain children rather than averages. Parent scopes are judged as parents; smaller scopes locate strengths and problems.
 
@@ -173,7 +173,7 @@ Automatic bundle/module selection is useful for a standalone evaluation. For mat
 
 Generic OpenAI-compatible endpoints receive the strict response schema in the prompt and are validated locally. Add `--openai-structured-outputs` only when the endpoint supports OpenAI's strict JSON Schema response format; Codex uses a schema-constrained response file automatically.
 
-Use `--driving-prompt` when the text was generated from a prompt. A brief, driving prompt, or sample text can inform route selection and weighted goals, but author taste and subjective intent are not gates. Automatic routing cannot create binding requirements; only atomic, objective, explicitly non-negotiable requirements in a user-supplied, artifact-bound `--task-contract` control eligibility.
+Use `--driving-prompt` when the text was generated from a prompt. The long-form runner builds a source-text sample for route selection; with a remote provider, that sample and the other disclosed inputs leave the local machine. A brief, driving prompt, or sample text can inform route selection and weighted goals, but author taste and subjective intent are not gates. Automatic routing cannot create binding requirements; only atomic, objective, explicitly non-negotiable requirements in a user-supplied, artifact-bound `--task-contract` control eligibility.
 
 ### Multiple samples
 
