@@ -187,7 +187,10 @@ was listed twice. Validation and compilation reject duplicate penalty modules.
 Scoring weights must be finite and positive; domain points and penalty caps must
 be finite and nonnegative. Validation and compilation reject values outside
 these ranges. Reports retain a positive weight when ordinary rounding would
-otherwise display it as zero.
+otherwise display it as zero. A custom bundle must explicitly specify a finite
+coverage threshold between 0 and 1; its below-threshold status must be
+`PROVISIONAL`. Bundles with invalid policies are rejected during validation and
+compilation, including when no point-bearing question can be assessed.
 To reproduce a historical result exactly, use the recorded scorer revision and
 original inputs; for example, the historical Python
 `hbqrs.core.score_bundle` API can replay a duplicated penalty when that revision
@@ -208,7 +211,8 @@ The earlier `strict_import_v1` retains its original report behavior for replay.
 Historical imports keep the default
 `historical_permissive_v1` behavior and unchanged report semantics. The strict
 policy is available in the v2 Python `score_bundle` API and the CLI with either
-report version; the sealed v1 scorer and historical verdict schema are unchanged.
+report version; the historical verdict schema is unchanged. For exact replay,
+use the recorded scorer revision as described above.
 
 For opt-in comparison of `uncertainty_preserving_ladder_v1` candidate reports,
 use the artifact-bound contract API when each full task contract differs only

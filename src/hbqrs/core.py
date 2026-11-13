@@ -140,6 +140,27 @@ def _scoring_number(value: Any, *, label: str, allow_zero: bool = False) -> floa
     return number
 
 
+def _validate_coverage_policy(bundle: Mapping[str, Any]) -> None:
+    """Reject policies that can label insufficient evidence as scored."""
+
+    policy = bundle.get("coverage_policy")
+    if not isinstance(policy, Mapping):
+        raise HBQError("Coverage policy must be an object")
+    if "minimum_weighted_coverage" not in policy:
+        raise HBQError("Coverage policy must specify minimum weighted coverage")
+    threshold = policy["minimum_weighted_coverage"]
+    if isinstance(threshold, bool) or not isinstance(threshold, (int, float)):
+        raise HBQError("Minimum weighted coverage must be a finite number between 0 and 1")
+    try:
+        valid = math.isfinite(threshold) and 0 <= threshold <= 1
+    except OverflowError:
+        valid = False
+    if not valid:
+        raise HBQError("Minimum weighted coverage must be a finite number between 0 and 1")
+    if policy.get("below_threshold_status", "PROVISIONAL") != "PROVISIONAL":
+        raise HBQError("Below-threshold status must be PROVISIONAL")
+
+
 def _reject_nonfinite_report(value: Any, *, path: str = "score report") -> None:
     """Do not return a report containing an overflow or non-finite value."""
 
@@ -302,6 +323,10 @@ def validate_registry(
 
     for bundle in bundles:
         bundle_id = bundle.get("bundle_id", "<missing>")
+        try:
+            _validate_coverage_policy(bundle)
+        except HBQError as exc:
+            errors.append(f"Bundle {bundle_id}: {exc}")
         domains = bundle.get("domains", [])
         domain_ids = {str(domain.get("domain_id")) for domain in domains}
         if len(domain_ids) != len(domains):
@@ -410,6 +435,7 @@ def compile_bundle(
     profile metadata, evidence requirements, and effective weights.
     """
 
+    _validate_coverage_policy(bundle)
     module_by_id = index_modules(modules)
     bundle_id = str(bundle.get("bundle_id"))
     domain_questions: list[dict[str, Any]] = []
