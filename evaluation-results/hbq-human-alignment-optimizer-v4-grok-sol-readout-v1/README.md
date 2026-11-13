@@ -10,8 +10,14 @@ The artifact contains no story text or response-evidence prose and supports no s
 
 The [dimension coverage summary](dimension-coverage.json) adds covered-only
 absolute differences and the same summaries restricted to the 22 pairs with all
-six dimensions covered. Dimension-specific estimates otherwise use different
-subsets; missing dimensions are never imputed. The seven item clusters and
+six dimensions covered by Grok. **Coverage in that historical summary reflects
+Grok only; it does not require Sol coverage.** A subsequent check of retained
+Sol response coverage found that eight of the 172 Grok-covered dimensions were
+uncovered by Sol (four empathy and four relevance), leaving 164 covered by both.
+Only 16 pairs have all six dimensions covered by both. Treat the original
+Grok-only summaries accordingly; their saved results remain unchanged.
+Dimension-specific estimates otherwise use different subsets; missing Grok
+dimensions are never imputed. The seven item clusters and
 candidate/dimension observations are dependent, and these post-result summaries
 do not establish agreement or generalize to new material. The published data
 omit signed scores, so provider offsets, score ranks and ordering reversals cannot
