@@ -256,6 +256,8 @@ def validate_registry(
         bundle_id = bundle.get("bundle_id", "<missing>")
         domains = bundle.get("domains", [])
         domain_ids = {str(domain.get("domain_id")) for domain in domains}
+        if len(domain_ids) != len(domains):
+            errors.append(f"Bundle {bundle_id} has duplicate domain IDs")
         task_contract_domain_id = str(bundle.get("task_contract_domain_id", "task"))
         if "task_contract_domain_id" in bundle and task_contract_domain_id not in domain_ids:
             errors.append(
@@ -344,9 +346,13 @@ def compile_bundle(
     supplemental: dict[str, dict[str, Any]] = {}
     used_module_ids: set[str] = set()
     scored_qids: dict[str, str] = {}
+    seen_domain_ids: set[str] = set()
 
     for domain in bundle.get("domains", []):
         domain_id = str(domain["domain_id"])
+        if domain_id in seen_domain_ids:
+            raise HBQError(f"Bundle {bundle_id} has duplicate domain IDs")
+        seen_domain_ids.add(domain_id)
         for component in domain.get("components", []):
             module_id = str(component["module_id"])
             if module_id not in module_by_id:

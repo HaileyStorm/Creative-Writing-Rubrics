@@ -179,11 +179,10 @@ cwr show prose.scene
 cwr render-judge --bundle prose.scene --artifact examples/sample_scene.md
 ```
 
-**Custom bundle warning:** Give every domain in a bundle a distinct `domain_id`.
-The current validator does not reject duplicate domain IDs, and the scorer can
-silently combine their questions and use the wrong domain points. Check custom
-bundle IDs before scoring, even if validation succeeds. This issue was reproduced
-with a modified custom bundle; the checked-in presets have distinct domain IDs.
+Each domain in a custom bundle must have a distinct `domain_id`. Validation and
+compilation reject duplicate IDs because older scorer versions could silently
+combine their questions and use the wrong domain points. To reproduce a historical
+result from a malformed bundle, retain and use the original pinned scorer.
 
 For new normalized verdict imports, use
 `cwr score prose.scene verdicts.jsonl --admission-policy strict_import_v2`.
