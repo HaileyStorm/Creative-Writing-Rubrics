@@ -184,7 +184,12 @@ compilation reject duplicate IDs because older scorer versions could silently
 combine their questions and use the wrong domain points. Each penalty module must
 also appear only once: older scorers could deduct the same penalty twice when it
 was listed twice. Validation and compilation reject duplicate penalty modules.
-To reproduce a historical result from a malformed bundle, use its pinned scorer.
+To reproduce a historical result from a malformed bundle, use the recorded scorer
+revision and original inputs; for example, the historical Python
+`hbqrs.core.score_bundle` API can replay a duplicated penalty when that revision
+allowed it. The current `historical_permissive_v1` admission policy preserves verdict
+admission behavior; it does not restore an older compiler or scorer. The CLI can
+also impose additional weight-profile checks, even with an older scorer revision.
 
 For new normalized verdict imports, use
 `cwr score prose.scene verdicts.jsonl --admission-policy strict_import_v2`.
