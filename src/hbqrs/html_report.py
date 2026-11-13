@@ -269,6 +269,7 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
   <header class="hbqrs-scorecard__header"><div><p class="hbqrs-scorecard__eyebrow">HBQ-RS · long-form</p><h2 class="hbqrs-scorecard__title">Scorecard</h2></div></header>
   <div class="hbqrs-scorecard__chips" aria-label="Evaluation context">{chips}</div>
   <section class="hbqrs-scorecard__hero" aria-label="Canonical whole-work score"><div><p class="hbqrs-scorecard__label">Canonical whole-work score</p><div class="hbqrs-scorecard__hero-value">{global_score}</div><p class="hbqrs-scorecard__bounds">Bounds {global_bounds}</p>{interval}</div><div>{coverage_bar}</div></section>
+  <p class="hbqrs-scorecard__bounds">Bounds describe sensitivity to unassessed criteria, not a confidence interval. Historical ladder handling can make an upper bound too low when an unassessed lower threshold suppresses a higher YES.</p>
   {hierarchy}
   {local_readout}
   {breakdown}
