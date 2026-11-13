@@ -93,6 +93,23 @@ amendments do not establish controlled identical-runtime repetition. Comparator
 repeat records lack such a fresh equivalence proof. No independent-trial,
 population-reliability, confidence-interval or bootstrap claim is made.
 
+For the HBQ full-bank comparisons, summing the published repeat summaries gives:
+
+| Cycle pair | Planned | Complete | Recorded same contract and configuration | Recorded contrast | Missing complete pair |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 0–1 | 12 | 11 | 2 | 9 | 1 |
+| 0–2 | 12 | 12 | 6 | 6 | 0 |
+| 1–2 | 12 | 11 | 2 | 9 | 1 |
+| **Total** | **36** | **34** | **10** | **24** | **2** |
+
+Thus 10 of 34 complete comparisons have recorded contract/configuration equality;
+the other 24 are recorded contrasts. These are dependent comparisons of the same
+12 sentinel poems, not 34 independent poems. Recorded equality does not prove
+identical runtime, account, source or native controls. Complete banks are not the
+same as eligible scalar pairs, and the public aggregate does not cross-tabulate
+agreement or scalar eligibility by configuration category. These counts do not
+establish the effect of configuration changes or a reliability estimate.
+
 The original report attempt failed at a design-family lookup after saving its
 qualifications. Preparation075 uses opaque family keys; the recovery derives
 those exact keys from the original074 design names, retaining original identities
