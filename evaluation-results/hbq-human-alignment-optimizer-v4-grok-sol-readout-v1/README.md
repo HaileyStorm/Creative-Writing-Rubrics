@@ -28,5 +28,7 @@ To reproduce the already disclosed both-endpoint coverage counts, run
 `python evaluation-results/hbq-human-alignment-optimizer-v4-grok-sol-readout-v1/both-covered-counts.py`.
 This requires the original local receipt, admission-proof and response directories;
 the public package alone is insufficient. It verifies their retained hashes and
-identity bindings but does not rerun full historical admission. The command emits
-only aggregate counts and limitations, not scores or per-pair coverage.
+identity bindings but does not rerun full historical admission. Successful output
+contains only aggregate counts and limitations, not scores or per-pair coverage.
+Errors and tracebacks can contain local paths and identifiers; review them before
+sharing logs.
