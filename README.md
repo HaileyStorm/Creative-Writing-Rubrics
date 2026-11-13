@@ -199,6 +199,33 @@ Historical imports keep the default
 policy is available in the v2 Python `score_bundle` API and the CLI with either
 report version; the sealed v1 scorer and historical verdict schema are unchanged.
 
+For opt-in comparison of `uncertainty_preserving_ladder_v1` candidate reports,
+use the artifact-bound contract API when each full task contract differs only
+in its top-level `artifact_id`:
+
+```python
+from hbqrs.contract_comparison import compare
+
+result = compare(
+    left_report, right_report,
+    left_contract=left_contract, right_contract=right_contract,
+    comparison_context_sha256=shared_frozen_context_sha256,
+)
+```
+
+This API supports `historical_v1` aggregation. It checks each contract's full
+commitment, the report's scoring-context commitment, equal compiled-bundle
+commitments, and equal remaining contract content. These are self-consistency
+checks; they do not authenticate provenance or recompute scores. The shared
+context digest is the caller's attestation about frozen conditions, including
+judge, prompts and source versions, and is not independently verified. Keep the
+original report/contract pairs and verify their lineage. Eligibility,
+applicability and visible-structure checks still apply; unsupported policies
+or differing commitments are rejected. Inputs and standard comparison defaults
+are preserved. The comparison retains the historical aggregation's descriptive
+bound limitations; it establishes neither statistical confidence nor human
+validity or a universal uncertainty envelope.
+
 For a real judge, bring a local OpenAI-compatible endpoint:
 
 ```bash
