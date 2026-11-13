@@ -315,5 +315,6 @@ def score_bundle(
         verdicts,
         task_contract=task_contract,
     )
+    core._reject_nonfinite_report(report)
     _validate_v2(report)
     return report

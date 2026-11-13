@@ -127,6 +127,32 @@ def load_bundles(path: str | Path) -> list[dict[str, Any]]:
     return _ensure_list(load_data(path), "bundles")
 
 
+def _scoring_number(value: Any, *, label: str, allow_zero: bool = False) -> float:
+    """Reject weights and point values that cannot produce meaningful scores."""
+
+    try:
+        number = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise HBQError(f"{label} must be a finite number") from exc
+    if not math.isfinite(number) or number < 0 or (not allow_zero and number == 0):
+        qualifier = "nonnegative" if allow_zero else "positive"
+        raise HBQError(f"{label} must be a finite {qualifier} number")
+    return number
+
+
+def _reject_nonfinite_report(value: Any, *, path: str = "score report") -> None:
+    """Do not return a report containing an overflow or non-finite value."""
+
+    if isinstance(value, float) and not math.isfinite(value):
+        raise HBQError(f"{path} contains a non-finite number")
+    if isinstance(value, Mapping):
+        for key, child in value.items():
+            _reject_nonfinite_report(child, path=f"{path}/{key}")
+    elif isinstance(value, (list, tuple)):
+        for index, child in enumerate(value):
+            _reject_nonfinite_report(child, path=f"{path}/{index}")
+
+
 def walk_tree(
     nodes: Sequence[dict[str, Any]],
     *,
@@ -140,11 +166,14 @@ def walk_tree(
         if node_type == "question":
             yield node, group_ids, group_weight
         elif node_type == "group":
-            weight = float(node.get("weight", 1.0))
+            weight = _scoring_number(node.get("weight", 1.0), label=f"Group {node.get('id')} weight")
+            effective_group_weight = _scoring_number(
+                group_weight * weight, label=f"Group {node.get('id')} effective weight"
+            )
             yield from walk_tree(
                 node.get("children", []),
                 group_ids=(*group_ids, str(node.get("id", ""))),
-                group_weight=group_weight * weight,
+                group_weight=effective_group_weight,
             )
         else:
             raise HBQError(f"Unknown rubric-tree node type: {node_type!r}")
@@ -238,10 +267,9 @@ def validate_registry(
             if leaf.get("question_type") not in QUESTION_TYPES:
                 errors.append(f"Question {qid} has invalid question_type {leaf.get('question_type')!r}")
             try:
-                if float(leaf.get("weight", 0)) <= 0:
-                    errors.append(f"Question {qid} has non-positive weight")
-            except (TypeError, ValueError):
-                errors.append(f"Question {qid} has a nonnumeric weight")
+                _scoring_number(leaf.get("weight", 0), label=f"Question {qid} weight")
+            except HBQError as exc:
+                errors.append(str(exc))
             key = leaf.get("criterion_key")
             if not isinstance(key, str) or not key:
                 errors.append(f"Question {qid} lacks criterion_key")
@@ -264,21 +292,38 @@ def validate_registry(
                 f"Bundle {bundle_id} task_contract_domain_id {task_contract_domain_id!r} is not a domain"
             )
         try:
-            total = sum(float(domain.get("points", 0)) for domain in domains)
+            total = sum(
+                _scoring_number(
+                    domain.get("points", 0),
+                    label=f"Bundle {bundle_id} domain {domain.get('domain_id')} points",
+                    allow_zero=True,
+                )
+                for domain in domains
+            )
             if not math.isclose(total, 100.0, abs_tol=1e-8):
                 errors.append(f"Bundle {bundle_id} domain points sum to {total}, not 100")
-        except (TypeError, ValueError):
-            errors.append(f"Bundle {bundle_id} contains nonnumeric domain points")
+        except HBQError as exc:
+            errors.append(str(exc))
         scored_question_owners: dict[str, str] = {}
         for domain in domains:
             domain_id = domain.get("domain_id", "<missing>")
             selected_count = 0
             for component in domain.get("components", []):
                 module_id = component.get("module_id")
+                try:
+                    _scoring_number(
+                        component.get("weight", 1.0), label=f"Bundle {bundle_id} component {module_id} weight"
+                    )
+                except HBQError as exc:
+                    errors.append(str(exc))
                 if module_id not in module_by_id:
                     errors.append(f"Bundle {bundle_id} references missing module {module_id}")
                     continue
-                leaves = select_leaves(module_by_id[module_id], component)
+                try:
+                    leaves = select_leaves(module_by_id[module_id], component)
+                except HBQError as exc:
+                    errors.append(f"Bundle {bundle_id} component {module_id}: {exc}")
+                    continue
                 if not leaves:
                     errors.append(
                         f"Bundle {bundle_id} domain {domain_id} component {module_id} selects no questions"
@@ -304,10 +349,12 @@ def validate_registry(
             if module_id not in module_by_id:
                 errors.append(f"Bundle {bundle_id} references missing penalty module {module_id}")
             try:
-                if float(penalty.get("cap_points", -1)) < 0:
-                    errors.append(f"Bundle {bundle_id} has a negative penalty cap")
-            except (TypeError, ValueError):
-                errors.append(f"Bundle {bundle_id} has a nonnumeric penalty cap")
+                _scoring_number(
+                    penalty.get("cap_points", -1),
+                    label=f"Bundle {bundle_id} penalty {module_id} cap", allow_zero=True,
+                )
+            except HBQError as exc:
+                errors.append(str(exc))
 
     if module_schema is not None or bundle_schema is not None:
         try:
@@ -357,27 +404,36 @@ def compile_bundle(
         if domain_id in seen_domain_ids:
             raise HBQError(f"Bundle {bundle_id} has duplicate domain IDs")
         seen_domain_ids.add(domain_id)
+        domain_points = _scoring_number(
+            domain.get("points", 0), label=f"Bundle {bundle_id} domain {domain_id} points", allow_zero=True
+        )
         for component in domain.get("components", []):
             module_id = str(component["module_id"])
             if module_id not in module_by_id:
                 raise HBQError(f"Bundle {bundle_id} references missing module {module_id}")
             used_module_ids.add(module_id)
-            component_weight = float(component.get("weight", 1.0))
+            component_weight = _scoring_number(
+                component.get("weight", 1.0), label=f"Bundle {bundle_id} component {module_id} weight"
+            )
             leaves = select_leaves(module_by_id[module_id], component)
             if not leaves:
                 raise HBQError(f"Component {module_id} in {bundle_id}/{domain_id} selects no questions")
             for leaf, ancestors, group_weight in leaves:
                 qid = leaf["id"]
                 qtype = leaf["question_type"]
+                leaf_weight = _scoring_number(leaf["weight"], label=f"Question {qid} weight")
+                effective_weight = _scoring_number(
+                    leaf_weight * component_weight * group_weight, label=f"Question {qid} effective weight"
+                )
                 record = {
                     "module_id": module_id,
                     "domain_id": domain_id,
                     "domain_title": domain.get("title", domain_id),
-                    "domain_points": float(domain.get("points", 0)),
+                    "domain_points": domain_points,
                     "question": leaf,
                     "component_weight": component_weight,
                     "group_weight": group_weight,
-                    "effective_weight": float(leaf["weight"]) * component_weight * group_weight,
+                    "effective_weight": effective_weight,
                     "group_ids": list(ancestors),
                 }
                 if qtype == "hard_gate":
@@ -392,6 +448,14 @@ def compile_bundle(
                 else:
                     supplemental.setdefault(qid, {**record, "role": "supplemental"})
 
+    _scoring_number(
+        sum(
+            _scoring_number(domain.get("points", 0), label=f"Bundle {bundle_id} domain points", allow_zero=True)
+            for domain in bundle.get("domains", [])
+        ),
+        label=f"Bundle {bundle_id} total domain points", allow_zero=True,
+    )
+
     penalty_groups: list[dict[str, Any]] = []
     penalty_module_ids: set[str] = set()
     for penalty in bundle.get("penalty_modules", []):
@@ -400,6 +464,9 @@ def compile_bundle(
             raise HBQError(f"Bundle {bundle_id} references missing penalty module {module_id}")
         if module_id in penalty_module_ids:
             raise HBQError(f"Bundle {bundle_id} has duplicate penalty module {module_id}")
+        cap_points = _scoring_number(
+            penalty["cap_points"], label=f"Bundle {bundle_id} penalty {module_id} cap", allow_zero=True
+        )
         penalty_module_ids.add(module_id)
         used_module_ids.add(module_id)
         questions: list[dict[str, Any]] = []
@@ -408,6 +475,10 @@ def compile_bundle(
                 raise HBQError(
                     f"Penalty module {module_id} in {bundle_id} contains non-scored question {leaf.get('id')}"
                 )
+            leaf_weight = _scoring_number(leaf["weight"], label=f"Question {leaf['id']} weight")
+            effective_weight = _scoring_number(
+                leaf_weight * group_weight, label=f"Question {leaf['id']} effective weight"
+            )
             questions.append(
                 {
                     "module_id": module_id,
@@ -415,17 +486,17 @@ def compile_bundle(
                     "question": leaf,
                     "component_weight": 1.0,
                     "group_weight": group_weight,
-                    "effective_weight": float(leaf["weight"]) * group_weight,
+                    "effective_weight": effective_weight,
                     "group_ids": list(ancestors),
                     "role": "penalty",
-                    "cap_points": float(penalty["cap_points"]),
+                    "cap_points": cap_points,
                 }
             )
         penalty_groups.append(
             {
                 "module_id": module_id,
                 "title": module_by_id[module_id].get("title", module_id),
-                "cap_points": float(penalty["cap_points"]),
+                "cap_points": cap_points,
                 "questions": questions,
             }
         )
@@ -441,13 +512,17 @@ def compile_bundle(
             raise HBQError(f"Bundle {bundle_id} lists missing module {module_id}")
         for leaf, ancestors, group_weight in walk_tree(module_by_id[module_id].get("tree", [])):
             qid = leaf["id"]
+            leaf_weight = _scoring_number(leaf["weight"], label=f"Question {qid} weight")
+            effective_weight = _scoring_number(
+                leaf_weight * group_weight, label=f"Question {qid} effective weight"
+            )
             record = {
                 "module_id": module_id,
                 "domain_id": None,
                 "question": leaf,
                 "component_weight": 1.0,
                 "group_weight": group_weight,
-                "effective_weight": float(leaf["weight"]) * group_weight,
+                "effective_weight": effective_weight,
                 "group_ids": list(ancestors),
                 "role": "hard_gate" if leaf["question_type"] == "hard_gate" else "supplemental",
             }
@@ -563,6 +638,17 @@ def compile_bundle(
             "weighted_goal_ids": [f"{module_id}.{item['goal_id']}" for item in goals],
             "binding_requirement_ids": [f"{module_id}.{item['requirement_id']}" for item in requirements],
         }
+
+    for role, records in (
+        ("domain", domain_questions),
+        ("hard gate", hard_gates.values()),
+        ("penalty", (record for group in penalty_groups for record in group["questions"])),
+        ("supplemental", supplemental.values()),
+    ):
+        _scoring_number(
+            sum(record["effective_weight"] for record in records),
+            label=f"Bundle {bundle_id} total {role} weight", allow_zero=True,
+        )
 
     return {
         "standard": bundle.get("standard"),
@@ -999,7 +1085,7 @@ def score_bundle(
     if artifact is None:
         artifact = next((str(v.get("artifact_id")) for v in verdicts if v.get("artifact_id")), "artifact")
 
-    return {
+    report = {
         "$schema": "../schema/hbq_score_report.schema.json",
         "standard": bundle.get("standard"),
         "bundle_id": bundle.get("bundle_id"),
@@ -1026,6 +1112,8 @@ def score_bundle(
         "supplemental": supplemental_results,
         "issues": sorted(set(issues)),
     }
+    _reject_nonfinite_report(report)
+    return report
 
 
 def resolve_bundle(bundles: Sequence[dict[str, Any]], bundle_id: str) -> dict[str, Any]:

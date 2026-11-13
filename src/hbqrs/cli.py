@@ -226,11 +226,16 @@ def _cmd_validate(args: argparse.Namespace) -> int:
         module_schema=module_schema,
         bundle_schema=bundle_schema,
     )
+    try:
+        question_count = sum(1 for module in modules for _ in walk_tree(module.get("tree", [])))
+    except HBQError:
+        # The validation errors already explain why this tree cannot be walked.
+        question_count = None
     report = {
         "valid": not errors,
         "module_count": len(modules),
         "bundle_count": len(bundles),
-        "question_count": sum(1 for module in modules for _ in walk_tree(module.get("tree", []))),
+        "question_count": question_count,
         "errors": errors,
     }
     write_data(args.output, report, fmt=args.format)

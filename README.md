@@ -184,6 +184,9 @@ compilation reject duplicate IDs because older scorer versions could silently
 combine their questions and use the wrong domain points. Each penalty module must
 also appear only once: older scorers could deduct the same penalty twice when it
 was listed twice. Validation and compilation reject duplicate penalty modules.
+Scoring weights must be finite and positive; domain points and penalty caps must
+be finite and nonnegative. Validation and compilation reject values outside
+these ranges.
 To reproduce a historical result from a malformed bundle, use the recorded scorer
 revision and original inputs; for example, the historical Python
 `hbqrs.core.score_bundle` API can replay a duplicated penalty when that revision
