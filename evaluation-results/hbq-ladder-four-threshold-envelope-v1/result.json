@@ -1,0 +1,38 @@
+{
+  "ladder": [
+    "core.holistic_artistic_success.threshold_1_functional",
+    "core.holistic_artistic_success.threshold_2_effective",
+    "core.holistic_artistic_success.threshold_3_keepworthy",
+    "core.holistic_artistic_success.threshold_4_exceptional"
+  ],
+  "results": [
+    {
+      "bank": "synthetic_A",
+      "binary_completions": 625,
+      "configurations": 256,
+      "violations": []
+    },
+    {
+      "bank": "synthetic_B",
+      "binary_completions": 625,
+      "configurations": 256,
+      "violations": []
+    }
+  ],
+  "scope": "Post-result synthetic analysis of all 256 states of one four-level ladder in each of two fixed short-story banks, resolving only CANNOT_ASSESS to YES/NO, keeping all other verdicts and NOT_APPLICABLE fixed. This is not a general proof, a human-validity study, or a promotion gate.",
+  "source_code_sha256": {
+    "bundles/all_bundles.json": "012af060e8630b8980661465b368e129ddeec82dfa7b48e13e7a35a473eb95a8",
+    "bundles/prose.short_story.yaml": "444040ef7c3c769146f597ecd3bfa28ddf5b4b1aaadde3ac93da4dccd02e67d8",
+    "registry/all_modules.json": "43a33ee015310097f79c8a04bb7c3a8782813e758d523b1db08ae2b14d51f66f",
+    "src/hbqrs/core.py": "70b4cd16bd536f2f6ddb8e066f801090a037a39605652b14d6c7f6ff312446cb",
+    "src/hbqrs/ladder_uncertainty.py": "74a450a601a6f50eb6eebe6c971d20f7021a6d542e285518258c95321562a2bd",
+    "src/hbqrs/scoring_v2.py": "30df72d89e386a82eed44eb5a43461e93fabf85c2d4ffdeaa51765d11e2204b9"
+  },
+  "source_sha256": "b0b15150b835e1b6d291429db286eb9f08b0ab4544a31fceccf0dc583b75cfcc",
+  "states": [
+    "YES",
+    "NO",
+    "CANNOT_ASSESS",
+    "NOT_APPLICABLE"
+  ]
+}
