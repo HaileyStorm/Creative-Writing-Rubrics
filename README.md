@@ -231,6 +231,14 @@ diagnostic subset and is labeled as such. Reports preserve observed scores,
 coverage, unresolved bounds, evidence scope, and control states rather than
 collapsing them into one unsupported quality claim.
 
+Some scope modules declare context or sampling actions in `modifier_actions`.
+Compilation does not automatically apply those declarations or include them
+in the judge packet. Review the selected modules and supply the relevant context;
+when required evidence is missing, use `CANNOT_ASSESS` rather than treating it as
+a failure. With an explicit long-form sample, review and report its coverage.
+Without an explicit sample selection or limit, the default evaluates every
+substantive local unit.
+
 The optional GUI is an offline helper, not a server or telemetry system:
 
 <p>
