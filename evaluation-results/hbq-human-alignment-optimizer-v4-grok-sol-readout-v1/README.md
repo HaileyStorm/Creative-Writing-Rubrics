@@ -23,3 +23,10 @@ do not establish agreement or generalize to new material. The published data
 omit signed scores, so provider offsets, score ranks and ordering reversals cannot
 be recovered. Regenerate the summary from the pinned public result with
 `python evaluation-results/hbq-human-alignment-optimizer-v4-grok-sol-readout-v1/dimension-coverage.py`.
+
+To reproduce the already disclosed both-endpoint coverage counts, run
+`python evaluation-results/hbq-human-alignment-optimizer-v4-grok-sol-readout-v1/both-covered-counts.py`.
+This requires the original local receipt, admission-proof and response directories;
+the public package alone is insufficient. It verifies their retained hashes and
+identity bindings but does not rerun full historical admission. The command emits
+only aggregate counts and limitations, not scores or per-pair coverage.
