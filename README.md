@@ -181,8 +181,10 @@ cwr render-judge --bundle prose.scene --artifact examples/sample_scene.md
 
 Each domain in a custom bundle must have a distinct `domain_id`. Validation and
 compilation reject duplicate IDs because older scorer versions could silently
-combine their questions and use the wrong domain points. To reproduce a historical
-result from a malformed bundle, retain and use the original pinned scorer.
+combine their questions and use the wrong domain points. Each penalty module must
+also appear only once: older scorers could deduct the same penalty twice when it
+was listed twice. Validation and compilation reject duplicate penalty modules.
+To reproduce a historical result from a malformed bundle, use its pinned scorer.
 
 For new normalized verdict imports, use
 `cwr score prose.scene verdicts.jsonl --admission-policy strict_import_v2`.

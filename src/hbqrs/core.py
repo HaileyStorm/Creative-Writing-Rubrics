@@ -295,8 +295,12 @@ def validate_registry(
                         scored_question_owners[qid] = str(domain_id)
             if selected_count == 0:
                 errors.append(f"Bundle {bundle_id} domain {domain_id} has no selected questions")
+        penalty_module_ids: set[str] = set()
         for penalty in bundle.get("penalty_modules", []):
             module_id = penalty.get("module_id")
+            if module_id in penalty_module_ids:
+                errors.append(f"Bundle {bundle_id} has duplicate penalty module {module_id}")
+            penalty_module_ids.add(module_id)
             if module_id not in module_by_id:
                 errors.append(f"Bundle {bundle_id} references missing penalty module {module_id}")
             try:
@@ -394,6 +398,8 @@ def compile_bundle(
         module_id = str(penalty["module_id"])
         if module_id not in module_by_id:
             raise HBQError(f"Bundle {bundle_id} references missing penalty module {module_id}")
+        if module_id in penalty_module_ids:
+            raise HBQError(f"Bundle {bundle_id} has duplicate penalty module {module_id}")
         penalty_module_ids.add(module_id)
         used_module_ids.add(module_id)
         questions: list[dict[str, Any]] = []
