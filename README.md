@@ -186,9 +186,10 @@ also appear only once: older scorers could deduct the same penalty twice when it
 was listed twice. Validation and compilation reject duplicate penalty modules.
 Scoring weights must be finite and positive; domain points and penalty caps must
 be finite and nonnegative. Validation and compilation reject values outside
-these ranges.
-To reproduce a historical result from a malformed bundle, use the recorded scorer
-revision and original inputs; for example, the historical Python
+these ranges. Reports retain a positive weight when ordinary rounding would
+otherwise display it as zero.
+To reproduce a historical result exactly, use the recorded scorer revision and
+original inputs; for example, the historical Python
 `hbqrs.core.score_bundle` API can replay a duplicated penalty when that revision
 allowed it. The current `historical_permissive_v1` admission policy preserves verdict
 admission behavior; it does not restore an older compiler or scorer. The CLI can

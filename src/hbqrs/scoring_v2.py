@@ -126,6 +126,7 @@ def _role_aggregate(
     assessed: list[tuple[float, float]] = []
     applicable_count = 0
     applicable_weight = 0.0
+    applicable_weights: list[float] = []
     assessed_weight = 0.0
     confidence_mass = 0.0
     for record in records:
@@ -136,19 +137,31 @@ def _role_aggregate(
             continue
         applicable_count += 1
         applicable_weight += weight
+        applicable_weights.append(weight)
         if state not in {"YES", "NO"}:
             continue
         confidence = float(normalized_verdicts[question_id]["confidence"])
         assessed.append((confidence, weight))
         assessed_weight += weight
         confidence_mass += confidence * weight
-    weighted_mean = confidence_mass / assessed_weight if assessed_weight else None
+    if assessed_weight and any(core._underflowed_product(confidence, weight) for confidence, weight in assessed):
+        assessed_scale = max(weight for _, weight in assessed)
+        weighted_mean = sum(confidence * (weight / assessed_scale) for confidence, weight in assessed) / sum(
+            weight / assessed_scale for _, weight in assessed
+        )
+        applicable_scale = max(applicable_weights)
+        effective_mass = sum(confidence * (weight / applicable_scale) for confidence, weight in assessed) / sum(
+            weight / applicable_scale for weight in applicable_weights
+        )
+    else:
+        weighted_mean = confidence_mass / assessed_weight if assessed_weight else None
+        effective_mass = confidence_mass / applicable_weight if assessed_weight and applicable_weight else None
     return {
         "question_count": len(records),
         "applicable_count": applicable_count,
         "assessed_count": len(assessed),
-        "applicable_effective_weight": round(applicable_weight, 6),
-        "assessed_effective_weight": round(assessed_weight, 6),
+        "applicable_effective_weight": core._report_weight(applicable_weight),
+        "assessed_effective_weight": core._report_weight(assessed_weight),
         "assessed_raw_confidence_weighted_mean": (
             None if weighted_mean is None else round(weighted_mean, 4)
         ),
@@ -169,9 +182,7 @@ def _role_aggregate(
         },
         "effective_confidence_mass": {
             "value": (
-                round(confidence_mass / applicable_weight, 4)
-                if assessed_weight and applicable_weight
-                else None
+                None if effective_mass is None else round(effective_mass, 4)
             ),
             "is_coverage": False,
         },

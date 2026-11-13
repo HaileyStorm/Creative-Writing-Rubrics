@@ -153,6 +153,26 @@ def _reject_nonfinite_report(value: Any, *, path: str = "score report") -> None:
             _reject_nonfinite_report(child, path=f"{path}/{index}")
 
 
+def _underflowed_product(left: float, right: float) -> bool:
+    return left != 0 and right != 0 and abs(left * right) < sys.float_info.min
+
+
+def _weighted_share(scale: float, numerator: float, denominator: float) -> float:
+    """Preserve ordinary arithmetic while avoiding extreme intermediate products."""
+
+    product = scale * numerator
+    if not math.isfinite(product) or _underflowed_product(scale, numerator):
+        return scale * (numerator / denominator)
+    return product / denominator
+
+
+def _report_weight(value: float) -> float:
+    """Keep the ordinary six-place display without erasing positive weights."""
+
+    rounded = round(value, 6)
+    return value if value != 0 and rounded == 0 else rounded
+
+
 def walk_tree(
     nodes: Sequence[dict[str, Any]],
     *,
@@ -913,6 +933,7 @@ def score_bundle(
         passed = failed = unassessed = 0.0
         assessed_confidence = 0.0
         assessed_confidence_weight = 0.0
+        confidence_terms: list[tuple[float, float]] = []
         question_reports: list[dict[str, Any]] = []
         for record in by_domain.get(domain_id, []):
             qid = record["question"]["id"]
@@ -924,7 +945,7 @@ def score_bundle(
                     "question_id": qid,
                     "module_id": record["module_id"],
                     "verdict": state,
-                    "weight": round(weight, 6),
+                    "weight": _report_weight(weight),
                     "confidence": verdict.get("confidence", 0.0),
                     "evidence": verdict.get("evidence", []),
                 }
@@ -937,16 +958,18 @@ def score_bundle(
                 passed += weight
                 assessed_confidence += weight * float(verdict.get("confidence", 0.0))
                 assessed_confidence_weight += weight
+                confidence_terms.append((weight, float(verdict.get("confidence", 0.0))))
             elif state == "NO":
                 failed += weight
                 assessed_confidence += weight * float(verdict.get("confidence", 0.0))
                 assessed_confidence_weight += weight
+                confidence_terms.append((weight, float(verdict.get("confidence", 0.0))))
         assessed = passed + failed
         applicable = assessed + unassessed
         if applicable > 0:
             active_points += points
-            lower = points * passed / applicable
-            upper = points * (passed + unassessed) / applicable
+            lower = _weighted_share(points, passed, applicable)
+            upper = _weighted_share(points, passed + unassessed, applicable)
             lower_points_base += lower
             upper_points_base += upper
             coverage = assessed / applicable
@@ -955,13 +978,19 @@ def score_bundle(
             lower = upper = None
             coverage = None
         if assessed > 0:
-            observed = points * passed / assessed
+            observed = _weighted_share(points, passed, assessed)
             observed_points_base += observed
             observed_point_capacity += points
         else:
             observed = None
         if assessed_confidence_weight > 0:
-            domain_confidence = assessed_confidence / assessed_confidence_weight
+            if any(_underflowed_product(weight, confidence) for weight, confidence in confidence_terms):
+                scale = max(weight for weight, _ in confidence_terms)
+                domain_confidence = sum(weight / scale * confidence for weight, confidence in confidence_terms) / sum(
+                    weight / scale for weight, _ in confidence_terms
+                )
+            else:
+                domain_confidence = assessed_confidence / assessed_confidence_weight
             confidence_numerator += points * domain_confidence
             confidence_denominator += points
         else:
@@ -973,10 +1002,10 @@ def score_bundle(
                 "nominal_points": points,
                 "active": applicable > 0,
                 "weights": {
-                    "passed": round(passed, 6),
-                    "failed": round(failed, 6),
-                    "unassessed": round(unassessed, 6),
-                    "applicable": round(applicable, 6),
+                    "passed": _report_weight(passed),
+                    "failed": _report_weight(failed),
+                    "unassessed": _report_weight(unassessed),
+                    "applicable": _report_weight(applicable),
                 },
                 "coverage": None if coverage is None else round(coverage, 4),
                 "confidence": None if domain_confidence is None else round(domain_confidence, 4),
@@ -1013,7 +1042,7 @@ def score_bundle(
                 {
                     "question_id": qid,
                     "verdict": state,
-                    "weight": round(weight, 6),
+                    "weight": _report_weight(weight),
                     "confidence": verdict.get("confidence", 0.0),
                     "evidence": verdict.get("evidence", []),
                 }
@@ -1028,9 +1057,9 @@ def score_bundle(
                 failed += weight
         assessed = passed + failed
         applicable = assessed + unassessed
-        observed = cap * failed / assessed if assessed > 0 else 0.0
-        lower = cap * failed / applicable if applicable > 0 else 0.0
-        upper = cap * (failed + unassessed) / applicable if applicable > 0 else 0.0
+        observed = _weighted_share(cap, failed, assessed) if assessed > 0 else 0.0
+        lower = _weighted_share(cap, failed, applicable) if applicable > 0 else 0.0
+        upper = _weighted_share(cap, failed + unassessed, applicable) if applicable > 0 else 0.0
         coverage = assessed / applicable if applicable > 0 else 1.0
         penalty_observed_total += observed
         penalty_lower_total += lower
@@ -1042,10 +1071,10 @@ def score_bundle(
                 "cap_points": cap,
                 "coverage": round(coverage, 4),
                 "weights": {
-                    "passed": round(passed, 6),
-                    "failed": round(failed, 6),
-                    "unassessed": round(unassessed, 6),
-                    "applicable": round(applicable, 6),
+                    "passed": _report_weight(passed),
+                    "failed": _report_weight(failed),
+                    "unassessed": _report_weight(unassessed),
+                    "applicable": _report_weight(applicable),
                 },
                 "deduction": _triplet(observed, lower, upper),
                 "questions": question_reports,
