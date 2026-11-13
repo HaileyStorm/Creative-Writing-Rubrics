@@ -1226,7 +1226,7 @@ def render_workflow_markdown(report: Mapping[str, Any]) -> str:
             "- **Control state** reports only objective, explicit binding requirements and whether enough evidence exists to decide them. Author preferences and aesthetic goals are weighted criteria, not gates.",
             "- **Coverage** is the weighted share of applicable selected criteria that received a YES or NO verdict.",
             "- **Observed score** is the deterministic score from relevant criteria that received a YES or NO verdict.",
-            "- **Uncertainty bounds** are the non-statistical lowest and highest scores still possible if unassessed relevant criteria later resolve as failures or passes. They are not a confidence interval.",
+            "- **Uncertainty bounds** describe sensitivity to unassessed criteria; they are not a confidence interval. Historical ladder handling can make the upper bound too low when an unassessed lower threshold suppresses a higher YES.",
             "- Local unit scores are independent diagnostics. They remain separate unless an explicit hierarchical score profile is shown below.",
             (
                 "- **Work-in-progress rule:** criteria that require an unavailable finished work are NOT_APPLICABLE, not failures. Craft, continuity, applicable explicit requirements, and weighted goals are still evaluated on the supplied scope."
