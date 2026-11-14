@@ -79,6 +79,11 @@ The live release-facing work is narrower than the historical experiment log:
   verifies two local CLI results, `0052` and `0068`, each with recorded exit code 0.
   Local execution failures remain preserved; 127 cells remain and full Sol
   validation is incomplete. Completed cells are excluded from future contact.
+- A post-result [WPB length baseline](evaluation-results/hbq-wpb-length-baseline-dev-v1/)
+  matched 17/24 DEV preferences by choosing the longer response, compared with
+  10/24 Grok and 11/24 Sol for the previously reported compact-family proxy.
+  This is selected development evidence, not a full-HBQ comparison or a
+  confirmation result.
 - [Dryad source and full-HBQ preparation](docs/RESULTS.md#dryad-source-and-full-hbq-preparation)
   adds an audited independent corpus and a frozen 176 TRAIN / 60 DEV / 57
   confirmation split. The [owner-adopted 100-story amendment](evaluation-results/hbq-human-alignment-dryad-full-hbq-analysis-v1/baseline-budget-amendment-100-v1.json)
