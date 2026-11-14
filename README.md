@@ -186,8 +186,10 @@ also appear only once: older scorers could deduct the same penalty twice when it
 was listed twice. Validation and compilation reject duplicate penalty modules.
 Scoring weights must be finite and positive; domain points and penalty caps must
 be finite and nonnegative. Validation and compilation reject values outside
-these ranges. Reports retain a positive weight when ordinary rounding would
-otherwise display it as zero. A custom bundle must explicitly specify a finite
+these ranges. Reports retain positive weights, active points and domain scores
+when ordinary rounding would otherwise display them as zero. Extremely small
+active point totals use scaled normalization to avoid overflowing the score.
+A custom bundle must explicitly specify a finite
 coverage threshold between 0 and 1; its below-threshold status must be
 `PROVISIONAL`. Bundles with invalid policies are rejected during validation and
 compilation, including when no point-bearing question can be assessed.

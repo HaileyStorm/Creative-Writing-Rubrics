@@ -194,6 +194,13 @@ def _report_weight(value: float) -> float:
     return value if value != 0 and rounded == 0 else rounded
 
 
+def _report_nonzero_points(value: float) -> float:
+    """Keep four-place score display without erasing positive point values."""
+
+    rounded = round(value, 4)
+    return value if value != 0 and rounded == 0 else rounded
+
+
 def walk_tree(
     nodes: Sequence[dict[str, Any]],
     *,
@@ -867,11 +874,15 @@ def _enforce_subjective_ladders(
             prior_passed = prior_passed and state == "YES"
 
 
-def _triplet(observed: float | None, lower: float | None, upper: float | None) -> dict[str, float | None]:
+def _triplet(
+    observed: float | None, lower: float | None, upper: float | None, *, preserve_tiny: bool = False
+) -> dict[str, float | None]:
     """Round and return an observed/lower/upper score triplet."""
 
     def rounded(value: float | None) -> float | None:
-        return None if value is None else round(float(value), 4)
+        if value is None:
+            return None
+        return _report_nonzero_points(float(value)) if preserve_tiny else round(float(value), 4)
 
     return {"observed": rounded(observed), "lower": rounded(lower), "upper": rounded(upper)}
 
@@ -953,6 +964,7 @@ def score_bundle(
     weighted_assessed_points = 0.0
     confidence_numerator = 0.0
     confidence_denominator = 0.0
+    normalization_terms: list[tuple[float, float, float, float, float, float | None]] = []
 
     for domain_id, meta in domain_meta.items():
         points = float(meta["points"])
@@ -1021,6 +1033,7 @@ def score_bundle(
             confidence_denominator += points
         else:
             domain_confidence = None
+        normalization_terms.append((points, passed, assessed, unassessed, applicable, domain_confidence))
         domain_reports.append(
             {
                 "domain_id": domain_id,
@@ -1035,7 +1048,7 @@ def score_bundle(
                 },
                 "coverage": None if coverage is None else round(coverage, 4),
                 "confidence": None if domain_confidence is None else round(domain_confidence, 4),
-                "score": _triplet(observed, lower, upper),
+                "score": _triplet(observed, lower, upper, preserve_tiny=True),
                 "questions": question_reports,
             }
         )
@@ -1050,6 +1063,28 @@ def score_bundle(
     base_upper = upper_points_base * normalization_factor if active_points > 0 else None
     weighted_coverage = weighted_assessed_points / active_points if active_points > 0 else 0.0
     overall_confidence = confidence_numerator / confidence_denominator if confidence_denominator > 0 else 0.0
+
+    # Very small but valid active point totals can overflow the 100 / total
+    # normalization and underflow point-weighted intermediate products. Scale
+    # each domain by its actual total first in that exceptional case.
+    if active_points > 0 and not math.isfinite(normalization_factor):
+        base_lower = 100.0 * sum((points / active_points) * (passed / applicable)
+                                 for points, passed, assessed, unassessed, applicable, confidence in normalization_terms
+                                 if applicable > 0)
+        base_upper = 100.0 * sum((points / active_points) * ((passed + unassessed) / applicable)
+                                 for points, passed, assessed, unassessed, applicable, confidence in normalization_terms
+                                 if applicable > 0)
+        weighted_coverage = sum((points / active_points) * (assessed / applicable)
+                                for points, passed, assessed, unassessed, applicable, confidence in normalization_terms
+                                if applicable > 0)
+    if observed_point_capacity > 0 and not math.isfinite(observed_factor):
+        base_observed = 100.0 * sum((points / observed_point_capacity) * (passed / assessed)
+                                    for points, passed, assessed, unassessed, applicable, confidence in normalization_terms
+                                    if assessed > 0)
+    if confidence_denominator > 0 and not math.isfinite(100.0 / confidence_denominator):
+        overall_confidence = sum((points / confidence_denominator) * confidence
+                                 for points, passed, assessed, unassessed, applicable, confidence in normalization_terms
+                                 if confidence is not None)
 
     penalty_reports: list[dict[str, Any]] = []
     penalty_observed_total = 0.0
@@ -1153,7 +1188,7 @@ def score_bundle(
         "coverage": round(weighted_coverage, 4),
         "minimum_coverage": minimum_coverage,
         "confidence": round(overall_confidence, 4),
-        "active_nominal_points": round(active_points, 4),
+        "active_nominal_points": _report_nonzero_points(active_points),
         "inactive_points_reallocated": round(max(0.0, 100.0 - active_points), 4),
         "base_score": _triplet(base_observed, base_lower, base_upper),
         "penalty_deduction": _triplet(
