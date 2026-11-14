@@ -643,14 +643,19 @@ def normalize_score_result(
         if not isinstance(domain, Mapping):
             raise HBQError("Score report domains must be objects")
         domain_coverage = domain.get("coverage", 0)
-        if not isinstance(domain_coverage, (int, float)) or not 0 <= float(domain_coverage) <= 1:
-            raise HBQError("Domain coverage must be a number from 0 to 1")
+        if domain_coverage is not None and (
+            not isinstance(domain_coverage, (int, float)) or not 0 <= float(domain_coverage) <= 1
+        ):
+            raise HBQError("Domain coverage must be null or a number from 0 to 1")
+        domain_score = _interval(domain.get("score"))
+        if domain_coverage is None and domain_score is not None:
+            raise HBQError("A domain without coverage cannot have a score")
         domains.append(
             {
                 "domain_id": str(domain.get("domain_id", "domain")),
                 "title": str(domain.get("title", domain.get("domain_id", "Domain"))),
-                "coverage": round(float(domain_coverage), 4),
-                "score": _interval(domain.get("score")),
+                "coverage": None if domain_coverage is None else round(float(domain_coverage), 4),
+                "score": domain_score,
             }
         )
     return {
@@ -1239,6 +1244,7 @@ def render_workflow_markdown(report: Mapping[str, Any]) -> str:
             f"Whole-work bundle `{report['route']['global_bundle_id']}` with {len(report['route']['module_ids'])} selected modules, "
             f"{report['route']['weighted_goal_count']} weighted author goals, and "
             f"{report['route']['binding_requirement_count']} binding requirements.",
+            "Whole-work scores and coverage apply to the selected criteria; scores from different module selections are not automatically comparable.",
             f"Local bundle `{report['route']['local_bundle_id']}`; selection mode `{report['route']['local_bundle_mode']}`.",
             f"Declared completion status: `{report['completion_contract']['completion_status']}`.",
             (
@@ -1279,8 +1285,11 @@ def render_workflow_markdown(report: Mapping[str, Any]) -> str:
                 ]
             )
             for domain in global_result["domains"]:
+                domain_coverage = (
+                    "Not scored" if domain["coverage"] is None else f"{domain['coverage']:.1%}"
+                )
                 lines.append(
-                    f"| {_md(domain['title'])} | {domain['coverage']:.1%} | "
+                    f"| {_md(domain['title'])} | {domain_coverage} | "
                     f"{_observed_score_text({'score': domain['score']})} | "
                     f"{_uncertainty_bounds_text({'score': domain['score']})} |"
                 )

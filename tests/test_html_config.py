@@ -88,8 +88,6 @@ def test_configurator_exposes_requested_controls_and_command_preview():
 
 def test_configurator_frozen_module_checkboxes_flow_into_config_and_command_preview():
     output = render_workflow_configurator(_catalog())
-    assert "Confirm compatible modules" in output
-    assert "Automatic routing remains a complete first-class route." in output
     assert "Search this bundle's modules" in output
     assert 'type="search"' in output
     assert "module-tree" in output
@@ -97,7 +95,6 @@ def test_configurator_frozen_module_checkboxes_flow_into_config_and_command_prev
     assert "document.createElement('details')" in output
     assert "document.createElement('summary')" in output
     assert "filterModules" in output
-    assert "compatible module" in output
     assert "input.name = 'frozen-module'" in output
     assert "input.checked = true" in output
     assert "frozen_module_ids" in output

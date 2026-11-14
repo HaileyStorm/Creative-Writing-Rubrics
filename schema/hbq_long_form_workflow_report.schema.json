@@ -131,7 +131,7 @@
       "properties": {
         "domain_id": {"type": "string", "minLength": 1},
         "title": {"type": "string", "minLength": 1},
-        "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+        "coverage": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
         "score": {
           "anyOf": [
             {"$ref": "#/$defs/interval"},
@@ -139,6 +139,12 @@
           ]
         }
       },
+      "allOf": [
+        {
+          "if": {"properties": {"coverage": {"type": "null"}}},
+          "then": {"properties": {"score": {"type": "null"}}}
+        }
+      ],
       "additionalProperties": false
     },
     "result": {

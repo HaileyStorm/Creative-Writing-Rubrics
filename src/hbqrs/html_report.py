@@ -45,6 +45,10 @@ def _percent(value: Any) -> str:
     return f"{float(value):.1%}"
 
 
+def _domain_coverage(value: Any) -> str:
+    return "Not scored" if value is None else _percent(value)
+
+
 def _completion_label(report: Mapping[str, Any]) -> str:
     status = str(report["completion_contract"]["completion_status"])
     return "Work in progress" if status == "work_in_progress" else status.replace("_", " ").title()
@@ -210,7 +214,7 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
         "<li>{}: {} ({}, bounds {})</li>".format(
             _text(domain["title"]),
             _text(_score_text(domain["score"])),
-            _text(_percent(domain["coverage"])),
+            _text(_domain_coverage(domain["coverage"])),
             _text(_bounds_text(domain["score"])),
         )
         for domain in domains
@@ -245,6 +249,7 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
             (f"Format: {evaluated_format}", ""),
             (f"Scope: {report['orientation']['evaluated_scope']}", ""),
             (f"Bundle: {bundle_id}", ""),
+            (f"Selected modules: {len(report['route']['module_ids'])}", ""),
             (f"Source: {report['artifact']['artifact_id']}", ""),
         )
     )
@@ -268,7 +273,8 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
 <section class="hbqrs-scorecard">
   <header class="hbqrs-scorecard__header"><div><p class="hbqrs-scorecard__eyebrow">HBQ-RS · long-form</p><h2 class="hbqrs-scorecard__title">Scorecard</h2></div></header>
   <div class="hbqrs-scorecard__chips" aria-label="Evaluation context">{chips}</div>
-  <section class="hbqrs-scorecard__hero" aria-label="Canonical whole-work score"><div><p class="hbqrs-scorecard__label">Canonical whole-work score</p><div class="hbqrs-scorecard__hero-value">{global_score}</div><p class="hbqrs-scorecard__bounds">Bounds {global_bounds}</p>{interval}</div><div>{coverage_bar}</div></section>
+  <section class="hbqrs-scorecard__hero" aria-label="Whole-work score for selected modules"><div><p class="hbqrs-scorecard__label">Whole-work score for selected modules</p><div class="hbqrs-scorecard__hero-value">{global_score}</div><p class="hbqrs-scorecard__bounds">Bounds {global_bounds}</p>{interval}</div><div>{coverage_bar}</div></section>
+  <p class="hbqrs-scorecard__note">Whole-work scores and coverage apply to the selected criteria; scores from different module selections are not automatically comparable.</p>
   <p class="hbqrs-scorecard__bounds">Bounds describe sensitivity to unassessed criteria, not a confidence interval. Historical ladder handling can make an upper bound too low when an unassessed lower threshold suppresses a higher YES.</p>
   {hierarchy}
   {local_readout}
@@ -281,7 +287,7 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
         global_score=_text(_score_text(_result_score(global_result))),
         global_bounds=_text(_bounds_text(_result_score(global_result))),
         chips=chips,
-        interval=_interval_markup(_result_score(global_result), label="Canonical whole-work score"),
+        interval=_interval_markup(_result_score(global_result), label="Whole-work score for selected modules"),
         coverage_bar=_coverage_markup(global_result),
         local_readout=local_readout,
         breakdown=breakdown,
@@ -319,7 +325,7 @@ def _domain_rows(result: Mapping[str, Any] | None) -> str:
     return "".join(
         "<tr><th scope=\"row\">{}</th><td>{}</td><td>{}</td><td>{}</td></tr>".format(
             _text(domain["title"]),
-            _text(_percent(domain["coverage"])),
+            _text(_domain_coverage(domain["coverage"])),
             _text(_score_text(domain["score"])),
             _text(_bounds_text(domain["score"])),
         )

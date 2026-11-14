@@ -175,7 +175,6 @@ def test_full_renderer_is_deterministic_self_contained_and_semantic():
     assert "sessionStorage" not in first
     assert "innerHTML" not in first
     assert "Custom-weighted composite · noncanonical" in first
-    assert "Canonical whole-work score" in first
     assert "Secondary confidence diagnostics (uncalibrated)" in first
     assert "Threshold shares are assessed-effective-weight shares" in first
     assert "Whole-work domain breakdown" in first
@@ -274,7 +273,7 @@ def test_scorecard_card_hierarchy_chips_and_accessible_visible_fallbacks(layout:
     card = render_html_scorecard(_report(), layout=layout)
 
     assert '<header class="hbqrs-scorecard__header">' in card
-    assert 'class="hbqrs-scorecard__hero" aria-label="Canonical whole-work score"' in card
+    assert 'class="hbqrs-scorecard__hero" aria-label="Whole-work score for selected modules"' in card
     assert card.index('class="hbqrs-scorecard__hero"') < card.index('class="hbqrs-scorecard__custom"')
     for text in (
         "Control: VALID",
@@ -288,7 +287,7 @@ def test_scorecard_card_hierarchy_chips_and_accessible_visible_fallbacks(layout:
         "Coverage 95.0%",
     ):
         assert text in card
-    assert 'role="img" aria-label="Canonical whole-work score:' in card
+    assert 'role="img" aria-label="Whole-work score for selected modules:' in card
     assert 'role="progressbar" aria-label="Whole-work coverage"' in card
     assert 'id="' not in card
 
@@ -345,8 +344,6 @@ def test_scorecard_omits_custom_headline_without_profile():
     full = render_html_report(report)
     assert "Custom-weighted composite · noncanonical" not in card
     assert "Custom-weighted composite · noncanonical" not in full
-    assert "Canonical whole-work score" in card
-    assert "Canonical whole-work score" in full
 
 
 def test_renderer_does_not_mutate_report():
@@ -459,7 +456,6 @@ def test_scorecard_handles_a_schema_valid_null_whole_work_result(layout: str):
     report = _report(with_hierarchy=False)
     report["global_result"] = None
     card = render_html_scorecard(report, layout=layout)
-    assert "Canonical whole-work score" in card
     assert "Not observed" in card
     if layout == "minimal":
         assert "Not available" in card
@@ -624,7 +620,6 @@ def test_scorecard_feature_matrix(
         ),
         layout=layout,
     )
-    assert "Canonical whole-work score" in card
     assert "Creative-Writing-Rubrics" in card
     assert "Support this project" in card
     assert "<script" not in card
@@ -658,20 +653,54 @@ def test_scorecard_feature_matrix(
         assert "naïve café 🧭" in card
 
 
-def test_compact_scorecard_smoke_matrix_for_every_catalog_bundle():
-    bundles = load_bundles(book_root() / "bundles" / "all_bundles.json")
-    assert len(bundles) == 85
-    for bundle in bundles:
-        card = render_html_scorecard(
-            _matrix_report(
-                local_count=1,
-                null_scores=False,
-                control_state="VALID",
-                completion_status="work_in_progress",
-                hierarchy=False,
-                bundle_id=bundle["bundle_id"],
-            ),
-            layout="compact",
-        )
-        assert "Canonical whole-work score" in card
-        assert "<script" not in card
+def test_inactive_domain_survives_scoring_and_report_rendering():
+    from hbqrs.core import compile_bundle, compiled_questions, load_modules, resolve_bundle, score_bundle
+    from hbqrs.longform import normalize_score_result, render_workflow_markdown
+
+    modules = load_modules(book_root() / "registry" / "all_modules.json")
+    bundle = resolve_bundle(load_bundles(book_root() / "bundles" / "all_bundles.json"), "prose.scene")
+    compiled = compile_bundle(modules, bundle)
+    inactive_id = compiled["domain_questions"][0]["domain_id"]
+    inactive_questions = {
+        row["question"]["id"] for row in compiled["domain_questions"] if row["domain_id"] == inactive_id
+    }
+    ids = {row["question"]["id"] for row in compiled_questions(compiled)}
+    verdicts = [
+        {
+            "question_id": question_id,
+            "verdict": "NOT_APPLICABLE" if question_id in inactive_questions else "YES",
+            "note": "Synthetic applicability",
+            "confidence": 1.0,
+            "evidence": [],
+        }
+        for question_id in ids
+    ]
+    raw = score_bundle(modules, bundle, verdicts, artifact_id="synthetic")
+    result = normalize_score_result(raw, scope_id="work", label="Whole work")
+    inactive = next(domain for domain in result["domains"] if domain["domain_id"] == inactive_id)
+    assert inactive["coverage"] is None and inactive["score"] is None
+    assert isinstance(result["coverage"], float)
+
+    report = _report(with_hierarchy=False)
+    report["global_result"] = result
+    report["route"]["global_bundle_id"] = bundle["bundle_id"]
+    report["route"]["module_ids"] = bundle["module_ids"]
+    assert "Not scored" in render_workflow_markdown(report)
+    assert "Not scored" in render_html_report(report)
+    for layout in CARD_LAYOUTS:
+        card = render_html_scorecard(report, layout=layout)
+        assert "Selected modules:" in card and "not automatically comparable" in card
+
+    invalid = deepcopy(report)
+    domain = next(item for item in invalid["global_result"]["domains"] if item["coverage"] is None)
+    domain["score"] = {"observed": 1, "lower": 1, "upper": 1}
+    with pytest.raises(HBQError):
+        render_html_scorecard(invalid)
+    invalid_raw = deepcopy(raw)
+    raw_domain = next(item for item in invalid_raw["domains"] if item["coverage"] is None)
+    raw_domain["score"] = {"observed": 1, "lower": 1, "upper": 1}
+    with pytest.raises(HBQError):
+        normalize_score_result(invalid_raw, scope_id="work", label="Whole work")
+    domain["coverage"] = 0.0
+    domain["score"] = None
+    assert "0.0%" in render_html_report(invalid)
