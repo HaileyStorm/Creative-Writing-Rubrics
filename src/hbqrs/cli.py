@@ -144,6 +144,13 @@ def _cmd_render_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_workflow_readiness(args: argparse.Namespace) -> int:
+    from .readiness import workflow_scorer_readiness
+
+    print(json.dumps(workflow_scorer_readiness(args.output_dir), ensure_ascii=False, indent=2))
+    return 0
+
+
 def _cmd_configure(args: argparse.Namespace) -> int:
     modules, bundles = _load_registry(args)
     catalog = {
@@ -771,6 +778,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     report.add_argument("--title", default="HBQ-RS long-form evaluation")
     report.set_defaults(func=_cmd_render_report)
+
+    readiness = subparsers.add_parser(
+        "workflow-readiness", help="show saved scorer readiness separately from control gates"
+    )
+    readiness.add_argument("output_dir", help="completed long-form workflow directory")
+    readiness.set_defaults(func=_cmd_workflow_readiness)
 
     batch = subparsers.add_parser(
         "batch",

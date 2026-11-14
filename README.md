@@ -275,6 +275,15 @@ diagnostic subset and is labeled as such. Reports preserve observed scores,
 coverage, unresolved bounds, evidence scope, and control states rather than
 collapsing them into one unsupported quality claim.
 
+For a completed long-form run, `cwr workflow-readiness <output-dir>` reads the
+saved score records and displays each scorer status separately from its control
+gate. A `VALID` gate can coexist with `PROVISIONAL` scoring when coverage is
+low. If an older record or its scorer status is missing, the view reports it as
+unknown; it does not infer a status from rounded coverage. It checks each
+available score against the report and prints hashes of the files it read, but
+those hashes alone do not establish the files' origin or authenticity. The
+command does not modify the saved workflow or contact a provider.
+
 Some scope modules declare context or sampling actions in `modifier_actions`.
 Compilation does not automatically apply those declarations or include them
 in the judge packet. Review the selected modules and supply the relevant context;
