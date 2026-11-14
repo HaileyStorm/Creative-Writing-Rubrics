@@ -13,6 +13,55 @@ from jsonschema import Draft202012Validator
 
 from hbqrs import book_root
 
+
+def test_strict_compact_import_rejects_conflicting_criterion_id(tmp_path: Path, capsys) -> None:
+    import pytest
+
+    from hbqrs.cli import main as score_main
+    from hbqrs.core import load_verdicts
+    from hbqrs.ladder_uncertainty import main as ladder_main
+
+    outer = "core.task_and_brief_fidelity.intervention"
+    embedded = "core.task_and_brief_fidelity.completion_flag"
+    record = {"artifact_id": "witness", "bundle_id": "prose.scene", "question_id": embedded,
+              "verdict": "YES", "confidence": 0.9,
+              "evidence": [{"reference": "synthetic", "summary": "Synthetic evidence."}]}
+    path = tmp_path / "verdicts.json"
+    path.write_text(json.dumps({outer: record}), encoding="utf-8")
+    with pytest.raises(SystemExit) as failure:
+        score_main(["score", "prose.scene", str(path), "--admission-policy", "strict_import_v2"])
+    assert failure.value.code == 2
+    assert "identity disagrees" in capsys.readouterr().err
+    with pytest.raises(SystemExit) as failure:
+        ladder_main(["prose.scene", str(path), "--admission-policy", "strict_import_v2"])
+    assert failure.value.code == 2
+    assert "identity disagrees" in capsys.readouterr().err
+
+    report = tmp_path / "historical.json"
+    assert score_main(["score", "prose.scene", str(path), "--admission-policy",
+                       "historical_permissive_v1", "--output", str(report)]) == 0
+    assert load_verdicts(path)[0]["question_id"] == embedded
+    assert score_main(["score", "prose.scene", str(path), "--admission-policy",
+                       "strict_import_v1", "--output", str(report)]) == 0
+
+    for wrong_id in (None, 7):
+        record["question_id"] = wrong_id
+        path.write_text(json.dumps({outer: record}), encoding="utf-8")
+        with pytest.raises(ValueError, match="identity disagrees"):
+            load_verdicts(path, reject_conflicting_compact_ids=True)
+
+    record["question_id"] = outer
+    path.write_text(json.dumps({outer: record}), encoding="utf-8")
+    assert score_main(["score", "prose.scene", str(path), "--admission-policy",
+                       "strict_import_v2", "--output", str(report)]) == 0
+    assert json.loads(report.read_text(encoding="utf-8"))["import_admission"]["supplied_questions"] == 1
+    del record["question_id"]
+    path.write_text(json.dumps({outer: record}), encoding="utf-8")
+    assert load_verdicts(path, reject_conflicting_compact_ids=True)[0]["question_id"] == outer
+    path.write_text(json.dumps({outer: "YES"}), encoding="utf-8")
+    assert load_verdicts(path, reject_conflicting_compact_ids=True)[0]["question_id"] == outer
+
+
 HOST_MARKERS = (
     r"Palimpsest",
     r"palimpsest",

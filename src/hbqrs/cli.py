@@ -273,7 +273,9 @@ def _cmd_score(args: argparse.Namespace) -> int:
         _load_weight_profile(args.weight_profile),
     )
     scorer = score_bundle_v1 if args.report_version == 1 else score_bundle_v2
-    verdicts = load_verdicts(args.verdicts)
+    verdicts = load_verdicts(
+        args.verdicts, reject_conflicting_compact_ids=args.admission_policy == "strict_import_v2"
+    )
     task_contract = _load_task_contract(args.task_contract)
     admission = validate_import_admission(
         modules, bundle, verdicts, artifact_id=args.artifact_id,

@@ -747,7 +747,9 @@ def compiled_questions(compiled: Mapping[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
-def _normalize_verdict_records(value: Any) -> list[dict[str, Any]]:
+def _normalize_verdict_records(
+    value: Any, *, reject_conflicting_compact_ids: bool = False
+) -> list[dict[str, Any]]:
     """Normalize a verdict collection to a list of objects."""
 
     if isinstance(value, dict):
@@ -762,6 +764,9 @@ def _normalize_verdict_records(value: Any) -> list[dict[str, Any]]:
                 if isinstance(verdict, str):
                     compact.append({"question_id": question_id, "verdict": verdict})
                 elif isinstance(verdict, dict):
+                    if (reject_conflicting_compact_ids and "question_id" in verdict
+                            and verdict["question_id"] != question_id):
+                        raise HBQError(f"Compact verdict identity disagrees with its key: {question_id}")
                     compact.append({"question_id": question_id, **verdict})
                 else:
                     raise HBQError(f"Unsupported compact verdict value for {question_id}")
@@ -771,10 +776,14 @@ def _normalize_verdict_records(value: Any) -> list[dict[str, Any]]:
     return value
 
 
-def load_verdicts(path: str | Path) -> list[dict[str, Any]]:
+def load_verdicts(
+    path: str | Path, *, reject_conflicting_compact_ids: bool = False
+) -> list[dict[str, Any]]:
     """Load verdict records from JSON, JSONL, or YAML."""
 
-    return _normalize_verdict_records(load_data(path))
+    return _normalize_verdict_records(
+        load_data(path), reject_conflicting_compact_ids=reject_conflicting_compact_ids
+    )
 
 
 def _verdict_index(verdicts: Sequence[dict[str, Any]]) -> tuple[dict[str, dict[str, Any]], list[str]]:

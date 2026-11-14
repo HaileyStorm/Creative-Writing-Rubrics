@@ -206,7 +206,12 @@ This rejects malformed records, duplicate or mismatched identities, unsupported
 YES/NO evidence, untyped references, and N/A without an activation reason before
 writing a report. Omitted questions remain `CANNOT_ASSESS`. The report records
 `import_admission`; this validates structure and declared evidence, not quotation
-grounding or literary support. If a `strict_import_v2` import has no verdicts, a supplied task
+grounding or literary support. For compact maps, strict v2 also rejects a nested
+`question_id` that disagrees with the map key. Python callers loading compact
+maps can request the same pre-normalization check with
+`load_verdicts(path, reject_conflicting_compact_ids=True)`; once a map has been
+converted to a list, the original key is no longer available for validation.
+If a `strict_import_v2` import has no verdicts, a supplied task
 contract still identifies the artifact; it does not supply the missing assessments.
 An empty v2 import requires an explicit artifact ID or task-contract artifact ID.
 The earlier `strict_import_v1` retains its original report behavior for replay.

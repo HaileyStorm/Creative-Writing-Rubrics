@@ -139,7 +139,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         modules = core.load_modules(registry_path())
         bundle = core.resolve_bundle(core.load_bundles(bundles_path()), args.bundle)
         data, verdicts_sha256 = _read_input(args.verdicts)
-        verdicts = core._normalize_verdict_records(data)
+        verdicts = core._normalize_verdict_records(
+            data, reject_conflicting_compact_ids=args.admission_policy == "strict_import_v2"
+        )
         contract = None
         inputs = {"verdicts_file_sha256": verdicts_sha256}
         if args.task_contract:
