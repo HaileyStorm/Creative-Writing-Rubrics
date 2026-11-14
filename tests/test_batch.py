@@ -340,18 +340,18 @@ def test_batch_binds_and_propagates_legacy_normalization_upgrade(
     assert all(call["upgrade_legacy_normalization"] is True for call in calls)
 
 def test_batch_renders_html_for_a_valid_control_state(tmp_path: Path, monkeypatch) -> None:
+    from test_html_report import _report
+
     calls: list[dict[str, object]] = []
 
     def fake_runner(**kwargs):
         calls.append(kwargs)
         output = Path(kwargs["output_dir"])
         output.mkdir(parents=True, exist_ok=True)
-        (output / "report.json").write_text("{}", encoding="utf-8")
+        (output / "report.json").write_text(json.dumps(_report()), encoding="utf-8")
         return {"status": "VALID"}
 
     monkeypatch.setattr("hbqrs.batch.run_longform_judge", fake_runner)
-    monkeypatch.setattr("hbqrs.batch.render_html_report", lambda report: "full")
-    monkeypatch.setattr("hbqrs.batch.render_html_scorecard", lambda report: "card")
     manifest = _manifest(tmp_path, "individual")
     manifest["defaults"]["html_report"] = True
     run_longform_batch(
@@ -360,8 +360,8 @@ def test_batch_renders_html_for_a_valid_control_state(tmp_path: Path, monkeypatc
     )
     for job_id in ("one", "two"):
         output = tmp_path / "outputs" / "jobs" / job_id
-        assert (output / "report.html").read_text(encoding="utf-8") == "full"
-        assert (output / "scorecard.html").read_text(encoding="utf-8") == "card"
+        assert "Whole-work score for selected modules" in (output / "report.html").read_text(encoding="utf-8")
+        assert "Whole-work score for selected modules" in (output / "scorecard.html").read_text(encoding="utf-8")
 
 
 def test_batch_can_mix_longform_and_single_scope_without_duplicate_single_scoring(

@@ -14,7 +14,7 @@ from uuid import uuid4
 from jsonschema import Draft202012Validator
 
 from .core import HBQError, load_bundles, load_data, load_modules, resolve_bundle
-from .html_report import render_html_report, render_html_scorecard
+from .html_report import write_workflow_html_exports
 from .longform_runner import _derive_bundle
 from .longform_runner_v2 import run_longform_judge
 from .paths import schema_dir
@@ -334,8 +334,7 @@ def _render_completed_html(output_dir: Path) -> None:
     report = load_data(output_dir / "report.json")
     if not isinstance(report, dict):
         raise HBQError(f"Completed batch job lacks an object report: {output_dir}")
-    (output_dir / "report.html").write_text(render_html_report(report), encoding="utf-8")
-    (output_dir / "scorecard.html").write_text(render_html_scorecard(report), encoding="utf-8")
+    write_workflow_html_exports(report, output_dir)
 
 
 def _load_valid_plan(

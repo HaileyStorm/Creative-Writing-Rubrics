@@ -26,6 +26,7 @@ from .core import (
     resolve_bundle,
 )
 from .longform import (
+    _legacy_pre_scope_compatible,
     _validate_source_excerpts,
     build_route_sample,
     build_workflow_report,
@@ -452,6 +453,21 @@ def _write_or_verify(path: Path, content: bytes) -> None:
             raise HBQError(f"Persisted workflow artifact changed: {path}")
         return
     _atomic_write(path, content)
+
+
+def _write_or_verify_report_markdown(path: Path, report: Mapping[str, Any], *, resume: bool) -> None:
+    try:
+        info = path.lstat()
+    except FileNotFoundError:
+        info = None
+    if info is not None and (path.is_symlink() or getattr(info, "st_file_attributes", 0) & 1024):
+        raise HBQError(f"Persisted workflow artifact is not a regular file: {path}")
+    current = render_workflow_markdown(report).encode("utf-8")
+    if resume and path.is_file() and _legacy_pre_scope_compatible(report):
+        legacy = render_workflow_markdown(report, _legacy_pre_scope_note=True).encode("utf-8")
+        if path.read_bytes() == legacy:
+            return
+    _write_or_verify(path, current)
 
 
 def _reject_structured_checkpoint(pass_dir: Path, *, reason: str) -> None:
@@ -1875,7 +1891,7 @@ def run_longform_judge(
     markdown_path = destination / "report.md"
     svg_path = destination / "local-scores.svg"
     _write_or_verify(report_path, _json_bytes(report))
-    _write_or_verify(markdown_path, render_workflow_markdown(report).encode("utf-8"))
+    _write_or_verify_report_markdown(markdown_path, report, resume=resume)
     _write_or_verify(svg_path, render_local_scores_svg(report).encode("utf-8"))
     summary = {
         "status": global_result["control_state"],

@@ -1197,7 +1197,19 @@ def _uncertainty_bounds_text(result: Mapping[str, Any]) -> str:
     return f"{score['lower']:.1f}\u2013{score['upper']:.1f}"
 
 
-def render_workflow_markdown(report: Mapping[str, Any]) -> str:
+def _legacy_pre_scope_compatible(report: Mapping[str, Any]) -> bool:
+    """Whether a report could have been rendered before nullable coverage."""
+    results = [report.get("global_result"), *report.get("local_results", [])]
+    return all(
+        domain.get("coverage") is not None
+        for result in results if isinstance(result, Mapping)
+        for domain in result.get("domains", [])
+    )
+
+
+def render_workflow_markdown(
+    report: Mapping[str, Any], *, _legacy_pre_scope_note: bool = False
+) -> str:
     """Render base results plus any explicitly requested deterministic hierarchy."""
 
     _validate_schema(
@@ -1244,7 +1256,9 @@ def render_workflow_markdown(report: Mapping[str, Any]) -> str:
             f"Whole-work bundle `{report['route']['global_bundle_id']}` with {len(report['route']['module_ids'])} selected modules, "
             f"{report['route']['weighted_goal_count']} weighted author goals, and "
             f"{report['route']['binding_requirement_count']} binding requirements.",
-            "Whole-work scores and coverage apply to the selected criteria; scores from different module selections are not automatically comparable.",
+            *([] if _legacy_pre_scope_note else [
+                "Whole-work scores and coverage apply to the selected criteria; scores from different module selections are not automatically comparable."
+            ]),
             f"Local bundle `{report['route']['local_bundle_id']}`; selection mode `{report['route']['local_bundle_mode']}`.",
             f"Declared completion status: `{report['completion_contract']['completion_status']}`.",
             (

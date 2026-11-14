@@ -1,15 +1,65 @@
 from copy import deepcopy
+import os
 
 import pytest
 
 from hbqrs import HBQError, book_root
 from hbqrs.core import load_bundles
-from hbqrs.html_report import CARD_LAYOUTS, render_html_report, render_html_scorecard
+from hbqrs.html_report import CARD_LAYOUTS, render_html_report, render_html_scorecard, write_workflow_html_exports
+from hbqrs.longform import render_workflow_markdown
+from hbqrs.longform_runner import _write_or_verify_report_markdown
 
 
 UNIT_ONE = "unit-0001-0123456789ab"
 UNIT_TWO = "unit-0002-abcdef012345"
 UNIT_THREE = "unit-0003-123456abcdef"
+
+
+def test_resume_preserves_verified_old_reports_and_rejects_changed_exports(tmp_path):
+    report = _report()
+    markdown = tmp_path / "report.md"
+    old_md = render_workflow_markdown(report, _legacy_pre_scope_note=True).encode("utf-8")
+    markdown.write_bytes(old_md)
+    _write_or_verify_report_markdown(markdown, report, resume=True)
+    assert markdown.read_bytes() == old_md
+    old_html = render_html_report(report, _legacy_pre_scope_note=True).replace("\n", "\r\n").encode("utf-8")
+    old_card = render_html_scorecard(report, _legacy_pre_scope_note=True).encode("utf-8")
+    html = tmp_path / "report.html"
+    card = tmp_path / "scorecard.html"
+    html.write_bytes(old_html)
+    card.write_bytes(old_card)
+    write_workflow_html_exports(report, tmp_path)
+    assert html.read_bytes() == old_html and card.read_bytes() == old_card
+    card.write_bytes(old_card + b"x")
+    with pytest.raises(HBQError, match="artifact changed"):
+        write_workflow_html_exports(report, tmp_path)
+    assert html.read_bytes() == old_html and card.read_bytes() == old_card + b"x"
+    html.unlink()
+    with pytest.raises(HBQError, match="artifact changed"):
+        write_workflow_html_exports(report, tmp_path)
+    assert not html.exists()
+    markdown.write_bytes(old_md + b"x")
+    with pytest.raises(HBQError, match="artifact changed"):
+        _write_or_verify_report_markdown(markdown, report, resume=True)
+
+
+def test_resume_creates_current_exports_and_does_not_invent_legacy_null_coverage(tmp_path):
+    report = _report()
+    domain = report["local_results"][0]["domains"][0]
+    domain["coverage"] = domain["score"] = None
+    markdown = tmp_path / "report.md"
+    markdown.write_bytes(render_workflow_markdown(report, _legacy_pre_scope_note=True).encode("utf-8"))
+    with pytest.raises(HBQError, match="artifact changed"):
+        _write_or_verify_report_markdown(markdown, report, resume=True)
+    html = tmp_path / "report.html"
+    html.write_bytes(render_html_report(report, _legacy_pre_scope_note=True).encode("utf-8"))
+    with pytest.raises(HBQError, match="artifact changed"):
+        write_workflow_html_exports(report, tmp_path)
+    assert not (tmp_path / "scorecard.html").exists()
+    html.unlink()
+    write_workflow_html_exports(report, tmp_path)
+    assert html.read_bytes() == render_html_report(report).replace("\n", os.linesep).encode("utf-8")
+    write_workflow_html_exports(report, tmp_path)
 
 
 def _interval(observed: float, lower: float | None = None, upper: float | None = None):

@@ -31,7 +31,7 @@ from .pack import pack_book
 from .paths import book_root, bundles_path, prompts_dir, registry_path, schema_dir
 from .runner_v2 import run_judge
 from .html_config import render_workflow_configurator
-from .html_report import render_html_report, render_html_scorecard
+from .html_report import render_html_report, render_html_scorecard, write_workflow_html_exports
 from .html_status import render_workflow_status, summarize_workflow_progress
 from .html_weights import render_weight_configurator
 from .longform import segment_longform
@@ -578,12 +578,7 @@ def _cmd_longform(args: argparse.Namespace) -> int:
         report = load_data(report_path)
         if not isinstance(report, dict):
             raise HBQError("Completed long-form workflow did not produce an object report")
-        (Path(args.output_dir) / "report.html").write_text(
-            render_html_report(report), encoding="utf-8"
-        )
-        (Path(args.output_dir) / "scorecard.html").write_text(
-            render_html_scorecard(report), encoding="utf-8"
-        )
+        write_workflow_html_exports(report, Path(args.output_dir))
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
 

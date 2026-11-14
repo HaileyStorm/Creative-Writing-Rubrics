@@ -9,9 +9,12 @@ from __future__ import annotations
 
 from html import escape
 import json
+from pathlib import Path
+import stat
 from typing import Any, Mapping, Sequence
 
-from .longform import _schema, _validate_schema, validate_hierarchical_score_provenance
+from .core import HBQError
+from .longform import _legacy_pre_scope_compatible, _schema, _validate_schema, validate_hierarchical_score_provenance
 
 
 def _validate_report(report: Mapping[str, Any]) -> None:
@@ -202,7 +205,9 @@ def _confidence_diagnostics_markup(result: Mapping[str, Any] | None) -> str:
     )
 
 
-def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> str:
+def _scorecard_markup(
+    report: Mapping[str, Any], *, layout: str = "summary", _legacy_pre_scope_note: bool = False
+) -> str:
     if layout not in CARD_LAYOUTS:
         raise ValueError(f"layout must be one of: {', '.join(CARD_LAYOUTS)}")
     global_result = report["global_result"]
@@ -249,7 +254,7 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
             (f"Format: {evaluated_format}", ""),
             (f"Scope: {report['orientation']['evaluated_scope']}", ""),
             (f"Bundle: {bundle_id}", ""),
-            (f"Selected modules: {len(report['route']['module_ids'])}", ""),
+            *(((f"Selected modules: {len(report['route']['module_ids'])}", ""),) if not _legacy_pre_scope_note else ()),
             (f"Source: {report['artifact']['artifact_id']}", ""),
         )
     )
@@ -269,13 +274,17 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
     <p class="hbqrs-scorecard__note">{local_coverage}. {local_summary}</p>
   </details>
 """.format(local_coverage=local_coverage, local_summary=local_summary)
+    score_label = "Canonical whole-work score" if _legacy_pre_scope_note else "Whole-work score for selected modules"
+    scope_note = "" if _legacy_pre_scope_note else (
+        '<p class="hbqrs-scorecard__note">Whole-work scores and coverage apply to the selected criteria; '
+        'scores from different module selections are not automatically comparable.</p>\n  '
+    )
     return """
 <section class="hbqrs-scorecard">
   <header class="hbqrs-scorecard__header"><div><p class="hbqrs-scorecard__eyebrow">HBQ-RS · long-form</p><h2 class="hbqrs-scorecard__title">Scorecard</h2></div></header>
   <div class="hbqrs-scorecard__chips" aria-label="Evaluation context">{chips}</div>
-  <section class="hbqrs-scorecard__hero" aria-label="Whole-work score for selected modules"><div><p class="hbqrs-scorecard__label">Whole-work score for selected modules</p><div class="hbqrs-scorecard__hero-value">{global_score}</div><p class="hbqrs-scorecard__bounds">Bounds {global_bounds}</p>{interval}</div><div>{coverage_bar}</div></section>
-  <p class="hbqrs-scorecard__note">Whole-work scores and coverage apply to the selected criteria; scores from different module selections are not automatically comparable.</p>
-  <p class="hbqrs-scorecard__bounds">Bounds describe sensitivity to unassessed criteria, not a confidence interval. Historical ladder handling can make an upper bound too low when an unassessed lower threshold suppresses a higher YES.</p>
+  <section class="hbqrs-scorecard__hero" aria-label="{score_label}"><div><p class="hbqrs-scorecard__label">{score_label}</p><div class="hbqrs-scorecard__hero-value">{global_score}</div><p class="hbqrs-scorecard__bounds">Bounds {global_bounds}</p>{interval}</div><div>{coverage_bar}</div></section>
+  {scope_note}<p class="hbqrs-scorecard__bounds">Bounds describe sensitivity to unassessed criteria, not a confidence interval. Historical ladder handling can make an upper bound too low when an unassessed lower threshold suppresses a higher YES.</p>
   {hierarchy}
   {local_readout}
   {breakdown}
@@ -287,7 +296,9 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
         global_score=_text(_score_text(_result_score(global_result))),
         global_bounds=_text(_bounds_text(_result_score(global_result))),
         chips=chips,
-        interval=_interval_markup(_result_score(global_result), label="Whole-work score for selected modules"),
+        score_label=_text(score_label),
+        scope_note=scope_note,
+        interval=_interval_markup(_result_score(global_result), label=score_label),
         coverage_bar=_coverage_markup(global_result),
         local_readout=local_readout,
         breakdown=breakdown,
@@ -295,7 +306,9 @@ def _scorecard_markup(report: Mapping[str, Any], *, layout: str = "summary") -> 
     )
 
 
-def render_html_scorecard(report: Mapping[str, Any], *, layout: str = "summary") -> str:
+def render_html_scorecard(
+    report: Mapping[str, Any], *, layout: str = "summary", _legacy_pre_scope_note: bool = False
+) -> str:
     """Render an embeddable no-script scorecard with scoped styling.
 
     The charset declaration also makes the fragment safe to open directly as
@@ -303,7 +316,7 @@ def render_html_scorecard(report: Mapping[str, Any], *, layout: str = "summary")
     """
 
     _validate_report(report)
-    return f'<meta charset="utf-8"><style>{_scorecard_css()}</style>\n{_scorecard_markup(report, layout=layout)}'
+    return f'<meta charset="utf-8"><style>{_scorecard_css()}</style>\n{_scorecard_markup(report, layout=layout, _legacy_pre_scope_note=_legacy_pre_scope_note)}'
 
 
 def _table_rows(results: Sequence[Mapping[str, Any]]) -> str:
@@ -502,7 +515,7 @@ def _editor_script() -> str:
 
 
 def render_html_report(
-    report: Mapping[str, Any], *, title: str = "HBQ-RS long-form evaluation"
+    report: Mapping[str, Any], *, title: str = "HBQ-RS long-form evaluation", _legacy_pre_scope_note: bool = False
 ) -> str:
     """Render a self-contained, offline interactive HTML report.
 
@@ -535,13 +548,13 @@ __SCORECARD__</div>
 <p class="hbqrs-muted">Formula: reduce selected local intervals by the chosen local reducer, then take the requested global/local weighted mean. Unit weights are normalized inside the local component. Zero-weight units are excluded; weakest-unit selection breaks lowest-score ties by source order. Tail trim removes the earliest lowest and latest highest observed local results, then requires at least three eligible units.</p></section>
 <section class="hbqrs-screen-only" aria-labelledby="hbqrs-embed-title"><h2 id="hbqrs-embed-title">Embeddable scorecard</h2><p>Choose a fixed layout, then copy the complete self-contained fragment. No remote asset loads when the card renders; its repository and support links open only when selected.</p><label for="hbqrs-card-layout">Card layout<select id="hbqrs-card-layout"><option value="summary">Summary: scores, domains, and local trajectory</option><option value="compact">Compact: scores, control, and coverage</option><option value="minimal">Minimal: scores and disclosed weights</option></select></label><label for="hbqrs-embed-code">Embed code<textarea id="hbqrs-embed-code" readonly rows="10"></textarea></label><div class="hbqrs-editor-actions"><button id="hbqrs-select-embed" type="button">Select embed code for copying</button></div></section>
 </main><script id="hbqrs-report-data" type="application/json">__DATA__</script><script id="hbqrs-embed-data" type="application/json">__EMBEDS__</script><script>__SCRIPT__</script></body></html>"""
-    embeds = {layout: render_html_scorecard(report, layout=layout) for layout in CARD_LAYOUTS}
+    embeds = {layout: render_html_scorecard(report, layout=layout, _legacy_pre_scope_note=_legacy_pre_scope_note) for layout in CARD_LAYOUTS}
     replacements = {
         "__TITLE__": _text(title),
         "__CSS__": _document_css(),
         "__PREMISE__": _text(orientation["premise"]),
         "__SCOPE__": _text(orientation["evaluated_scope"]),
-        "__SCORECARD__": _scorecard_markup(report),
+        "__SCORECARD__": _scorecard_markup(report, _legacy_pre_scope_note=_legacy_pre_scope_note),
         "__DOMAIN_ROWS__": _domain_rows(report["global_result"]),
         "__LOCAL_ROWS__": _table_rows(report["local_results"]),
         "__FINDINGS__": _finding_markup(report["findings"]),
@@ -553,3 +566,40 @@ __SCORECARD__</div>
     for marker, replacement in replacements.items():
         document = document.replace(marker, replacement)
     return document
+
+
+def write_workflow_html_exports(report: Mapping[str, Any], output_dir: Path) -> None:
+    """Create missing automatic exports without changing verified saved renders."""
+    current = {
+        "report.html": render_html_report(report),
+        "scorecard.html": render_html_scorecard(report),
+    }
+    legacy = {}
+    if _legacy_pre_scope_compatible(report):
+        legacy = {
+            "report.html": render_html_report(report, _legacy_pre_scope_note=True),
+            "scorecard.html": render_html_scorecard(report, _legacy_pre_scope_note=True),
+        }
+    missing = []
+    for name, content in current.items():
+        path = output_dir / name
+        try:
+            info = path.lstat()
+        except FileNotFoundError:
+            missing.append((path, content))
+            continue
+        if not stat.S_ISREG(info.st_mode) or getattr(info, "st_file_attributes", 0) & 1024:
+            raise HBQError(f"Persisted workflow artifact is not a regular file: {path}")
+        candidates = [content]
+        if name in legacy:
+            candidates.append(legacy[name])
+        allowed = {
+            encoded
+            for candidate in candidates
+            for encoded in (candidate.encode("utf-8"), candidate.replace("\n", "\r\n").encode("utf-8"))
+        }
+        if path.read_bytes() not in allowed:
+            raise HBQError(f"Persisted workflow artifact changed: {path}")
+    for path, content in missing:
+        with path.open("x", encoding="utf-8") as stream:
+            stream.write(content)
