@@ -1,0 +1,38 @@
+{
+  "axes": {
+    "expert": {
+      "hbq": {
+        "length_adjusted_rank_correlation": 0.23302219498094368,
+        "unadjusted_spearman": 0.293140141246496
+      },
+      "length_reference_spearman": -0.4064874154809265,
+      "matched_works": 19,
+      "ttcw": {
+        "length_adjusted_rank_correlation": 0.20052079429258002,
+        "unadjusted_spearman": 0.2325320921564207
+      }
+    },
+    "reader": {
+      "hbq": {
+        "length_adjusted_rank_correlation": 0.42232422494160166,
+        "unadjusted_spearman": 0.39041176034122
+      },
+      "length_reference_spearman": 0.17374214039097458,
+      "matched_works": 19,
+      "ttcw": {
+        "length_adjusted_rank_correlation": 0.37744321681416204,
+        "unadjusted_spearman": 0.3646873257462848
+      }
+    }
+  },
+  "baseline_aggregate_canonical_sha256": "65eee601772e6fd3d949611a8200a7f2c0ba6a2cd1217597a0592d2dda9c5e72",
+  "limits": [
+    "Post-result selected development cohorts; expert and reader axes are distinct.",
+    "Rank residualization is not within-length Spearman and does not identify causal effects or eliminate all confounding.",
+    "Works and raters may be dependent; no confidence interval, method-superiority or promotion claim follows."
+  ],
+  "method": "Pearson correlations between midranks, residualizing score and reference ranks linearly on an intercept and word-count rank",
+  "new_human_labels": 0,
+  "provider_calls": 0,
+  "state": "HF32_POST_RESULT_LENGTH_ADJUSTED_RANK_SENSITIVITY"
+}
