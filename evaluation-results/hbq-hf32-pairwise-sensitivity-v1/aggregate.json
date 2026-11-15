@@ -1,0 +1,45 @@
+{
+  "analysis": {
+    "expert": {
+      "full_difference_pp_by_tie_credit": {
+        "0": 10.0,
+        "1": -8.18,
+        "1/2": 0.91
+      },
+      "half_credit_leave_one_out_max_pp": 5.73,
+      "half_credit_leave_one_out_min_pp": -6.19,
+      "half_credit_leave_one_out_signs": {
+        "negative": 5,
+        "positive": 12,
+        "zero": 0
+      }
+    },
+    "reader": {
+      "full_difference_pp_by_tie_credit": {
+        "0": 12.07,
+        "1": -6.9,
+        "1/2": 2.59
+      },
+      "half_credit_leave_one_out_max_pp": 8.25,
+      "half_credit_leave_one_out_min_pp": -1.5,
+      "half_credit_leave_one_out_signs": {
+        "negative": 3,
+        "positive": 14,
+        "zero": 0
+      }
+    }
+  },
+  "case_manifest_sha256": "469806acefd2f4cc92908f6b31e3c5f0afae3b4e8c15b9061892f89293994a0c",
+  "limits": [
+    "Availability-selected post-result development subset, not prospective confirmation.",
+    "Pairs share works; deletion ranges are not confidence intervals or significance tests.",
+    "Tie credits are sensitivity conventions, not additional correct predictions.",
+    "No population inference, method superiority or promotion follows."
+  ],
+  "new_human_labels": 0,
+  "provider_calls": 0,
+  "request_manifest_sha256": "ab4adf5943e0eb12dd5e750e05ea63c5c99cafd3f2ec37c351d4bd05a62e9268",
+  "source_sha256": "e8bfc8cb83c91f4f26c4f901bc0f9fef9e993072b509c175baccafcddaad9fe7",
+  "state": "HF32_POST_RESULT_WORK_DELETION_SENSITIVITY",
+  "works": 17
+}
