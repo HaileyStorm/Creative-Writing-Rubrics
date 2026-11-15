@@ -89,6 +89,21 @@ confidence interval, a calibration result, a human-alignment finding, a
 guarantee about model uncertainty, or an unattended acceptance decision.
 Consider applicability and the evidence for each criterion separately.
 
+### Inspect guarded grouped completions
+
+For a fully supplied verdict bank, the optional Python API
+`hbqrs.scoring_grouped_completion.grouped_completion_envelope` can evaluate
+independent scorer groups without enumerating every cross-group combination.
+It requires strict v2 admission, a fixed assessed question in each domain,
+valid fixed gates, distinct question IDs, and no subjective ladder crossing
+domains. Unsupported inputs raise `ValueError`; use the finite enumerator when
+its requirements and limits permit.
+
+The grouped method limits both assignments and assignment-count multiplied by
+the number of selected questions. These are work estimates, not time guarantees.
+Its extrema are fixed-input, scorer-only substitutions; they do not supply
+evidence, new judgments, confidence intervals or human-validation claims.
+
 ### Inspect decision readiness
 
 Run the optional readiness tool on an existing local v1 or v2 score report:
