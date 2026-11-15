@@ -37,6 +37,7 @@ def build_fixture(
     prompt_rendering_version: int = runner.PROMPT_RENDERING_VERSION,
     task_contract_enabled: bool = True,
     response_schema_mode: str | None = None,
+    response_json_policy: str | None = None,
 ) -> tuple[Path, dict[str, Any]]:
     """Materialize a complete run from source inputs; never edits an existing run."""
 
@@ -119,7 +120,7 @@ def build_fixture(
         if response_schema_mode != "batch_question_ids_v1" or prompt_rendering_version != runner.PROMPT_RENDERING_VERSION:
             raise ValueError("Unsupported opt-in verifier fixture configuration")
         frozen["execution"]["response_schema_mode"] = response_schema_mode
-        frozen["execution"]["response_json_policy"] = runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY
+        frozen["execution"]["response_json_policy"] = response_json_policy or runner.RESPONSE_JSON_FINITE_POLICY
         calls = 0
 
         def fake_codex(*, response_schema: Path, **_kwargs: Any) -> tuple[str, dict[str, Any]]:
@@ -151,6 +152,7 @@ def build_fixture(
                 allow_remote=True,
                 artifact_id=artifact_id,
                 response_schema_mode=response_schema_mode,
+                response_json_policy=response_json_policy,
             )
         if calls != (len(questions) + 31) // 32:
             raise AssertionError("Opt-in fixture did not execute every frozen batch")

@@ -9,6 +9,7 @@ import hashlib
 import hmac
 import ipaddress
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -67,6 +68,8 @@ NOUS_TRANSPORT_POLICY = {
 EVIDENCE_NORMALIZATION_POLICY = "invalid_exact_quote_to_summary_v1"
 RESPONSE_JSON_UNIQUE_KEYS_POLICY = "unique_keys_v1"
 RESPONSE_JSON_LEGACY_POLICY = "legacy_last_key_v1"
+RESPONSE_JSON_FINITE_POLICY = "unique_keys_finite_v2"
+RESPONSE_JSON_POLICIES = frozenset({RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY, RESPONSE_JSON_FINITE_POLICY})
 VALIDATION_FEEDBACK_POLICY = "validation_feedback_retry_v1"
 ATTEMPT_LIFECYCLE_POLICY = "terminal_sidecar_v1"
 ATTEMPT_OUTCOMES = frozenset({
@@ -336,13 +339,25 @@ def _unique_json_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
+def _finite_json_float(value: str) -> float:
+    result = float(value)
+    if not math.isfinite(result):
+        raise HBQError("Judge returned JSON with a non-finite number")
+    return result
+
+
+def _reject_json_constant(value: str) -> None:
+    raise HBQError("Judge returned JSON with a non-finite number")
+
+
 def _parse_model_json(text: str, *, policy: str = RESPONSE_JSON_LEGACY_POLICY) -> dict[str, Any]:
-    if not isinstance(policy, str) or policy not in {RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY}:
+    if not isinstance(policy, str) or policy not in RESPONSE_JSON_POLICIES:
         raise HBQError("Unsupported judge response JSON policy")
     try:
         value = json.loads(_strip_json_fence(text), object_pairs_hook=(
-            _unique_json_object if policy == RESPONSE_JSON_UNIQUE_KEYS_POLICY else None
-        ))
+            _unique_json_object if policy != RESPONSE_JSON_LEGACY_POLICY else None
+        ), parse_float=_finite_json_float if policy == RESPONSE_JSON_FINITE_POLICY else float,
+            parse_constant=_reject_json_constant if policy == RESPONSE_JSON_FINITE_POLICY else None)
     except json.JSONDecodeError as exc:
         raise HBQError(f"Judge returned invalid JSON: {exc}") from exc
     if not isinstance(value, dict):
@@ -3247,7 +3262,7 @@ def _load_checkpoints(
         if not isinstance(configuration, Mapping):
             raise HBQError("Run configuration is malformed while loading checkpoints")
         recorded_policy = configuration.get("response_json_policy", RESPONSE_JSON_LEGACY_POLICY)
-        if not isinstance(recorded_policy, str) or recorded_policy not in {RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY}:
+        if not isinstance(recorded_policy, str) or recorded_policy not in RESPONSE_JSON_POLICIES:
             raise HBQError("Unsupported recorded judge response JSON policy")
         if response_json_policy is not None and response_json_policy != recorded_policy:
             raise HBQError("Checkpoint response JSON policy does not match the run")
@@ -3685,17 +3700,17 @@ def run_judge(
     requested_response_json_policy = response_json_policy
     if requested_response_json_policy is not None and (
         not isinstance(requested_response_json_policy, str)
-        or requested_response_json_policy not in {RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY}
+        or requested_response_json_policy not in RESPONSE_JSON_POLICIES
     ):
         raise HBQError("Unsupported judge response JSON policy")
     if prior_manifest is None:
-        response_json_policy = requested_response_json_policy or RESPONSE_JSON_UNIQUE_KEYS_POLICY
+        response_json_policy = requested_response_json_policy or RESPONSE_JSON_FINITE_POLICY
     else:
         prior_configuration = prior_manifest.get("configuration")
         if not isinstance(prior_configuration, Mapping):
             raise HBQError("Cannot resume: run configuration is malformed")
         response_json_policy = prior_configuration.get("response_json_policy", RESPONSE_JSON_LEGACY_POLICY)
-        if not isinstance(response_json_policy, str) or response_json_policy not in {RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY}:
+        if not isinstance(response_json_policy, str) or response_json_policy not in RESPONSE_JSON_POLICIES:
             raise HBQError("Cannot resume: unsupported judge response JSON policy")
         if requested_response_json_policy is not None and requested_response_json_policy != response_json_policy:
             raise HBQError("Cannot resume: judge response JSON policy changed")
@@ -3844,7 +3859,7 @@ def run_judge(
         "questions_sha256": _sha256_bytes(_json_bytes(_question_payload(questions))),
         "compiled_bundle_sha256": _sha256_bytes(_json_bytes(compiled)),
     }
-    if response_json_policy == RESPONSE_JSON_UNIQUE_KEYS_POLICY:
+    if response_json_policy != RESPONSE_JSON_LEGACY_POLICY:
         configuration["response_json_policy"] = response_json_policy
     if response_schema_mode is not None:
         configuration["response_schema_mode"] = response_schema_mode

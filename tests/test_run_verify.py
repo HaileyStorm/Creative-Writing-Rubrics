@@ -99,9 +99,13 @@ def test_verifies_a_genuine_complete_v4_run_with_batch_response_schemas(tmp_path
     assert result["commitments"]["batch_response_schemas"] == records
 
 
-def test_verifier_requires_frozen_response_json_policy(tmp_path: Path) -> None:
-    run, frozen = _fixture(tmp_path, response_schema_mode="batch_question_ids_v1")
+@pytest.mark.parametrize("policy", [runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY, runner.RESPONSE_JSON_FINITE_POLICY])
+def test_verifier_requires_frozen_response_json_policy(tmp_path: Path, policy: str) -> None:
+    run, frozen = _fixture(tmp_path, response_schema_mode="batch_question_ids_v1", response_json_policy=policy)
     assert verify_binary_run(run, frozen)["checkpoint_count"] == 6
+    frozen["execution"]["response_json_policy"] = (runner.RESPONSE_JSON_FINITE_POLICY if policy == runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY else runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY)
+    with pytest.raises(core.HBQError, match="configuration"):
+        verify_binary_run(run, frozen)
     del frozen["execution"]["response_json_policy"]
     with pytest.raises(core.HBQError, match="configuration"):
         verify_binary_run(run, frozen)

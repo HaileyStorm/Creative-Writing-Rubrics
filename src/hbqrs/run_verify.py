@@ -73,7 +73,7 @@ def _execution(frozen: Mapping[str, Any]) -> dict[str, Any]:
         raise core.HBQError("Frozen attempt lifecycle policy is malformed")
     if "response_schema_mode" in value and value["response_schema_mode"] != "batch_question_ids_v1":
         raise core.HBQError("Frozen response schema mode is malformed")
-    if "response_json_policy" in value and value["response_json_policy"] != runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY:
+    if "response_json_policy" in value and value["response_json_policy"] not in (runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY, runner.RESPONSE_JSON_FINITE_POLICY):
         raise core.HBQError("Frozen response JSON policy is malformed")
     return dict(value)
 

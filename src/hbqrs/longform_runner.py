@@ -55,6 +55,8 @@ from .runner import (
     NOUS_TRANSPORT_POLICY,
     RESPONSE_JSON_LEGACY_POLICY,
     RESPONSE_JSON_UNIQUE_KEYS_POLICY,
+    RESPONSE_JSON_FINITE_POLICY,
+    RESPONSE_JSON_POLICIES,
     _ProviderAttemptFailure,
     _NoRedirect,
     _atomic_write,
@@ -302,9 +304,9 @@ def _run_structured_pass(
         "prompt_sha256": _sha256_bytes(prompt.encode("utf-8")),
         "schema_sha256": _sha256_bytes(_json_bytes(schema)),
     }
-    if response_json_policy not in (RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY):
+    if not isinstance(response_json_policy, str) or response_json_policy not in RESPONSE_JSON_POLICIES:
         raise HBQError("Unsupported structured response JSON policy")
-    if response_json_policy == RESPONSE_JSON_UNIQUE_KEYS_POLICY:
+    if response_json_policy != RESPONSE_JSON_LEGACY_POLICY:
         configuration["response_json_policy"] = response_json_policy
     if input_json_layout is not None:
         configuration["input_json_layout"] = input_json_layout
@@ -1365,10 +1367,10 @@ def run_longform_judge(
         if not isinstance(policy_configuration, Mapping):
             raise HBQError("Cannot resume: long-form workflow configuration is malformed")
         response_json_policy = policy_configuration.get("response_json_policy", RESPONSE_JSON_LEGACY_POLICY)
-        if response_json_policy not in (RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY):
+        if not isinstance(response_json_policy, str) or response_json_policy not in RESPONSE_JSON_POLICIES:
             raise HBQError("Cannot resume: unsupported long-form response JSON policy")
     else:
-        response_json_policy = RESPONSE_JSON_UNIQUE_KEYS_POLICY
+        response_json_policy = RESPONSE_JSON_FINITE_POLICY
     configuration = {
         "format_version": 3,
         "artifact": _record_without_text(source),
@@ -1407,7 +1409,7 @@ def run_longform_judge(
         "codex_bin": codex_bin if provider == "codex" else None,
         "strict_ai": strict_ai,
     }
-    if response_json_policy == RESPONSE_JSON_UNIQUE_KEYS_POLICY:
+    if response_json_policy != RESPONSE_JSON_LEGACY_POLICY:
         configuration["response_json_policy"] = response_json_policy
     if attempt_lifecycle_policy is not None:
         configuration["attempt_lifecycle_policy"] = attempt_lifecycle_policy

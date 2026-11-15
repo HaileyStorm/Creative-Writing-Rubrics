@@ -54,17 +54,20 @@ Nous is available only through the canonical Windows launcher, which provides th
 
 Evidence is typed: an `exact_quote` must be a nonblank contiguous artifact or context substring before checkpoint acceptance; non-verbatim support belongs in `summary`. The model-facing schema uses `kind` plus nullable wire fields for strict Structured Outputs, then stores a compact normalized form. Older normalized `quote` verdicts still score.
 
-New runs record `response_json_policy: unique_keys_v1` in their configuration.
+New runs record `response_json_policy: unique_keys_finite_v2` in their configuration.
 They reject repeated JSON object keys, including equivalent escaped spellings,
-before schema validation. A run created before this policy retains its original
-last-key decoding when resumed or independently replayed; this does not certify
-that its original responses lacked duplicate keys. When preparing a frozen
+and non-finite numeric values, including overflow from numeric exponents, before
+schema validation. A run recorded under `unique_keys_v1` retains that policy,
+including its historical treatment of non-finite values. A run created before
+either policy retains its original last-key decoding when resumed or independently
+replayed. These replay rules do not certify that the original responses lacked
+duplicate keys or non-finite values. When preparing a frozen
 execution contract for `verify_binary_run`, include the same
 `response_json_policy` in its `execution` object for a new run. Verification
 rejects a mismatch between the frozen contract and the run configuration.
 Neither the manifest nor this check authenticates a provider response by itself.
 New long-form workflows bind the same policy across route, map, synthesis and
-binary judging passes. A pre-policy workflow keeps legacy decoding, including
+binary judging passes. A prior workflow keeps its recorded policy, including
 for its not-yet-started passes. If a resumed workflow and an existing binary
 pass record different policies, resume stops for review instead of switching
 either policy silently.

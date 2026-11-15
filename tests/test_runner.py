@@ -1377,7 +1377,7 @@ def test_new_run_rejects_duplicate_keys_and_preserves_rejected_attempt(tmp_path:
     with pytest.raises(HBQError, match="exhausted"):
         _run(tmp_path, batch_attempts=1)
     manifest = json.loads((tmp_path / "run/run.json").read_text(encoding="utf-8"))
-    assert manifest["configuration"]["response_json_policy"] == runner_module.RESPONSE_JSON_UNIQUE_KEYS_POLICY
+    assert manifest["configuration"]["response_json_policy"] == runner_module.RESPONSE_JSON_FINITE_POLICY
     rejected = json.loads((tmp_path / "run/responses/rejected/batch-0001/attempt-0001.json").read_text(encoding="utf-8"))
     assert "duplicate object keys" in rejected["error"]["message"]
     with pytest.raises(HBQError, match="exhausted"):
@@ -1385,6 +1385,44 @@ def test_new_run_rejects_duplicate_keys_and_preserves_rejected_attempt(tmp_path:
     with pytest.raises(HBQError, match="response JSON policy changed"):
         _run(tmp_path, batch_attempts=1, resume=True, response_json_policy=runner_module.RESPONSE_JSON_LEGACY_POLICY)
     assert calls == 1
+
+
+@pytest.mark.parametrize("number", ["NaN", "Infinity", "-Infinity", "1e999", "-1e999"])
+def test_finite_response_policy_rejects_nonfinite_values(number: str) -> None:
+    raw = '{"outer":[{"value":' + number + '}]}'
+    with pytest.raises(HBQError, match="non-finite"):
+        _parse_model_json(raw, policy=runner_module.RESPONSE_JSON_FINITE_POLICY)
+    old = _parse_model_json(raw, policy=runner_module.RESPONSE_JSON_UNIQUE_KEYS_POLICY)
+    assert not __import__("math").isfinite(old["outer"][0]["value"])
+
+
+def test_new_run_rejects_nonfinite_and_resumes_old_policy(tmp_path: Path, monkeypatch) -> None:
+    calls = 0
+
+    def nonfinite(**kwargs: object) -> tuple[str, dict[str, object]]:
+        nonlocal calls
+        calls += 1
+        qid = _questions_from_prompt(str(kwargs["user_prompt"]))[0]["question_id"]
+        return json.dumps({"verdicts": [{"question_id": qid, "verdict": "YES", "confidence": float("nan"),
+            "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": "A short test scene.", "summary": None}],
+            "note": "synthetic"}]}), {}
+
+    monkeypatch.setattr(runner_module, "_call_openai", nonfinite)
+    (tmp_path / "new").mkdir()
+    with pytest.raises(HBQError, match="exhausted"):
+        _run(tmp_path / "new", batch_attempts=1)
+    rejected = json.loads((tmp_path / "new/run/responses/rejected/batch-0001/attempt-0001.json").read_text(encoding="utf-8"))
+    assert "non-finite" in rejected["error"]["message"] and "NaN" in rejected["raw_content"]["text"]
+    with pytest.raises(HBQError, match="exhausted"):
+        _run(tmp_path / "new", batch_attempts=1, resume=True)
+    assert calls == 1
+    old = tmp_path / "old"
+    old.mkdir()
+    assert _run(old, batch_attempts=1, response_json_policy=runner_module.RESPONSE_JSON_UNIQUE_KEYS_POLICY)["verdicts"] == 1
+    assert _run(old, batch_attempts=1, resume=True)["verdicts"] == 1
+    assert calls == 2
+    with pytest.raises(HBQError, match="response JSON policy changed"):
+        _run(old, batch_attempts=1, resume=True, response_json_policy=runner_module.RESPONSE_JSON_FINITE_POLICY)
 
 
 def test_legacy_run_resume_keeps_original_json_policy(tmp_path: Path, monkeypatch) -> None:
