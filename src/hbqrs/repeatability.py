@@ -434,8 +434,16 @@ def paired_response_envelope(
     request_bytes: bytes,
     accepted_session_ids: Sequence[str],
     response_bytes: bytes,
+    response_parse_policy: str = "unique_keys_v2",
 ) -> dict[str, Any]:
-    """Wrap one provider-facing response with local receipt fields after return."""
+    """Wrap a response; opt into legacy last-key parsing only for historical replay.
+
+    The existing receipt format binds the raw response hash and parsed output,
+    but does not record which parse policy was used. Retain the raw response and
+    the caller's policy separately when that distinction matters.
+    """
+    if not isinstance(response_parse_policy, str) or response_parse_policy not in {"unique_keys_v2", "legacy_last_key_v1"}:
+        raise RepeatabilityContractError("unsupported paired response parse policy")
     if presentation_order not in {"AB", "BA"}:
         raise RepeatabilityContractError("paired response order is invalid")
     committed = _validated_paired_commitment(commitment)
@@ -443,9 +451,24 @@ def paired_response_envelope(
     if request_sha256 != committed[f"{presentation_order.casefold()}_request_sha256"]:
         raise RepeatabilityContractError("request bytes do not match committed presentation order")
     raw_response = _bytes(response_bytes, "response_bytes")
+
+    def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                raise RepeatabilityContractError("paired response JSON contains duplicate object keys")
+            result[key] = value
+        return result
+
     try:
-        output = dict(_mapping(json.loads(raw_response.decode("utf-8")), "paired model output"))
-    except (UnicodeDecodeError, json.JSONDecodeError, RepeatabilityContractError) as error:
+        decoded = json.loads(raw_response.decode("utf-8"), object_pairs_hook=(
+            unique_object if response_parse_policy == "unique_keys_v2" else None
+        ))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise RepeatabilityContractError("paired response bytes must be strict UTF-8 JSON") from error
+    try:
+        output = dict(_mapping(decoded, "paired model output"))
+    except RepeatabilityContractError as error:
         raise RepeatabilityContractError("paired response bytes must be strict UTF-8 JSON") from error
     if set(output) != {"winner"} or output["winner"] not in {"FIRST", "SECOND", "TIE"}:
         raise RepeatabilityContractError("paired model output must contain only winner FIRST, SECOND, or TIE")

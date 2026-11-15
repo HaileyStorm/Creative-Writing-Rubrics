@@ -40,6 +40,16 @@ A model name is not a reproducible judge. Record the exact checkpoint or revisio
 
 Sampler settings belong to the task. A sampler that helps drafting may hurt grading or exact evidence transfer, so do not carry a creative-generation profile into judging without a separate calibration result. Model confidence is also diagnostic until it is calibrated against repeated decisions and external labels; it does not change canonical score or coverage by default.
 
+The experimental `hbqrs.repeatability.paired_response_envelope` rejects duplicate
+JSON object keys by default, including differently escaped spellings of the
+same key. Historical raw responses can be reconstructed with the explicit
+`response_parse_policy="legacy_last_key_v1"` option, which retains the former
+last-key behavior. Existing receipts and their hashes do not change. The v1
+receipt binds the raw response hash and parsed output but does not record the
+parse policy; retain the raw response and the caller's policy separately when
+that distinction matters. This parser check does not prove native receipt
+authenticity, model identity, or that a paired request actually swapped inputs.
+
 ## Confidence diagnostics
 
 `report.confidence` remains for compatibility. It is the legacy domain-point-weighted mean across assessed domains, not an effective-leaf calculation.

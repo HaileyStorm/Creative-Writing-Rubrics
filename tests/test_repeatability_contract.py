@@ -243,6 +243,24 @@ def test_paired_commitment_binds_reuse_lineage_and_exact_order_requests() -> Non
         )
 
 
+def test_paired_response_duplicate_keys_fail_closed_and_legacy_replay_is_explicit() -> None:
+    commitment = _commit()
+    base = dict(commitment=commitment, presentation_order="AB", request_bytes=_REQUESTS["AB"],
+                accepted_session_ids=("duplicate-key-session",))
+    for raw in (b'{"winner":"FIRST","winner":"SECOND"}',
+                b'{"winner":"FIRST","win\\u006eer":"FIRST"}'):
+        with pytest.raises(RepeatabilityContractError, match="duplicate object keys"):
+            paired_response_envelope(**base, response_bytes=raw)
+    legacy = paired_response_envelope(**base, response_bytes=b'{"winner":"FIRST","winner":"SECOND"}',
+                                      response_parse_policy="legacy_last_key_v1")
+    assert legacy["model_output"] == {"winner": "SECOND"}
+    assert legacy["response_bytes_sha256"] == _hash('{"winner":"FIRST","winner":"SECOND"}')
+    pair = validate_paired_comparison(commitment, [legacy, _response(commitment, "BA", "FIRST", 2)])
+    assert pair["agreement_classification"] == "agreement_artifact_b"
+    with pytest.raises(RepeatabilityContractError, match="parse policy"):
+        paired_response_envelope(**base, response_bytes=b'{"winner":"FIRST"}', response_parse_policy="unknown")
+
+
 @pytest.mark.parametrize(
     ("ab_winner", "ba_winner", "expected"),
     [
