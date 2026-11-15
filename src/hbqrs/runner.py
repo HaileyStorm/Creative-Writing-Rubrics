@@ -3551,6 +3551,7 @@ def run_judge(
     grok_transport_sha256: str | None = None,
     response_schema_mode: str | None = None,
     codex_receipt_policy: str | None = None,
+    response_json_policy: str | None = None,
 ) -> dict[str, Any]:
     """Judge one artifact against one bundle, checkpointing every batch.
 
@@ -3681,8 +3682,14 @@ def run_judge(
         if not isinstance(loaded_manifest, Mapping):
             raise HBQError("Cannot resume: run manifest is malformed")
         prior_manifest = loaded_manifest
+    requested_response_json_policy = response_json_policy
+    if requested_response_json_policy is not None and (
+        not isinstance(requested_response_json_policy, str)
+        or requested_response_json_policy not in {RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY}
+    ):
+        raise HBQError("Unsupported judge response JSON policy")
     if prior_manifest is None:
-        response_json_policy = RESPONSE_JSON_UNIQUE_KEYS_POLICY
+        response_json_policy = requested_response_json_policy or RESPONSE_JSON_UNIQUE_KEYS_POLICY
     else:
         prior_configuration = prior_manifest.get("configuration")
         if not isinstance(prior_configuration, Mapping):
@@ -3690,6 +3697,8 @@ def run_judge(
         response_json_policy = prior_configuration.get("response_json_policy", RESPONSE_JSON_LEGACY_POLICY)
         if not isinstance(response_json_policy, str) or response_json_policy not in {RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY}:
             raise HBQError("Cannot resume: unsupported judge response JSON policy")
+        if requested_response_json_policy is not None and requested_response_json_policy != response_json_policy:
+            raise HBQError("Cannot resume: judge response JSON policy changed")
     legacy_prompt_resume = (
         prior_manifest is not None
         and prior_manifest.get("format_version") in {1, 2, 3}

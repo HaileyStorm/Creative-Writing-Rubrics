@@ -63,6 +63,11 @@ execution contract for `verify_binary_run`, include the same
 `response_json_policy` in its `execution` object for a new run. Verification
 rejects a mismatch between the frozen contract and the run configuration.
 Neither the manifest nor this check authenticates a provider response by itself.
+New long-form workflows bind the same policy across route, map, synthesis and
+binary judging passes. A pre-policy workflow keeps legacy decoding, including
+for its not-yet-started passes. If a resumed workflow and an existing binary
+pass record different policies, resume stops for review instead of switching
+either policy silently.
 
 Use `--task-contract contract.json` when a brief affects scoring or eligibility. It must match `schema/hbq_task_contract.schema.json`; `weighted_goals` affect the task-domain score, while only atomic, objective, explicitly non-negotiable `binding_requirements` become gates. Context, preferences, aspirations, and inferred intent never do. The contract also works with `cwr compile`, `cwr render-judge`, and `cwr score`. `--temperature` is OpenAI-compatible only; `--reasoning` is for Codex, Grok, and Nous, with unsupported combinations failing.
 

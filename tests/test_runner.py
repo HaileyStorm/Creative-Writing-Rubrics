@@ -1382,6 +1382,8 @@ def test_new_run_rejects_duplicate_keys_and_preserves_rejected_attempt(tmp_path:
     assert "duplicate object keys" in rejected["error"]["message"]
     with pytest.raises(HBQError, match="exhausted"):
         _run(tmp_path, batch_attempts=1, resume=True)
+    with pytest.raises(HBQError, match="response JSON policy changed"):
+        _run(tmp_path, batch_attempts=1, resume=True, response_json_policy=runner_module.RESPONSE_JSON_LEGACY_POLICY)
     assert calls == 1
 
 
@@ -1406,6 +1408,9 @@ def test_legacy_run_resume_keeps_original_json_policy(tmp_path: Path, monkeypatc
     assert _run(tmp_path, resume=True)["verdicts"] == 1
     assert calls == 1
     assert _parse_model_json('{"a": 1, "a": 2}') == {"a": 2}
+    with pytest.raises(HBQError, match="response JSON policy changed"):
+        _run(tmp_path, resume=True, response_json_policy=runner_module.RESPONSE_JSON_UNIQUE_KEYS_POLICY)
+    assert calls == 1
 
 
 def test_runner_prompt_has_one_unambiguous_envelope(tmp_path: Path) -> None:

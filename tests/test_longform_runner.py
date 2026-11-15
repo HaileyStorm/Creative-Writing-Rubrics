@@ -1071,6 +1071,34 @@ def test_structured_failure_is_retryable_and_cached_result_is_hash_bound(tmp_pat
         longform_runner._run_structured_pass(**arguments, resume=True)
 
 
+@pytest.mark.parametrize("strict", [False, True])
+def test_structured_pass_duplicate_keys_respect_bound_policy(tmp_path: Path, monkeypatch, strict: bool) -> None:
+    calls = []
+
+    def duplicate(**kwargs):
+        calls.append(1)
+        return '{"value":1,"val\\u0075e":2}', {"model": "fake-local"}
+
+    monkeypatch.setattr(longform_runner, "_call_openai_structured", duplicate)
+    policy = binary_runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY if strict else binary_runner.RESPONSE_JSON_LEGACY_POLICY
+    args = {"name": "fixture", "prompt": "synthetic", "schema": {"type": "object", "required": ["value"],
+        "properties": {"value": {"type": "integer"}}, "additionalProperties": False}, "pass_dir": tmp_path / "pass",
+        "provider": "openai", "model": "fake-local", "endpoint": "http://127.0.0.1:1/v1/chat/completions",
+        "api_key_env": "UNSET_TEST_KEY", "temperature": None, "allow_model_mismatch": False, "reasoning": "high",
+        "codex_bin": "codex", "timeout": 1, "openai_structured_outputs": False, "response_json_policy": policy}
+    if strict:
+        with pytest.raises(HBQError, match="duplicate object keys"):
+            longform_runner._run_structured_pass(**args, resume=False)
+        assert (tmp_path / "pass/attempts/failed-0001.json").is_file()
+        assert not (tmp_path / "pass/response.json").exists()
+    else:
+        assert longform_runner._run_structured_pass(**args, resume=False) == {"value": 2}
+        assert longform_runner._run_structured_pass(**args, resume=True) == {"value": 2}
+        with pytest.raises(HBQError, match="Cannot resume fixture"):
+            longform_runner._run_structured_pass(**{**args, "response_json_policy": binary_runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY}, resume=True)
+    assert len(calls) == 1
+
+
 def test_structured_provider_failures_persist_and_resume_with_fresh_attempts(tmp_path: Path, monkeypatch) -> None:
     calls: list[dict[str, object]] = []
 
@@ -1561,8 +1589,9 @@ def test_full_book_freeze_geometry_matches_current_compiled_public_catalog() -> 
     )
 
 
+@pytest.mark.parametrize("legacy", [False, True])
 def test_terminal_lifecycle_strict_prefix_and_resume_are_provider_free(
-    tmp_path: Path, monkeypatch
+    tmp_path: Path, monkeypatch, legacy: bool
 ) -> None:
     registry, bundles = _catalog(tmp_path)
     artifact = tmp_path / "story.txt"
@@ -1702,7 +1731,23 @@ def test_terminal_lifecycle_strict_prefix_and_resume_are_provider_free(
     monkeypatch.setattr(longform_runner, "_call_openai_structured", fake_structured)
     monkeypatch.setattr(binary_runner, "_call_openai", fake_binary)
 
-    summary = run_longform_judge(**arguments)
+    if legacy:
+        assert run_longform_judge(**arguments, plan_only=True)["status"] == "PLANNED"
+        workflow_path = output / "workflow.json"
+        workflow = json.loads(workflow_path.read_text(encoding="utf-8"))
+        del workflow["configuration"]["response_json_policy"]
+        workflow["config_sha256"] = longform_runner._sha256_bytes(longform_runner._json_bytes(workflow["configuration"]))
+        workflow["workflow_id"] = f"longform-{workflow['config_sha256'][:16]}"
+        longform_runner._write_json(workflow_path, workflow)
+        route_dir = output / ".private/passes/route"
+        pass_record = json.loads((route_dir / "pass.json").read_text(encoding="utf-8"))
+        del pass_record["configuration"]["response_json_policy"]
+        pass_record["config_sha256"] = longform_runner._sha256_bytes(longform_runner._json_bytes(pass_record["configuration"]))
+        longform_runner._write_json(route_dir / "pass.json", pass_record)
+        response = json.loads((route_dir / "response.json").read_text(encoding="utf-8"))
+        response["config_sha256"] = pass_record["config_sha256"]
+        longform_runner._write_json(route_dir / "response.json", response)
+    summary = run_longform_judge(**arguments, resume=legacy)
     assert summary["status"] == "VALID"
     assert len(structured_prompts) == 3
     assert len(binary_prompts) == 3
@@ -1719,6 +1764,10 @@ def test_terminal_lifecycle_strict_prefix_and_resume_are_provider_free(
     workflow = json.loads((output / "workflow.json").read_text(encoding="utf-8"))
     assert workflow["format_version"] == 3
     assert workflow["configuration"]["attempt_lifecycle_policy"] == binary_runner.ATTEMPT_LIFECYCLE_POLICY
+    assert workflow["configuration"].get("response_json_policy") == (None if legacy else binary_runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY)
+    for name in ("route", "map", "synthesis"):
+        record = json.loads((output / ".private" / "passes" / name / "pass.json").read_text(encoding="utf-8"))
+        assert record["configuration"].get("response_json_policy") == (None if legacy else binary_runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY)
     segmentation = json.loads((output / ".private" / "segmentation.json").read_text(encoding="utf-8"))
     scope_dirs = [output / ".private" / "evaluations" / "global"] + [
         output / ".private" / "evaluations" / unit["unit_id"] for unit in segmentation["units"]
@@ -1727,6 +1776,7 @@ def test_terminal_lifecycle_strict_prefix_and_resume_are_provider_free(
         manifest = json.loads((scope_dir / "run.json").read_text(encoding="utf-8"))
         assert manifest["format_version"] == 5
         assert manifest["configuration"]["attempt_lifecycle_policy"] == binary_runner.ATTEMPT_LIFECYCLE_POLICY
+        assert manifest["configuration"].get("response_json_policy") == (None if legacy else binary_runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY)
         selected_ids = manifest["configuration"]["question_ids"]
         verdict_ids = [
             json.loads(line)["question_id"]

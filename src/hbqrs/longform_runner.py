@@ -53,6 +53,8 @@ from .runner import (
     NOUS_MODEL_POLICIES,
     NOUS_REASONING,
     NOUS_TRANSPORT_POLICY,
+    RESPONSE_JSON_LEGACY_POLICY,
+    RESPONSE_JSON_UNIQUE_KEYS_POLICY,
     _ProviderAttemptFailure,
     _NoRedirect,
     _atomic_write,
@@ -276,6 +278,7 @@ def _run_structured_pass(
     grok_bin: str = "grok",
     allow_unattested_reasoning: bool = False,
     input_json_layout: str | None = None,
+    response_json_policy: str = RESPONSE_JSON_LEGACY_POLICY,
 ) -> dict[str, Any]:
     """Execute or resume one strict structured provider pass."""
 
@@ -299,6 +302,10 @@ def _run_structured_pass(
         "prompt_sha256": _sha256_bytes(prompt.encode("utf-8")),
         "schema_sha256": _sha256_bytes(_json_bytes(schema)),
     }
+    if response_json_policy not in (RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY):
+        raise HBQError("Unsupported structured response JSON policy")
+    if response_json_policy == RESPONSE_JSON_UNIQUE_KEYS_POLICY:
+        configuration["response_json_policy"] = response_json_policy
     if input_json_layout is not None:
         configuration["input_json_layout"] = input_json_layout
     if provider == "grok":
@@ -345,7 +352,7 @@ def _run_structured_pass(
             mismatches["content_sha256"] = "content bytes changed"
         if mismatches:
             raise HBQError(f"Cached {name} response is not bound to this pass: {mismatches}")
-        parsed = _parse_model_json(content)
+        parsed = _parse_model_json(content, policy=response_json_policy)
         _validate(parsed, schema, name)
         result_hash = _sha256_bytes(_json_bytes(parsed))
         if response_record.get("result_sha256") != result_hash:
@@ -415,7 +422,7 @@ def _run_structured_pass(
         raise
     content_sha256 = _sha256_bytes(content.encode("utf-8"))
     try:
-        result = _parse_model_json(content)
+        result = _parse_model_json(content, policy=response_json_policy)
         _validate(result, schema, name)
     except HBQError:
         _write_json(
@@ -916,6 +923,7 @@ def _run_binary_scope(
     allow_unattested_reasoning: bool,
     upgrade_legacy_normalization: bool,
     attempt_lifecycle_policy: str | None,
+    response_json_policy: str = RESPONSE_JSON_LEGACY_POLICY,
     longform_route_plan_path: Path | None = None,
 ) -> dict[str, Any]:
     subresume = resume and (output_dir / "run.json").is_file()
@@ -971,6 +979,7 @@ def _run_binary_scope(
         allow_unattested_reasoning=allow_unattested_reasoning,
         upgrade_legacy_normalization=upgrade_legacy_normalization,
         attempt_lifecycle_policy=attempt_lifecycle_policy,
+        response_json_policy=response_json_policy,
     )
     if summary.get("score") is None or not (output_dir / "score.json").is_file():
         raise HBQError(f"Long-form {label} pass did not produce a complete score report")
@@ -1348,6 +1357,18 @@ def run_longform_judge(
     if dry_run:
         return {"status": "DRY_RUN", **disclosure, "unit_count": segmentation["unit_count"]}
 
+    destination = Path(output_dir).resolve()
+    workflow_path = destination / "workflow.json"
+    if workflow_path.is_file():
+        policy_workflow = load_data(workflow_path)
+        policy_configuration = policy_workflow.get("configuration") if isinstance(policy_workflow, Mapping) else None
+        if not isinstance(policy_configuration, Mapping):
+            raise HBQError("Cannot resume: long-form workflow configuration is malformed")
+        response_json_policy = policy_configuration.get("response_json_policy", RESPONSE_JSON_LEGACY_POLICY)
+        if response_json_policy not in (RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY):
+            raise HBQError("Cannot resume: unsupported long-form response JSON policy")
+    else:
+        response_json_policy = RESPONSE_JSON_UNIQUE_KEYS_POLICY
     configuration = {
         "format_version": 3,
         "artifact": _record_without_text(source),
@@ -1386,6 +1407,8 @@ def run_longform_judge(
         "codex_bin": codex_bin if provider == "codex" else None,
         "strict_ai": strict_ai,
     }
+    if response_json_policy == RESPONSE_JSON_UNIQUE_KEYS_POLICY:
+        configuration["response_json_policy"] = response_json_policy
     if attempt_lifecycle_policy is not None:
         configuration["attempt_lifecycle_policy"] = attempt_lifecycle_policy
     if provider == "grok":
@@ -1405,8 +1428,6 @@ def run_longform_judge(
     legacy_configuration["format_version"] = 1
     legacy_configuration.pop("retry_policy")
     legacy_config_sha256 = _sha256_bytes(_json_bytes(legacy_configuration))
-    destination = Path(output_dir).resolve()
-    workflow_path = destination / "workflow.json"
     workflow_format_version: int | None = None
     if workflow_path.is_file():
         if not resume:
@@ -1510,6 +1531,7 @@ def run_longform_judge(
         timeout=timeout,
         resume=resume,
         openai_structured_outputs=openai_structured_outputs,
+        response_json_policy=response_json_policy,
     )
     if bundle_id is not None:
         frozen_bundle = resolve_bundle(available_bundles, bundle_id)
@@ -1644,6 +1666,7 @@ def run_longform_judge(
         timeout=timeout,
         resume=resume,
         openai_structured_outputs=openai_structured_outputs,
+        response_json_policy=response_json_policy,
     )
     try:
         work_map = validate_long_form_map(map_raw, segmentation=segmentation)
@@ -1733,6 +1756,7 @@ def run_longform_judge(
             strict_ai=strict_ai,
             upgrade_legacy_normalization=upgrade_legacy_normalization,
             attempt_lifecycle_policy=attempt_lifecycle_policy,
+            response_json_policy=response_json_policy,
         )
 
     def evaluate_local(unit_id: str) -> dict[str, Any]:
@@ -1790,6 +1814,7 @@ def run_longform_judge(
             strict_ai=strict_ai,
             upgrade_legacy_normalization=upgrade_legacy_normalization,
             attempt_lifecycle_policy=attempt_lifecycle_policy,
+            response_json_policy=response_json_policy,
         )
 
     if binary_workers == 1:
@@ -1862,6 +1887,7 @@ def run_longform_judge(
         resume=resume,
         openai_structured_outputs=openai_structured_outputs,
         input_json_layout="compact",
+        response_json_policy=response_json_policy,
     )
     try:
         _validate_synthesis_references(
