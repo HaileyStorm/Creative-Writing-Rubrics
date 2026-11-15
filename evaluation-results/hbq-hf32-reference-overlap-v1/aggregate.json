@@ -1,0 +1,46 @@
+{
+  "case_manifest_sha256": "469806acefd2f4cc92908f6b31e3c5f0afae3b4e8c15b9061892f89293994a0c",
+  "common_reference_and_method_cohort": 17,
+  "complete_hbq_banks": 27,
+  "correlations_spearman": {
+    "expert": {
+      "hbq": 0.31515452719138787,
+      "length": -0.4014668960592651,
+      "ttcw": 0.27000930644717713
+    },
+    "reader": {
+      "hbq": 0.39333179292379433,
+      "length": 0.23564244916495,
+      "ttcw": 0.3857115639959481
+    }
+  },
+  "expert_matched_cohort": 19,
+  "expert_reader_pair_directions": {
+    "both_tie": 4,
+    "expert_only_tie": 22,
+    "opposite_direction": 46,
+    "pairs": 136,
+    "reader_only_tie": 16,
+    "same_direction": 48
+  },
+  "expert_reader_spearman": 0.014877898989867716,
+  "limits": [
+    "Selected previously opened development works; not an independent sample or prospective confirmation.",
+    "The common subset is selected on availability and does not address missingness or prove the populations differ.",
+    "Expert and reader references use distinct aggregates; shared work does not establish independent raters.",
+    "Pairs reuse works; no confidence interval, causation, superiority or candidate promotion is established."
+  ],
+  "new_human_labels": 0,
+  "planned_works": 32,
+  "provider_calls": 0,
+  "reader_matched_cohort": 19,
+  "reference_availability_among_complete_banks": {
+    "both": 21,
+    "expert_only": 4,
+    "neither": 0,
+    "reader_only": 2
+  },
+  "request_manifest_sha256": "ab4adf5943e0eb12dd5e750e05ea63c5c99cafd3f2ec37c351d4bd05a62e9268",
+  "source_sha256": "e8bfc8cb83c91f4f26c4f901bc0f9fef9e993072b509c175baccafcddaad9fe7",
+  "state": "HF32_POST_RESULT_SHARED_REFERENCE_OVERLAP"
+}
