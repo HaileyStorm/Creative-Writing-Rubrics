@@ -1,0 +1,59 @@
+{
+  "case_manifest_sha256": "469806acefd2f4cc92908f6b31e3c5f0afae3b4e8c15b9061892f89293994a0c",
+  "complete_hbq_banks": 27,
+  "limits": [
+    "Post-result selected development cohorts, not confirmation; only the same 19 works per reference axis are compared.",
+    "Length is an association baseline, not a mechanism, quality rule, causal explanation or calibrated judge.",
+    "Expert and reader constructs differ; works, raters and pair counts are not necessarily independent.",
+    "No population inference, method superiority or candidate promotion follows."
+  ],
+  "matched_results": {
+    "expert": {
+      "distinct_word_counts": 17,
+      "length_pair_counts": {
+        "concordant": 43,
+        "discordant": 93,
+        "length_tie": 1,
+        "pairs": 171,
+        "reference_tie": 34
+      },
+      "matched_works": 19,
+      "spearman_hbq_reference": 0.293140141246496,
+      "spearman_length_hbq": -0.20895530441399804,
+      "spearman_length_reference": -0.4064874154809265,
+      "spearman_length_ttcw": -0.12487220925950863,
+      "spearman_ttcw_reference": 0.2325320921564207,
+      "word_count_range": [
+        44,
+        198
+      ]
+    },
+    "reader": {
+      "distinct_word_counts": 18,
+      "length_pair_counts": {
+        "concordant": 83,
+        "discordant": 61,
+        "length_tie": 1,
+        "pairs": 171,
+        "reference_tie": 26
+      },
+      "matched_works": 19,
+      "spearman_hbq_reference": 0.39041176034122,
+      "spearman_length_hbq": -0.1272488055803799,
+      "spearman_length_reference": 0.17374214039097458,
+      "spearman_length_ttcw": -0.03876990312203809,
+      "spearman_ttcw_reference": 0.3646873257462848,
+      "word_count_range": [
+        67,
+        198
+      ]
+    }
+  },
+  "new_human_labels": 0,
+  "planned_works": 32,
+  "provider_calls": 0,
+  "request_manifest_sha256": "ab4adf5943e0eb12dd5e750e05ea63c5c99cafd3f2ec37c351d4bd05a62e9268",
+  "source_sha256": "e8bfc8cb83c91f4f26c4f901bc0f9fef9e993072b509c175baccafcddaad9fe7",
+  "state": "HF32_POST_RESULT_LENGTH_BASELINE",
+  "word_count_definition": "Python whitespace split on pinned UTF-8 source text; no prompt or task context included"
+}
