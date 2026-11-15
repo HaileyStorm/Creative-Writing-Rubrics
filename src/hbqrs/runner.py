@@ -65,6 +65,8 @@ NOUS_TRANSPORT_POLICY = {
     "retryable_statuses": [408, 409, 425, 429],
 }
 EVIDENCE_NORMALIZATION_POLICY = "invalid_exact_quote_to_summary_v1"
+RESPONSE_JSON_UNIQUE_KEYS_POLICY = "unique_keys_v1"
+RESPONSE_JSON_LEGACY_POLICY = "legacy_last_key_v1"
 VALIDATION_FEEDBACK_POLICY = "validation_feedback_retry_v1"
 ATTEMPT_LIFECYCLE_POLICY = "terminal_sidecar_v1"
 ATTEMPT_OUTCOMES = frozenset({
@@ -325,9 +327,22 @@ def _strip_json_fence(text: str) -> str:
     return value
 
 
-def _parse_model_json(text: str) -> dict[str, Any]:
+def _unique_json_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise HBQError("Judge returned JSON with duplicate object keys")
+        result[key] = value
+    return result
+
+
+def _parse_model_json(text: str, *, policy: str = RESPONSE_JSON_LEGACY_POLICY) -> dict[str, Any]:
+    if not isinstance(policy, str) or policy not in {RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY}:
+        raise HBQError("Unsupported judge response JSON policy")
     try:
-        value = json.loads(_strip_json_fence(text))
+        value = json.loads(_strip_json_fence(text), object_pairs_hook=(
+            _unique_json_object if policy == RESPONSE_JSON_UNIQUE_KEYS_POLICY else None
+        ))
     except json.JSONDecodeError as exc:
         raise HBQError(f"Judge returned invalid JSON: {exc}") from exc
     if not isinstance(value, dict):
@@ -2435,6 +2450,7 @@ def _recover_normalized_rejection(
     artifact_text: str,
     context_texts: Sequence[str],
     normalization_policy: str | None,
+    response_json_policy: str = RESPONSE_JSON_LEGACY_POLICY,
 ) -> tuple[list[dict[str, Any]], str, Mapping[str, Any] | None, Path, int, list[dict[str, Any]]] | None:
     if normalization_policy != EVIDENCE_NORMALIZATION_POLICY:
         return None
@@ -2447,7 +2463,7 @@ def _recover_normalized_rejection(
             continue
         try:
             _normalize_batch(
-                _parse_model_json(content),
+                _parse_model_json(content, policy=response_json_policy),
                 expected_ids=expected_ids,
                 artifact_id=artifact_id,
                 bundle_id=bundle_id,
@@ -2463,7 +2479,7 @@ def _recover_normalized_rejection(
         audit: list[dict[str, Any]] = []
         try:
             normalized = _normalize_batch(
-                _parse_model_json(content),
+                _parse_model_json(content, policy=response_json_policy),
                 expected_ids=expected_ids,
                 artifact_id=artifact_id,
                 bundle_id=bundle_id,
@@ -3218,11 +3234,26 @@ def _load_checkpoints(
     context_texts: Sequence[str],
     batch_attempts: int,
     normalization_policy: str | None = EVIDENCE_NORMALIZATION_POLICY,
+    response_json_policy: str | None = None,
     allow_legacy_rejection_records: bool = False,
     codex_receipt_policy: str | None = None,
     codex_model: str | None = None,
     codex_reasoning: str | None = None,
 ) -> tuple[list[dict[str, Any]], int, str | None]:
+    manifest_path = output_dir / "run.json"
+    if manifest_path.is_file():
+        manifest = load_data(manifest_path)
+        configuration = manifest.get("configuration") if isinstance(manifest, Mapping) else None
+        if not isinstance(configuration, Mapping):
+            raise HBQError("Run configuration is malformed while loading checkpoints")
+        recorded_policy = configuration.get("response_json_policy", RESPONSE_JSON_LEGACY_POLICY)
+        if not isinstance(recorded_policy, str) or recorded_policy not in {RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY}:
+            raise HBQError("Unsupported recorded judge response JSON policy")
+        if response_json_policy is not None and response_json_policy != recorded_policy:
+            raise HBQError("Checkpoint response JSON policy does not match the run")
+        response_json_policy = recorded_policy
+    elif response_json_policy is None:
+        response_json_policy = RESPONSE_JSON_LEGACY_POLICY
     _validate_recorded_batch_schemas(output_dir)
     _validate_rejected_attempt_store(output_dir)
     response_dir = output_dir / "responses"
@@ -3401,7 +3432,7 @@ def _load_checkpoints(
                 audit: list[dict[str, Any]] = []
                 try:
                     replayed = _normalize_batch(
-                        _parse_model_json(artifact_bytes.decode("utf-8")),
+                        _parse_model_json(artifact_bytes.decode("utf-8"), policy=response_json_policy),
                         expected_ids=question_ids,
                         artifact_id=str(normalized[0].get("artifact_id")) if normalized else "",
                         bundle_id=str(normalized[0].get("bundle_id")) if normalized else "",
@@ -3650,6 +3681,15 @@ def run_judge(
         if not isinstance(loaded_manifest, Mapping):
             raise HBQError("Cannot resume: run manifest is malformed")
         prior_manifest = loaded_manifest
+    if prior_manifest is None:
+        response_json_policy = RESPONSE_JSON_UNIQUE_KEYS_POLICY
+    else:
+        prior_configuration = prior_manifest.get("configuration")
+        if not isinstance(prior_configuration, Mapping):
+            raise HBQError("Cannot resume: run configuration is malformed")
+        response_json_policy = prior_configuration.get("response_json_policy", RESPONSE_JSON_LEGACY_POLICY)
+        if not isinstance(response_json_policy, str) or response_json_policy not in {RESPONSE_JSON_LEGACY_POLICY, RESPONSE_JSON_UNIQUE_KEYS_POLICY}:
+            raise HBQError("Cannot resume: unsupported judge response JSON policy")
     legacy_prompt_resume = (
         prior_manifest is not None
         and prior_manifest.get("format_version") in {1, 2, 3}
@@ -3795,6 +3835,8 @@ def run_judge(
         "questions_sha256": _sha256_bytes(_json_bytes(_question_payload(questions))),
         "compiled_bundle_sha256": _sha256_bytes(_json_bytes(compiled)),
     }
+    if response_json_policy == RESPONSE_JSON_UNIQUE_KEYS_POLICY:
+        configuration["response_json_policy"] = response_json_policy
     if response_schema_mode is not None:
         configuration["response_schema_mode"] = response_schema_mode
         configuration["batch_response_schemas"] = batch_schema_records
@@ -3924,6 +3966,7 @@ def run_judge(
         context_texts=[str(item["text"]) for item in contexts],
         batch_attempts=batch_attempts,
         normalization_policy=active_normalization_policy,
+        response_json_policy=response_json_policy,
         allow_legacy_rejection_records=legacy_rejection_compat,
         **({"codex_receipt_policy": codex_receipt_policy, "codex_model": model,
             "codex_reasoning": reasoning} if codex_receipt_policy is not None else {}),
@@ -4041,6 +4084,7 @@ def run_judge(
             normalization_policy=(
                 None if attempt_lifecycle_policy == ATTEMPT_LIFECYCLE_POLICY else active_normalization_policy
             ),
+            response_json_policy=response_json_policy,
         )
         if recovered is not None:
             normalized, content, recovered_provider, source_path, accepted_attempt, repair_audit = recovered
@@ -4277,7 +4321,7 @@ def run_judge(
             try:
                 attempt_repair_audit: list[dict[str, Any]] = []
                 normalized = _normalize_batch(
-                    _parse_model_json(content),
+                    _parse_model_json(content, policy=response_json_policy),
                     expected_ids=expected,
                     artifact_id=artifact_id,
                     bundle_id=bundle_id,

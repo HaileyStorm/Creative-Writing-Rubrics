@@ -1357,6 +1357,55 @@ def test_runner_normalizes_ungrounded_exact_quote_before_checkpoint(
 def test_strict_model_response_rejects_top_level_list() -> None:
     with pytest.raises(HBQError, match="must be an object"):
         _parse_model_json("[]")
+    with pytest.raises(HBQError, match="Unsupported"):
+        _parse_model_json('{}', policy=[])
+
+
+def test_new_run_rejects_duplicate_keys_and_preserves_rejected_attempt(tmp_path: Path, monkeypatch) -> None:
+    calls = 0
+
+    def duplicate(**kwargs: object) -> tuple[str, dict[str, object]]:
+        nonlocal calls
+        calls += 1
+        qid = _questions_from_prompt(str(kwargs["user_prompt"]))[0]["question_id"]
+        content = json.dumps({"verdicts": [{"question_id": qid, "verdict": "YES", "confidence": 0.8,
+            "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": "A short test scene.", "summary": None}],
+            "note": "grounded"}]})
+        return content.replace('"verdict": "YES"', '"verdict": "NO", "ver\\u0064ict": "YES"'), {}
+
+    monkeypatch.setattr(runner_module, "_call_openai", duplicate)
+    with pytest.raises(HBQError, match="exhausted"):
+        _run(tmp_path, batch_attempts=1)
+    manifest = json.loads((tmp_path / "run/run.json").read_text(encoding="utf-8"))
+    assert manifest["configuration"]["response_json_policy"] == runner_module.RESPONSE_JSON_UNIQUE_KEYS_POLICY
+    rejected = json.loads((tmp_path / "run/responses/rejected/batch-0001/attempt-0001.json").read_text(encoding="utf-8"))
+    assert "duplicate object keys" in rejected["error"]["message"]
+    with pytest.raises(HBQError, match="exhausted"):
+        _run(tmp_path, batch_attempts=1, resume=True)
+    assert calls == 1
+
+
+def test_legacy_run_resume_keeps_original_json_policy(tmp_path: Path, monkeypatch) -> None:
+    calls = 0
+
+    def valid(**kwargs: object) -> tuple[str, dict[str, object]]:
+        nonlocal calls
+        calls += 1
+        qid = _questions_from_prompt(str(kwargs["user_prompt"]))[0]["question_id"]
+        return json.dumps({"verdicts": [{"question_id": qid, "verdict": "YES", "confidence": 0.8,
+            "evidence": [{"kind": "exact_quote", "reference": "line:1", "exact_quote": "A short test scene.", "summary": None}],
+            "note": "grounded"}]}), {}
+
+    monkeypatch.setattr(runner_module, "_call_openai", valid)
+    assert _run(tmp_path)["verdicts"] == 1
+    manifest_path = tmp_path / "run/run.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    del manifest["configuration"]["response_json_policy"]
+    manifest["config_sha256"] = hashlib.sha256(runner_module._json_bytes(manifest["configuration"])).hexdigest()
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    assert _run(tmp_path, resume=True)["verdicts"] == 1
+    assert calls == 1
+    assert _parse_model_json('{"a": 1, "a": 2}') == {"a": 2}
 
 
 def test_runner_prompt_has_one_unambiguous_envelope(tmp_path: Path) -> None:

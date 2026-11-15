@@ -119,6 +119,7 @@ def build_fixture(
         if response_schema_mode != "batch_question_ids_v1" or prompt_rendering_version != runner.PROMPT_RENDERING_VERSION:
             raise ValueError("Unsupported opt-in verifier fixture configuration")
         frozen["execution"]["response_schema_mode"] = response_schema_mode
+        frozen["execution"]["response_json_policy"] = runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY
         calls = 0
 
         def fake_codex(*, response_schema: Path, **_kwargs: Any) -> tuple[str, dict[str, Any]]:

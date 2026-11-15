@@ -99,6 +99,44 @@ def test_verifies_a_genuine_complete_v4_run_with_batch_response_schemas(tmp_path
     assert result["commitments"]["batch_response_schemas"] == records
 
 
+def test_verifier_requires_frozen_response_json_policy(tmp_path: Path) -> None:
+    run, frozen = _fixture(tmp_path, response_schema_mode="batch_question_ids_v1")
+    assert verify_binary_run(run, frozen)["checkpoint_count"] == 6
+    del frozen["execution"]["response_json_policy"]
+    with pytest.raises(core.HBQError, match="configuration"):
+        verify_binary_run(run, frozen)
+
+
+@pytest.mark.parametrize("strict", [False, True])
+def test_verifier_replays_accepted_response_using_frozen_json_policy(tmp_path: Path, strict: bool) -> None:
+    run, frozen = _fixture(tmp_path, response_schema_mode="batch_question_ids_v1" if strict else None)
+    checkpoint_path = run / "responses/batch-0001.json"
+    checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+    message_path = run / checkpoint["response_artifact"]["path"]
+    raw = message_path.read_bytes()
+    marker = b'"verdict": "YES"'
+    assert marker in raw
+    raw = raw.replace(marker, b'"verdict": "YES", "verdict": "YES"', 1)
+    message_path.write_bytes(raw)
+    digest = hashlib.sha256(raw).hexdigest()
+    checkpoint["response_artifact"].update(bytes=len(raw), sha256=digest)
+    checkpoint["response_sha256"] = digest
+    _write(checkpoint_path, checkpoint)
+    _rechain_from(run, 1)
+    if strict:
+        with pytest.raises(core.HBQError, match="raw response cannot be replayed") as error:
+            verify_binary_run(run, frozen)
+        assert "duplicate object keys" in str(error.value.__cause__)
+        with pytest.raises(core.HBQError, match="raw response cannot be replayed"):
+            runner._load_checkpoints(run, artifact_text=Path(frozen["artifact"]["path"]).read_text(encoding="utf-8"),
+                context_texts=[Path(x["path"]).read_text(encoding="utf-8") for x in frozen["contexts"]], batch_attempts=3)
+        with pytest.raises(core.HBQError, match="does not match the run"):
+            runner._load_checkpoints(run, artifact_text="", context_texts=[], batch_attempts=3,
+                response_json_policy=runner.RESPONSE_JSON_LEGACY_POLICY)
+    else:
+        assert verify_binary_run(run, frozen)["checkpoint_count"] == 6
+
+
 def test_rejects_batch_response_schema_tampering_and_incomplete_initialization(tmp_path: Path) -> None:
     run, frozen = _fixture(tmp_path / "schema-tamper", response_schema_mode="batch_question_ids_v1")
     records = json.loads((run / "run.json").read_text(encoding="utf-8"))["configuration"]["batch_response_schemas"]

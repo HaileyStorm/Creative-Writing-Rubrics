@@ -58,7 +58,7 @@ def _manifest_record(path: Path) -> dict[str, Any]:
 def _execution(frozen: Mapping[str, Any]) -> dict[str, Any]:
     value = frozen.get("execution")
     required = {"artifact_id", "bundle_id", "batch_size", "batch_attempts", "strict_ai", "provider", "model", "reasoning", "codex_bin"}
-    optional = {"attempt_lifecycle_policy", "response_schema_mode"}
+    optional = {"attempt_lifecycle_policy", "response_schema_mode", "response_json_policy"}
     if not isinstance(value, Mapping) or not required <= set(value) or not set(value) <= required | optional:
         raise core.HBQError("Frozen execution contract is malformed")
     if not isinstance(value["artifact_id"], str) or not value["artifact_id"] or not isinstance(value["bundle_id"], str) or not value["bundle_id"]:
@@ -73,6 +73,8 @@ def _execution(frozen: Mapping[str, Any]) -> dict[str, Any]:
         raise core.HBQError("Frozen attempt lifecycle policy is malformed")
     if "response_schema_mode" in value and value["response_schema_mode"] != "batch_question_ids_v1":
         raise core.HBQError("Frozen response schema mode is malformed")
+    if "response_json_policy" in value and value["response_json_policy"] != runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY:
+        raise core.HBQError("Frozen response JSON policy is malformed")
     return dict(value)
 
 
@@ -147,6 +149,8 @@ def _configuration(
     }
     if "attempt_lifecycle_policy" in execution:
         configuration["attempt_lifecycle_policy"] = execution["attempt_lifecycle_policy"]
+    if "response_json_policy" in execution:
+        configuration["response_json_policy"] = execution["response_json_policy"]
     if "response_schema_mode" in execution:
         batch_schema_records, _ = runner._batch_schema_plan(
             configuration["question_ids"], execution["batch_size"]
@@ -411,7 +415,7 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
         if record.get("batch") != batch or record.get("question_ids") != expected_ids or prompt != expected_prompt:
             raise core.HBQError("Checkpoint does not bind the exact frozen batch slice and prompt bytes")
         prompt_commitments.append(_relative_commitment(directory, prompt_path))
-    verdicts, checkpoint_count, chain_head = runner._load_checkpoints(directory, artifact_text=artifact.read_text(encoding="utf-8"), context_texts=[path.read_text(encoding="utf-8") for path in context_paths], batch_attempts=execution["batch_attempts"], normalization_policy=runner.EVIDENCE_NORMALIZATION_POLICY)
+    verdicts, checkpoint_count, chain_head = runner._load_checkpoints(directory, artifact_text=artifact.read_text(encoding="utf-8"), context_texts=[path.read_text(encoding="utf-8") for path in context_paths], batch_attempts=execution["batch_attempts"], normalization_policy=runner.EVIDENCE_NORMALIZATION_POLICY, response_json_policy=execution.get("response_json_policy", runner.RESPONSE_JSON_LEGACY_POLICY))
     persisted = core.load_verdicts(directory / "verdicts.jsonl")
     if verdicts != persisted:
         raise core.HBQError("Checkpoint verdicts do not match verdicts.jsonl")

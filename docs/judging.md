@@ -54,6 +54,16 @@ Nous is available only through the canonical Windows launcher, which provides th
 
 Evidence is typed: an `exact_quote` must be a nonblank contiguous artifact or context substring before checkpoint acceptance; non-verbatim support belongs in `summary`. The model-facing schema uses `kind` plus nullable wire fields for strict Structured Outputs, then stores a compact normalized form. Older normalized `quote` verdicts still score.
 
+New runs record `response_json_policy: unique_keys_v1` in their configuration.
+They reject repeated JSON object keys, including equivalent escaped spellings,
+before schema validation. A run created before this policy retains its original
+last-key decoding when resumed or independently replayed; this does not certify
+that its original responses lacked duplicate keys. When preparing a frozen
+execution contract for `verify_binary_run`, include the same
+`response_json_policy` in its `execution` object for a new run. Verification
+rejects a mismatch between the frozen contract and the run configuration.
+Neither the manifest nor this check authenticates a provider response by itself.
+
 Use `--task-contract contract.json` when a brief affects scoring or eligibility. It must match `schema/hbq_task_contract.schema.json`; `weighted_goals` affect the task-domain score, while only atomic, objective, explicitly non-negotiable `binding_requirements` become gates. Context, preferences, aspirations, and inferred intent never do. The contract also works with `cwr compile`, `cwr render-judge`, and `cwr score`. `--temperature` is OpenAI-compatible only; `--reasoning` is for Codex, Grok, and Nous, with unsupported combinations failing.
 
 Fresh v4 and v5 `judge` runs that use a task contract also require a reviewed-v1 `--scope-compatibility-override` bound to the exact artifact, contract, and bundle. `cwr longform` instead derives the same evidence from its validated persisted v2 route plan and exact source, context, segmentation, scope, and bundle decisions. Neither path may silently infer compatibility or ignore a mismatch.
