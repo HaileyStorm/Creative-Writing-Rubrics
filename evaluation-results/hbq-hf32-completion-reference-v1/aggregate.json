@@ -1,0 +1,65 @@
+{
+  "case_manifest_sha256": "469806acefd2f4cc92908f6b31e3c5f0afae3b4e8c15b9061892f89293994a0c",
+  "guarded_envelope_works": 27,
+  "limits": [
+    "Post-result complete-case development subset; exact shared cohort within each axis only. Seventeen ranges also have full enumeration; ten rely on guarded grouping and direct witnesses.",
+    "Expert and reader references measure different constructs; works and raters may be dependent.",
+    "Intervals are scorer substitutions, not confidence or prediction intervals; pair counts reuse works.",
+    "No population, causal, method-superiority or candidate-promotion inference follows."
+  ],
+  "new_human_labels": 0,
+  "provider_calls": 0,
+  "results": {
+    "expert": {
+      "matched_works": 19,
+      "pair_counts": {
+        "disjoint": {
+          "hbq_concordant": 62,
+          "hbq_discordant": 35,
+          "pairs": 120,
+          "reference_tie": 23,
+          "ttcw_concordant": 53,
+          "ttcw_discordant": 29,
+          "ttcw_tie": 15
+        },
+        "overlap_or_touch": {
+          "hbq_concordant": 22,
+          "hbq_discordant": 18,
+          "pairs": 51,
+          "reference_tie": 11,
+          "ttcw_concordant": 16,
+          "ttcw_discordant": 14,
+          "ttcw_tie": 10
+        }
+      },
+      "spearman_hbq": 0.293140141246496,
+      "spearman_ttcw": 0.2325320921564207
+    },
+    "reader": {
+      "matched_works": 19,
+      "pair_counts": {
+        "disjoint": {
+          "hbq_concordant": 72,
+          "hbq_discordant": 29,
+          "pairs": 121,
+          "reference_tie": 20,
+          "ttcw_concordant": 63,
+          "ttcw_discordant": 23,
+          "ttcw_tie": 15
+        },
+        "overlap_or_touch": {
+          "hbq_concordant": 24,
+          "hbq_discordant": 20,
+          "pairs": 50,
+          "reference_tie": 6,
+          "ttcw_concordant": 15,
+          "ttcw_discordant": 15,
+          "ttcw_tie": 14
+        }
+      },
+      "spearman_hbq": 0.39041176034122,
+      "spearman_ttcw": 0.3646873257462848
+    }
+  },
+  "source_sha256": "e8bfc8cb83c91f4f26c4f901bc0f9fef9e993072b509c175baccafcddaad9fe7"
+}
