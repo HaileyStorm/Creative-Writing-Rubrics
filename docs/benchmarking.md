@@ -54,6 +54,41 @@ The `cwr score` command emits v2 by default. Use `--report-version 1` only to in
 
 For example, `synthetic_A` in the [scorer influence aggregate](../evaluation-results/hbq-scorer-verdict-influence-v1/aggregate.json) has a historical upper bound of 39.6799 when `core.holistic_artistic_success.threshold_1_functional` is unassessed. Resolving that one threshold as `YES` yields 41.6799. This is a mechanical counterexample, not an estimate of how often the issue occurs in practice.
 
+### Inspect finite scorer completions
+
+For a strictly admitted verdict bank with a manageable number of unassessed or
+omitted questions, the optional completion-envelope module can rescore every
+combination of `NO`, `YES` and `NOT_APPLICABLE` for score- or eligibility-
+affecting questions while holding the other verdicts and task contract fixed:
+
+```text
+python -m hbqrs.scoring_completion_envelope prose.short_story verdicts.json --artifact-id STORY_ID
+```
+
+The output keeps the historical score separately and reports the extrema of
+the historical scorer's rounded results for the enumerated states. It does
+not change the original verdicts or default score. Inputs must pass strict
+import admission; conflicting compact-map question IDs are rejected in both
+strict modes. Admission checks structure and declared evidence but does not
+verify references or quotations against the source text. A missing question
+is treated as unassessed, and the
+calculation uses a synthetic scorer-only record for each of its possible
+states; that record does not supply source evidence or an admitted judgment.
+Unassessed supplemental questions are counted separately because the pinned
+historical scorer excludes them from score and eligibility. Their individual
+reports and issue lists may still differ. The calculation refuses an
+unrecognized scorer implementation rather than assuming this property holds.
+
+The number of combinations grows threefold per unknown. The default maximum
+is 19,683 combinations; `--max-cases` can set a lower limit. The module declines
+to return a numeric envelope when the requested case limit would be exceeded
+or when any completion is not `SCORED`. In particular, an uncertain hard gate
+may make some completions ineligible. A returned envelope is limited to the
+specified scorer substitutions and fixed inputs; it is not a statistical
+confidence interval, a calibration result, a human-alignment finding, a
+guarantee about model uncertainty, or an unattended acceptance decision.
+Consider applicability and the evidence for each criterion separately.
+
 ### Inspect decision readiness
 
 Run the optional readiness tool on an existing local v1 or v2 score report:
