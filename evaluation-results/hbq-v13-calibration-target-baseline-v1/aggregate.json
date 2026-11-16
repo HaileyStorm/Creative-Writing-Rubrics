@@ -1,0 +1,52 @@
+{
+  "baseline_definitions": {
+    "train_mean": "dimension-wise mean across the 21 remaining prompt groups",
+    "train_median": "dimension-wise weighted median with each of 21 remaining groups given weight one"
+  },
+  "comparison": {
+    "train_mean": {
+      "calibrated_group_loss_comparison": {
+        "higher": 18,
+        "lower": 4
+      },
+      "calibrated_minus_baseline_mae": 0.19458311503494685
+    },
+    "train_median": {
+      "calibrated_group_loss_comparison": {
+        "higher": 19,
+        "lower": 3
+      },
+      "calibrated_minus_baseline_mae": 0.22367963579813432
+    }
+  },
+  "dimensions": 6,
+  "groups": 22,
+  "heldout_group_size_histogram": {
+    "1": 12,
+    "2": 3,
+    "3": 3,
+    "4": 3,
+    "5": 1
+  },
+  "items": 44,
+  "limitations": [
+    "Post-result TRAIN-only comparator; not confirmation, population inference, or a preselected primary arm.",
+    "Saved model scores and held-out calibration predictions were not newly replayed or generated.",
+    "Fold training sets overlap and all items and six dimensions share annotation dependencies.",
+    "The target-only baselines use no model scores; calibrated predictions use the saved historical endpoint evidence."
+  ],
+  "new_human_labels": 0,
+  "new_provider_calls": 0,
+  "out_of_fold_equal_group_mae": {
+    "calibrated": 0.7485954607139592,
+    "train_mean": 0.5540123456790124,
+    "train_median": 0.5249158249158249
+  },
+  "schedule_commitment": "6fdc8e99730747ba6d24d609260852df6ab6124270fd2afe1697c53679060506",
+  "source_sha256": {
+    "calibration": "e3900856addc8a4385f0dc578de87ecf88ab921e20a0ab9998bfa653d430caa8",
+    "public_result": "d039289ef0054ad1448bb3d852f505e6362a182ce3adae9610a407d34f912800",
+    "schedule": "2d66a311912e82f5cc1e4bb411e94493a22e6b0761da43ee6d580972a5d589db"
+  },
+  "training_groups_per_fold": 21
+}
