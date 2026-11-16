@@ -1,6 +1,10 @@
 """File-boundary checks for the opt-in completion-envelope parser."""
 import hashlib
 import json
+import os
+from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 
@@ -70,3 +74,25 @@ def test_strict_file_policy_rejects_nonfinite_contract(files):
     with pytest.raises(core.HBQError, match='non-finite'):
         main(['prose.scene', str(verdict), '--artifact-id', 'synthetic', '--max-cases', '1',
               '--task-contract', str(contract), '--input-policy', POLICY])
+
+
+@pytest.mark.parametrize('target', ['verdict', 'contract'])
+def test_malformed_yaml_cli_error_does_not_print_source(files, target):
+    verdict, contract = files
+    path = verdict.with_suffix('.yaml') if target == 'verdict' else contract.with_suffix('.yaml')
+    private_marker = 'SYNTHETIC_PRIVATE_SENTINEL_74C9'
+    path.write_text(f'{private_marker}: [unfinished\n', encoding='utf-8')
+    if target == 'verdict':
+        verdict = path
+    else:
+        contract = path
+    root = Path(__file__).resolve().parents[1]
+    env = dict(os.environ, PYTHONPATH=str(root / 'src'), PYTHONDONTWRITEBYTECODE='1')
+    completed = subprocess.run(
+        [sys.executable, '-m', 'hbqrs.scoring_completion_envelope', 'prose.scene', str(verdict),
+         '--artifact-id', 'synthetic', '--task-contract', str(contract), '--input-policy', POLICY],
+        cwd=root, env=env, capture_output=True, text=True, timeout=60,
+    )
+    assert completed.returncode != 0
+    assert 'invalid YAML' in completed.stderr
+    assert private_marker not in completed.stdout + completed.stderr

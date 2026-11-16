@@ -93,9 +93,10 @@ def load_structured_input(path: str | Path) -> tuple[Any, dict[str, str]]:
         else:
             raise ValueError("expected JSON, JSONL, YAML, or YML")
         _check_tree(value, set(), set())
-    except yaml.YAMLError as exc:
-        # PyYAML diagnostics can include lines of the private source text.
-        raise HBQError(f"Invalid structured input under {POLICY}: invalid YAML") from exc
+    except yaml.YAMLError:
+        # PyYAML diagnostics can include private source lines; suppress the
+        # chained traceback as well as replacing the displayed message.
+        raise HBQError(f"Invalid structured input under {POLICY}: invalid YAML") from None
     except (OSError, UnicodeError, ValueError, RecursionError) as exc:
         raise HBQError(f"Invalid structured input under {POLICY}: {exc}") from exc
     return value, {"policy": POLICY, "sha256": hashlib.sha256(raw).hexdigest()}
