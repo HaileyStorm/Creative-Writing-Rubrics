@@ -1,0 +1,52 @@
+{
+  "axes": {
+    "enjoyed": {
+      "conditional_paired_95_interval": [
+        -0.48190193545726834,
+        0.5783799617562606
+      ],
+      "hbq_minus_length_rho": 0.048965061606088545,
+      "hbq_rho": 0.3772535428287276,
+      "length_rho": 0.32828848122263904,
+      "undefined_draws": 0
+    },
+    "well_written": {
+      "conditional_paired_95_interval": [
+        -0.45104888260327874,
+        0.7440052651220374
+      ],
+      "hbq_minus_length_rho": 0.14581481435318758,
+      "hbq_rho": 0.3419413051091544,
+      "length_rho": 0.1961264907559668,
+      "undefined_draws": 0
+    }
+  },
+  "bootstrap": {
+    "chosen_after_result": true,
+    "quantiles": "linear interpolation",
+    "replicates": 2000,
+    "seed": 20261114,
+    "unit": "story"
+  },
+  "confirmation_opened": false,
+  "distinct_lengths": 30,
+  "hbq_length_rho": -0.060289210233592884,
+  "input_sha256": {
+    "aggregate": "43bc7afc5ec7ab389d1dddb965c83ad49d312727e0780dc6eecca4b6881ea505",
+    "analysis": "0c91ec3f2c31f40599d74fb250df5a4cbc12b3174ab89b6e743db7f6d1836c28",
+    "manifest": "d95ccf315193a77575259fdedd280984442c62148f9917da6157cc57701f712e",
+    "panel": "cbfc8eea8c5855b1e3cd0c30e5c14c3d53db42869ade3faf6e3b84b99c6f7b6c"
+  },
+  "length_rule": "UTF-8 decoded raw Unicode code points without normalization",
+  "limits": [
+    "Selected previously opened development panel; no prospective confirmation.",
+    "Story resampling conditions on the selected panel and pooled rater means; it does not model shared raters, topic or selection.",
+    "The intervals do not establish a winner, equivalence, causation or population performance."
+  ],
+  "new_human_labels": 0,
+  "new_provider_calls": 0,
+  "schema_version": 1,
+  "state": "RETROSPECTIVE_SELECTED_DEVELOPMENT",
+  "stories": 30,
+  "tied_length_pairs": 0
+}
