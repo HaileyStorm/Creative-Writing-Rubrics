@@ -8,6 +8,7 @@ from jsonschema import Draft202012Validator
 
 from hbqrs.repeatability import (
     RepeatabilityContractError,
+    canonical_json_sha256,
     content_address,
     derived_reuse_receipt,
     fresh_replicate_receipt,
@@ -177,6 +178,31 @@ def _response(commitment: dict[str, object], order: str, winner: str, number: in
         accepted_session_ids=(f"paired-session-{number}",),
         response_bytes=json.dumps({"winner": winner}, separators=(",", ":")).encode("utf-8"),
     )
+
+
+def test_paired_input_rejects_unsupported_version_and_malformed_values() -> None:
+    commitment = _commit()
+    ab, ba = _response(commitment, "AB", "FIRST", 1), _response(commitment, "BA", "SECOND", 2)
+    assert validate_paired_comparison(commitment, [ab, ba])["agreement_classification"] == "agreement_artifact_a"
+    for version in (2, True, "1"):
+        modified = commitment | {"format_version": version}
+        modified["commitment_sha256"] = canonical_json_sha256(
+            {key: value for key, value in modified.items() if key != "commitment_sha256"}
+        )
+        with pytest.raises(RepeatabilityContractError, match="format version"):
+            paired_response_envelope(commitment=modified, presentation_order="AB", request_bytes=_REQUESTS["AB"],
+                                     accepted_session_ids=("other",), response_bytes=b'{"winner":"FIRST"}')
+        with pytest.raises(RepeatabilityContractError, match="format version"):
+            validate_paired_comparison(modified, [ab, ba])
+    for malformed in ([], {}):
+        raw = json.dumps({"winner": malformed}).encode()
+        with pytest.raises(RepeatabilityContractError, match="only winner"):
+            paired_response_envelope(commitment=commitment, presentation_order="AB", request_bytes=_REQUESTS["AB"],
+                                     accepted_session_ids=("bad",), response_bytes=raw)
+        with pytest.raises(RepeatabilityContractError, match="only winner"):
+            validate_paired_comparison(commitment, [ab | {"model_output": {"winner": malformed}}, ba])
+        with pytest.raises(RepeatabilityContractError, match="order is invalid"):
+            validate_paired_comparison(commitment, [ab | {"presentation_order": malformed}, ba])
 
 
 def test_paired_commitment_binds_reuse_lineage_and_exact_order_requests() -> None:

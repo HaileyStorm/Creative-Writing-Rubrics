@@ -109,7 +109,8 @@ def _controls(value: Any, provider: str) -> dict[str, dict[str, Any]]:
     normalized: dict[str, dict[str, Any]] = {}
     for control, raw_control in raw.items():
         record = _mapping(raw_control, f"{control} support")
-        if set(record) != {"state", "value"} or record["state"] not in _CONTROL_STATES:
+        if (set(record) != {"state", "value"} or not isinstance(record["state"], str)
+                or record["state"] not in _CONTROL_STATES):
             raise RepeatabilityContractError(f"{control} support requires state and value")
         state = record["state"]
         supported_value = record["value"]
@@ -404,6 +405,8 @@ def _validated_paired_commitment(commitment: Mapping[str, Any]) -> dict[str, Any
     }
     if set(committed) != required or committed.get("orders") != ["AB", "BA"]:
         raise RepeatabilityContractError("paired commitment is malformed")
+    if type(committed["format_version"]) is not int or committed["format_version"] != 1:
+        raise RepeatabilityContractError("unsupported paired commitment format version")
     expected_hash = canonical_json_sha256({key: committed[key] for key in required - {"commitment_sha256"}})
     if committed["commitment_sha256"] != expected_hash:
         raise RepeatabilityContractError("paired commitment hash does not match")
@@ -444,7 +447,7 @@ def paired_response_envelope(
     """
     if not isinstance(response_parse_policy, str) or response_parse_policy not in {"unique_keys_v2", "legacy_last_key_v1"}:
         raise RepeatabilityContractError("unsupported paired response parse policy")
-    if presentation_order not in {"AB", "BA"}:
+    if not isinstance(presentation_order, str) or presentation_order not in {"AB", "BA"}:
         raise RepeatabilityContractError("paired response order is invalid")
     committed = _validated_paired_commitment(commitment)
     request_sha256 = sha256(_bytes(request_bytes, "request_bytes")).hexdigest()
@@ -470,7 +473,8 @@ def paired_response_envelope(
         output = dict(_mapping(decoded, "paired model output"))
     except RepeatabilityContractError as error:
         raise RepeatabilityContractError("paired response bytes must be strict UTF-8 JSON") from error
-    if set(output) != {"winner"} or output["winner"] not in {"FIRST", "SECOND", "TIE"}:
+    if (set(output) != {"winner"} or not isinstance(output["winner"], str)
+            or output["winner"] not in {"FIRST", "SECOND", "TIE"}):
         raise RepeatabilityContractError("paired model output must contain only winner FIRST, SECOND, or TIE")
     session_hashes = list(_session_hashes(accepted_session_ids, "accepted_session_ids"))
     response_bytes_sha256 = sha256(raw_response).hexdigest()
@@ -519,7 +523,7 @@ def validate_paired_comparison(
         }
         if set(response) != required_response:
             raise RepeatabilityContractError("paired response envelope is malformed")
-        if response["presentation_order"] not in {"AB", "BA"}:
+        if not isinstance(response["presentation_order"], str) or response["presentation_order"] not in {"AB", "BA"}:
             raise RepeatabilityContractError("paired response order is invalid")
         if response["commitment_sha256"] != committed["commitment_sha256"]:
             raise RepeatabilityContractError("paired response commitment does not match")
@@ -528,7 +532,8 @@ def validate_paired_comparison(
             raise RepeatabilityContractError("paired response request does not match committed presentation order")
         _sha256(response["request_sha256"], "request_sha256")
         model_output = _mapping(response["model_output"], "paired model output")
-        if set(model_output) != {"winner"} or model_output["winner"] not in {"FIRST", "SECOND", "TIE"}:
+        if (set(model_output) != {"winner"} or not isinstance(model_output["winner"], str)
+                or model_output["winner"] not in {"FIRST", "SECOND", "TIE"}):
             raise RepeatabilityContractError("paired model output must contain only winner FIRST, SECOND, or TIE")
         if response["model_output_sha256"] != canonical_json_sha256(model_output):
             raise RepeatabilityContractError("paired response model output does not match its sealed hash")

@@ -20,6 +20,7 @@ import yaml
 from . import core, scoring_v2
 from .paths import bundles_path, registry_path
 from .repeatability import canonical_json_sha256
+from .strict_input import POLICY as STRICT_INPUT_POLICY, load_structured_input
 
 
 POLICY = "uncertainty_preserving_ladder_v1"
@@ -134,18 +135,27 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--artifact-id")
     parser.add_argument("--admission-policy", default="strict_import_v1",
                         choices=("strict_import_v1", "strict_import_v2", "historical_permissive_v1"))
+    parser.add_argument("--input-policy", default="historical_v1",
+                        choices=("historical_v1", STRICT_INPUT_POLICY),
+                        help="structured-file parsing policy for verdicts and any task contract")
     args = parser.parse_args(argv)
     try:
         modules = core.load_modules(registry_path())
         bundle = core.resolve_bundle(core.load_bundles(bundles_path()), args.bundle)
-        data, verdicts_sha256 = _read_input(args.verdicts)
+        def read_input(path: Path) -> tuple[Any, str]:
+            if args.input_policy == "historical_v1":
+                return _read_input(path)
+            value, receipt = load_structured_input(path)
+            return value, receipt["sha256"]
+
+        data, verdicts_sha256 = read_input(args.verdicts)
         verdicts = core._normalize_verdict_records(
             data, reject_conflicting_compact_ids=args.admission_policy == "strict_import_v2"
         )
         contract = None
         inputs = {"verdicts_file_sha256": verdicts_sha256}
         if args.task_contract:
-            contract, contract_sha256 = _read_input(args.task_contract)
+            contract, contract_sha256 = read_input(args.task_contract)
             if not isinstance(contract, Mapping):
                 raise core.HBQError("Task contract must be an object")
             inputs["task_contract_file_sha256"] = contract_sha256
@@ -154,6 +164,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             task_contract=contract, admission_policy=args.admission_policy,
         )
         output["inputs"] = inputs
+        if args.input_policy != "historical_v1":
+            output["input_parsing_policy"] = args.input_policy
     except (OSError, ValueError, yaml.YAMLError) as error:
         parser.exit(2, f"ladder uncertainty: {error}\n")
     print(json.dumps(output, ensure_ascii=False, indent=2, allow_nan=False))

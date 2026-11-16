@@ -237,6 +237,12 @@ policy is available in the v2 Python `score_bundle` API and the CLI with either
 report version; the historical verdict schema is unchanged. For exact replay,
 use the recorded scorer revision as described above.
 
+The experimental `python -m hbqrs.ladder_uncertainty` comparison also accepts
+`--input-policy unique_keys_finite_v1` for both the verdict file and any task
+contract. Its output records that policy and the original file-byte hashes.
+The default historical parser remains available for replay; input parsing does
+not authenticate evidence or establish the validity of a candidate policy.
+
 For opt-in comparison of `uncertainty_preserving_ladder_v1` candidate reports,
 use the artifact-bound contract API when each full task contract differs only
 in its top-level `artifact_id`:
