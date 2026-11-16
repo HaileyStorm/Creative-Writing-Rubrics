@@ -1,0 +1,79 @@
+{
+  "accepted_saved_requests": 24,
+  "agreeing_pairs": 20,
+  "by_arm_and_role": {
+    "candidate_control": {
+      "agreeing_pairs": 9,
+      "groups": 3,
+      "mixed_groups": 0,
+      "pairs": 9,
+      "unanimous_groups": 3
+    },
+    "candidate_target": {
+      "agreeing_pairs": 3,
+      "groups": 1,
+      "mixed_groups": 0,
+      "pairs": 3,
+      "unanimous_groups": 1
+    },
+    "current_control": {
+      "agreeing_pairs": 7,
+      "groups": 3,
+      "mixed_groups": 1,
+      "pairs": 9,
+      "unanimous_groups": 2
+    },
+    "current_target": {
+      "agreeing_pairs": 1,
+      "groups": 1,
+      "mixed_groups": 1,
+      "pairs": 3,
+      "unanimous_groups": 0
+    }
+  },
+  "group_patterns": {
+    "mixed": 2,
+    "unanimous": 6
+  },
+  "identical_prompt_groups": 8,
+  "index_sha256": "346cbbc81b867bedc2411bd7d9c309d6ccc0fc595b652d18bd14516681cd2982",
+  "limits": [
+    "Small selected synthetic poetry treatment, not a population reliability estimate or human alignment.",
+    "Three within-group pairs reuse the same outputs and are dependent.",
+    "Prompt bytes match within groups, but reported provider settings and session IDs are not independently authenticated.",
+    "Source, context and declared leaf/rubric identities match within groups; historical runtime equivalence and account identity remain unverified.",
+    "Expected verdicts and human targets were not used; this does not alter the original NO_GO decision."
+  ],
+  "new_human_labels": 0,
+  "pair_comparisons": 24,
+  "pair_matrix_by_repeat_order": {
+    "CANNOT_ASSESS": {
+      "CANNOT_ASSESS": 6,
+      "NO": 0,
+      "NOT_APPLICABLE": 0,
+      "YES": 0
+    },
+    "NO": {
+      "CANNOT_ASSESS": 0,
+      "NO": 7,
+      "NOT_APPLICABLE": 0,
+      "YES": 2
+    },
+    "NOT_APPLICABLE": {
+      "CANNOT_ASSESS": 0,
+      "NO": 2,
+      "NOT_APPLICABLE": 0,
+      "YES": 0
+    },
+    "YES": {
+      "CANNOT_ASSESS": 0,
+      "NO": 0,
+      "NOT_APPLICABLE": 0,
+      "YES": 7
+    }
+  },
+  "planned_requests": 24,
+  "provider_calls": 0,
+  "repeats_per_group": 3,
+  "state": "POETRY_REPETITION_SAVED_PROMPT_REPEATABILITY"
+}
