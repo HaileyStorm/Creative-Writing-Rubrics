@@ -182,6 +182,19 @@ The [retained LAMP ordinal development comparison](../evaluation-results/hbq-lam
 
 ## Bias controls
 
+For a retrospective or prospectively specified comparison with missing scalar
+scores, `hbqrs.pairwise_bounds.pairwise_agreement_bounds` accepts one row per
+planned item with `id`, `group`, `reference`, and `score`. Use `None` for an
+unavailable reference or score and `within_groups=True` for within-group pairs.
+The caller must establish provenance, eligibility and consistent score direction.
+The function excludes missing or tied references from its denominator, assigns
+half credit to observed score ties and allows each unresolved score pair 0–1
+credit. It reports counts and relaxed outer bounds; because pairs share items,
+those extrema need not be jointly attainable. An empty eligible denominator
+returns null bounds. These bounds are conditional on available references; they
+are not full-population bounds, confidence intervals, human validation or a
+substitute for reporting missingness and the study's prespecified analysis.
+
 Hide author and model identity. Shuffle candidate order. Do not reward length or rhetorical confidence unless a leaf asks for it. Keep user-taste overlays out of the craft total.
 
 ## What this is not
