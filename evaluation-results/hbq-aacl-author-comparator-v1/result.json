@@ -1,0 +1,60 @@
+{
+  "condition_pair_agreement": {
+    "different_model_id": {
+      "all_available": 11748,
+      "all_both_tie": 2266,
+      "all_one_tie": 4017,
+      "all_opposite_strict": 302,
+      "all_same_strict": 5163,
+      "available_story_comparisons": 2136,
+      "condition_pairs": 178,
+      "different_score": 1111,
+      "same_score": 1025,
+      "within_topic_available": 3204,
+      "within_topic_both_tie": 433,
+      "within_topic_one_tie": 1070,
+      "within_topic_opposite_strict": 75,
+      "within_topic_same_strict": 1626
+    },
+    "same_model_id": {
+      "all_available": 792,
+      "all_both_tie": 189,
+      "all_one_tie": 155,
+      "all_opposite_strict": 3,
+      "all_same_strict": 445,
+      "available_story_comparisons": 144,
+      "condition_pairs": 12,
+      "different_score": 34,
+      "same_score": 110,
+      "within_topic_available": 216,
+      "within_topic_both_tie": 42,
+      "within_topic_one_tie": 32,
+      "within_topic_same_strict": 142
+    }
+  },
+  "conditions": 20,
+  "distribution": {
+    "all_available_pairs": 1320,
+    "all_pair_ties": 478,
+    "maximum_7": 87,
+    "minimum_1": 0,
+    "unavailable": 0,
+    "valid": 240,
+    "within_topic_available_pairs": 360,
+    "within_topic_ties": 108
+  },
+  "limitations": [
+    "Author-model scores only; no human-reference or CWR alignment.",
+    "Shared stories, topics and model families make comparisons dependent.",
+    "Source and prompt equivalence to survey rendering is not established.",
+    "Different recorded model IDs do not establish independent runtime or model families."
+  ],
+  "native_scale": [
+    1,
+    7
+  ],
+  "source": "https://github.com/ku-nlp/creativity-evaluation-artifact/blob/120c47958bd4941e8d6abd6995dc858b53515788/study1_human/data/llm_ratings.csv",
+  "source_sha256": "0c6deb17a57ed5d04f7a0c42388ada259924e85ba0112829571df16f84f06f37",
+  "stories": 12,
+  "topic_groups": 3
+}
