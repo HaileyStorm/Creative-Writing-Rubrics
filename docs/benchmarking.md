@@ -75,6 +75,14 @@ affecting questions while holding the other verdicts and task contract fixed:
 python -m hbqrs.scoring_completion_envelope prose.short_story verdicts.json --artifact-id STORY_ID
 ```
 
+For new structured files, add `--input-policy unique_keys_finite_v1` to reject
+duplicate keys and non-finite or non-JSON-compatible values in the verdict file
+and any supplied task contract. The output records this policy and the exact
+file-byte hashes. The default `historical_v1` parser preserves earlier command
+behavior; strict import admission alone does not detect keys discarded by that
+parser. This option does not authenticate sources or validate evidence against
+the artifact, and it does not apply to already-parsed Python API inputs.
+
 The output keeps the historical score separately and reports the extrema of
 the historical scorer's rounded results for the enumerated states. It does
 not change the original verdicts or default score. Inputs must pass strict

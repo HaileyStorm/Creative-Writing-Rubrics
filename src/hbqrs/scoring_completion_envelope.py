@@ -21,6 +21,7 @@ import yaml
 
 from . import core, scoring_v2
 from .paths import bundles_path, registry_path
+from .strict_input import POLICY as STRICT_INPUT_POLICY, load_structured_input
 
 POLICY = 'finite_scorer_completion_envelope_v2'
 REPLACEMENTS = ('NO', 'YES', 'NOT_APPLICABLE')
@@ -144,16 +145,26 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument('--artifact-id', required=True)
     parser.add_argument('--task-contract', type=Path)
     parser.add_argument('--admission-policy', choices=('strict_import_v1', 'strict_import_v2'), default='strict_import_v1')
+    parser.add_argument('--input-policy', choices=('historical_v1', STRICT_INPUT_POLICY), default='historical_v1',
+                        help='structured-file parsing policy for verdicts and any task contract')
     parser.add_argument('--max-cases', type=int, default=MAX_CASES)
     args = parser.parse_args(argv)
     modules = core.load_modules(registry_path())
     bundle = core.resolve_bundle(core.load_bundles(bundles_path()), args.bundle)
-    data, verdicts_bytes_hash = _read_input(args.verdicts)
+    def read_input(path: Path) -> tuple[Any, str]:
+        if args.input_policy == 'historical_v1':
+            return _read_input(path)
+        value, receipt = load_structured_input(path)
+        return value, receipt['sha256']
+
+    data, verdicts_bytes_hash = read_input(args.verdicts)
     verdicts = core._normalize_verdict_records(data, reject_conflicting_compact_ids=True)
-    contract, contract_bytes_hash = _read_input(args.task_contract) if args.task_contract else (None, None)
+    contract, contract_bytes_hash = read_input(args.task_contract) if args.task_contract else (None, None)
     result = completion_envelope(modules, bundle, verdicts, artifact_id=args.artifact_id,
                                  task_contract=contract, admission_policy=args.admission_policy, max_cases=args.max_cases)
     result['input_file_sha256'] = {'verdicts': verdicts_bytes_hash, 'task_contract': contract_bytes_hash}
+    if args.input_policy != 'historical_v1':
+        result['input_parsing_policy'] = args.input_policy
     print(json.dumps(result, sort_keys=True, indent=2, allow_nan=False))
     return 0
 
