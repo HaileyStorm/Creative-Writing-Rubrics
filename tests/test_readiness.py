@@ -8,7 +8,19 @@ from hbqrs.cli import main
 from hbqrs.core import compile_bundle, compiled_questions, load_bundles, load_modules, resolve_bundle, score_bundle
 from hbqrs.longform import normalize_score_result
 from hbqrs.readiness import workflow_scorer_readiness
+from hbqrs.decision_readiness import decision_readiness
 from test_html_report import _report
+
+
+def test_decision_readiness_rejects_unrepresentable_and_overflowing_weights():
+    report = {"bundle_id": "b", "artifact_id": "a", "status": "SCORED",
+              "hard_gate_status": "VALID", "coverage": 1, "domains": [],
+              "penalties": [], "final_score": {"observed": 50, "lower": 50, "upper": 50}}
+    for weight in (10 ** 400, 1e308):
+        report["domains"] = [{"questions": [{"weight": weight, "verdict": "YES"},
+                                             {"weight": weight, "verdict": "YES"}]}]
+        with pytest.raises(HBQError, match="finite"):
+            decision_readiness(report)
 
 
 def test_saved_scorer_readiness_is_distinct_from_gate_and_preserves_report(tmp_path, capsys):

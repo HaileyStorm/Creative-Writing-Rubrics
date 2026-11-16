@@ -24,11 +24,17 @@ _STATES = {"YES", "NO", "CANNOT_ASSESS", "NOT_APPLICABLE"}
 
 
 def _number(value: Any, name: str, low: float = 0, high: float | None = None) -> float:
-    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise HBQError(f"{name} must be a finite number")
+    try:
+        number = float(value)
+    except OverflowError as error:
+        raise HBQError(f"{name} must be a finite number") from error
+    if not math.isfinite(number):
         raise HBQError(f"{name} must be a finite number")
     if value < low or (high is not None and value > high):
         raise HBQError(f"{name} is outside its allowed range")
-    return float(value)
+    return number
 
 
 def _rows(value: Any, name: str) -> list[Mapping[str, Any]]:
@@ -50,6 +56,8 @@ def _assessment(groups: Sequence[Mapping[str, Any]], name: str) -> dict[str, Any
             if state == "NOT_APPLICABLE":
                 continue
             applicable += weight
+            if not math.isfinite(applicable):
+                raise HBQError(f"{name} applicable weight total must be finite")
             if state == "CANNOT_ASSESS":
                 unassessed_count += 1
                 unassessed_items.append({
