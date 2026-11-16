@@ -1,4 +1,4 @@
-"""Opt-in, unambiguous verdict-file parsing for new imports.
+"""Opt-in, unambiguous structured-file parsing for new imports.
 
 This validates source syntax and JSON-compatible finite values. It does not
 ground evidence or change the historic parser or scorer.
@@ -76,7 +76,7 @@ def _check_tree(value: Any, active: set[int], checked: set[int]) -> None:
     checked.add(identity)
 
 
-def load_verdict_input(path: str | Path) -> tuple[Any, dict[str, str]]:
+def load_structured_input(path: str | Path) -> tuple[Any, dict[str, str]]:
     """Read once and return parsed data with a source-byte digest and policy."""
     source = Path(path)
     try:
@@ -95,7 +95,12 @@ def load_verdict_input(path: str | Path) -> tuple[Any, dict[str, str]]:
         _check_tree(value, set(), set())
     except yaml.YAMLError as exc:
         # PyYAML diagnostics can include lines of the private source text.
-        raise HBQError(f"Invalid verdict input under {POLICY}: invalid YAML") from exc
+        raise HBQError(f"Invalid structured input under {POLICY}: invalid YAML") from exc
     except (OSError, UnicodeError, ValueError, RecursionError) as exc:
-        raise HBQError(f"Invalid verdict input under {POLICY}: {exc}") from exc
+        raise HBQError(f"Invalid structured input under {POLICY}: {exc}") from exc
     return value, {"policy": POLICY, "sha256": hashlib.sha256(raw).hexdigest()}
+
+
+def load_verdict_input(path: str | Path) -> tuple[Any, dict[str, str]]:
+    """Compatibility entry point for strict verdict-file parsing."""
+    return load_structured_input(path)

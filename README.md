@@ -206,15 +206,18 @@ admission behavior; it does not restore an older compiler or scorer. The CLI can
 also impose additional weight-profile checks, even with an older scorer revision.
 
 For new normalized verdict imports, use
-`cwr score prose.scene verdicts.jsonl --admission-policy strict_import_v2 --verdict-input-policy unique_keys_finite_v1`.
+`cwr score prose.scene verdicts.jsonl --admission-policy strict_import_v2 --verdict-input-policy unique_keys_finite_v1 --auxiliary-input-policy unique_keys_finite_v1`.
 The opt-in verdict-file parser rejects duplicate keys, non-finite values,
 recursive YAML aliases, non-string mapping keys, and YAML values outside the
 JSON data model; YAML merges with duplicate keys are rejected as ambiguous.
 It records the parsing policy and SHA-256 of the exact verdict file in
-`verdict_input`. This parsing policy applies to the `score` command's verdict
-file only, not its task contract, weight profile, other commands, or Python
-callers that supply already-parsed values. The default `historical_v1` parser
-remains available for replay; it can retain the last duplicate mapping key.
+`verdict_input`. The independent auxiliary option applies the same parsing to
+the `score` command's task-contract and weight-profile files when supplied,
+recording their digests and policy in `score_auxiliary_inputs`; absent inputs
+are recorded as null. The options do not cover registry or bundle sources,
+other commands, or Python callers that supply already-parsed values. The
+default `historical_v1` parsers remain available for replay; they can retain
+the last duplicate mapping key.
 This rejects malformed records, duplicate or mismatched identities, unsupported
 YES/NO evidence, untyped references, and N/A without an activation reason before
 writing a report. Omitted questions remain `CANNOT_ASSESS`. The report records

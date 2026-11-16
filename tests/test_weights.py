@@ -383,6 +383,7 @@ def test_non_scoring_only_group_weights_are_rejected(question_type: str) -> None
         ],
         "module_ids": ["test.module"],
         "penalty_modules": [],
+        "coverage_policy": {"minimum_weighted_coverage": 0.8},
     }
     with pytest.raises(HBQError, match="does not affect scoring"):
         materialize_weight_profile(

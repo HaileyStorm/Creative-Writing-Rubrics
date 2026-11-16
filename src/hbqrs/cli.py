@@ -7,7 +7,7 @@ import json
 import math
 from pathlib import Path
 import time
-from typing import Any, Sequence
+from typing import Any, Callable, Sequence
 
 from jsonschema import Draft202012Validator
 
@@ -39,17 +39,17 @@ from .longform import segment_longform
 from .longform_runner_v2 import run_longform_judge
 from .weights import make_weight_profile, materialize_weight_profile
 from .batch import run_longform_batch
-from .strict_input import POLICY as STRICT_VERDICT_INPUT_POLICY, load_verdict_input
+from .strict_input import POLICY as STRICT_VERDICT_INPUT_POLICY, load_structured_input, load_verdict_input
 
 
 def _load_registry(args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     return load_modules(args.registry), load_bundles(args.bundles)
 
 
-def _load_task_contract(path: str | None) -> dict[str, Any] | None:
+def _load_task_contract(path: str | None, *, loader: Callable[[str], Any] = load_data) -> dict[str, Any] | None:
     if path is None:
         return None
-    value = load_data(path)
+    value = loader(path)
     if not isinstance(value, dict):
         raise HBQError("Task contract must be a JSON or YAML object")
     errors = sorted(
@@ -61,10 +61,10 @@ def _load_task_contract(path: str | None) -> dict[str, Any] | None:
     return value
 
 
-def _load_weight_profile(path: str | None) -> dict[str, Any] | None:
+def _load_weight_profile(path: str | None, *, loader: Callable[[str], Any] = load_data) -> dict[str, Any] | None:
     if path is None:
         return None
-    value = load_data(path)
+    value = loader(path)
     if not isinstance(value, dict):
         raise HBQError("Weight profile must be a JSON or YAML object")
     return value
@@ -269,10 +269,19 @@ def _cmd_compile(args: argparse.Namespace) -> int:
 
 def _cmd_score(args: argparse.Namespace) -> int:
     modules, bundles = _load_registry(args)
+    auxiliary_receipts: dict[str, dict[str, str] | None] = {"task_contract": None, "weight_profile": None}
+
+    def read_auxiliary(path: str, kind: str) -> Any:
+        value, auxiliary_receipts[kind] = load_structured_input(path)
+        return value
+
+    weight_loader = (lambda path: read_auxiliary(path, "weight_profile")) if (
+        args.auxiliary_input_policy == STRICT_VERDICT_INPUT_POLICY
+    ) else load_data
     modules, bundle, weight_audit = materialize_weight_profile(
         modules,
         resolve_bundle(bundles, args.bundle_id),
-        _load_weight_profile(args.weight_profile),
+        _load_weight_profile(args.weight_profile, loader=weight_loader),
     )
     scorer = score_bundle_v1 if args.report_version == 1 else score_bundle_v2
     input_receipt = None
@@ -283,7 +292,10 @@ def _cmd_score(args: argparse.Namespace) -> int:
         verdicts = load_verdicts(
             args.verdicts, reject_conflicting_compact_ids=args.admission_policy == "strict_import_v2"
         )
-    task_contract = _load_task_contract(args.task_contract)
+    contract_loader = (lambda path: read_auxiliary(path, "task_contract")) if (
+        args.auxiliary_input_policy == STRICT_VERDICT_INPUT_POLICY
+    ) else load_data
+    task_contract = _load_task_contract(args.task_contract, loader=contract_loader)
     admission = validate_import_admission(
         modules, bundle, verdicts, artifact_id=args.artifact_id,
         task_contract=task_contract, admission_policy=args.admission_policy,
@@ -299,6 +311,8 @@ def _cmd_score(args: argparse.Namespace) -> int:
         report["import_admission"] = admission
     if input_receipt is not None:
         report["verdict_input"] = input_receipt
+    if args.auxiliary_input_policy == STRICT_VERDICT_INPUT_POLICY:
+        report["score_auxiliary_inputs"] = {"policy": STRICT_VERDICT_INPUT_POLICY, **auxiliary_receipts}
     report["weight_profile"] = weight_audit
     write_data(args.output, report, fmt=args.format)
     return 0
@@ -650,6 +664,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--verdict-input-policy", choices=("historical_v1", STRICT_VERDICT_INPUT_POLICY),
         default="historical_v1",
         help="opt in to unique keys and finite JSON-compatible verdict-file values",
+    )
+    score.add_argument(
+        "--auxiliary-input-policy", choices=("historical_v1", STRICT_VERDICT_INPUT_POLICY),
+        default="historical_v1",
+        help="opt in to strict task-contract and weight-profile file parsing",
     )
     score.add_argument(
         "--admission-policy",
