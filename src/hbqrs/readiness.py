@@ -9,9 +9,15 @@ from typing import Any, Mapping
 
 from .core import HBQError
 from .longform import _schema, _validate_schema, normalize_score_result
+from .strict_input import POLICY as STRICT_INPUT_POLICY, load_structured_input
 
 
-def _read_json(path: Path) -> tuple[bytes, Mapping[str, Any]]:
+def _read_json(path: Path, *, input_policy: str) -> tuple[str, Mapping[str, Any]]:
+    if input_policy == STRICT_INPUT_POLICY:
+        value, provenance = load_structured_input(path)
+        if not isinstance(value, Mapping):
+            raise HBQError(f"Saved JSON must be an object: {path}")
+        return provenance["sha256"], value
     try:
         payload = path.read_bytes()
     except OSError as exc:
@@ -22,13 +28,15 @@ def _read_json(path: Path) -> tuple[bytes, Mapping[str, Any]]:
         raise HBQError(f"Invalid saved JSON: {path}") from exc
     if not isinstance(value, Mapping):
         raise HBQError(f"Saved JSON must be an object: {path}")
-    return payload, value
+    return hashlib.sha256(payload).hexdigest(), value
 
 
-def workflow_scorer_readiness(output_dir: str | Path) -> dict[str, Any]:
-    """Derive a non-persisted, source-bound view; missing historical status is unknown."""
+def workflow_scorer_readiness(output_dir: str | Path, *, input_policy: str = "historical_v1") -> dict[str, Any]:
+    """Derive a source-bound view; strict parsing is optional for new reads."""
+    if input_policy not in {"historical_v1", STRICT_INPUT_POLICY}:
+        raise HBQError("Unsupported saved readiness input policy")
     directory = Path(output_dir)
-    report_bytes, report = _read_json(directory / "report.json")
+    report_sha256, report = _read_json(directory / "report.json", input_policy=input_policy)
     _validate_schema(report, _schema("hbq_long_form_workflow_report.schema.json"), "Long-form workflow report")
     route = report["route"]
     results = report["local_results"]
@@ -59,7 +67,7 @@ def workflow_scorer_readiness(output_dir: str | Path) -> dict[str, Any]:
                 continue
             except OSError as exc:
                 raise HBQError(f"Cannot inspect saved score: {source}") from exc
-            payload, score = _read_json(source)
+            score_sha256, score = _read_json(source, input_policy=input_policy)
             _validate_schema(score, _schema("hbq_score_report.schema.json"), "Saved score report")
             if score.get("artifact_id") != expected_artifact or score.get("bundle_id") != expected_bundle:
                 raise HBQError(f"Saved score identity differs from workflow report: {source}")
@@ -71,7 +79,7 @@ def workflow_scorer_readiness(output_dir: str | Path) -> dict[str, Any]:
             # normalizers include; compare every field actually recorded.
             if any(key not in normalized or normalized[key] != value for key, value in result.items()):
                 raise HBQError(f"Saved score differs from workflow report: {source}")
-            item["source_score_sha256"] = hashlib.sha256(payload).hexdigest()
+            item["source_score_sha256"] = score_sha256
             if "status" not in score:
                 item["reason"] = "scorer_status_missing"
             else:
@@ -82,6 +90,9 @@ def workflow_scorer_readiness(output_dir: str | Path) -> dict[str, Any]:
                     raise HBQError(f"Saved scorer status conflicts with its control gate: {source}")
                 item["scorer_status"] = status
         output.append(item)
-    return {"readiness_view_version": 1, "report_sha256": hashlib.sha256(report_bytes).hexdigest(),
+    view = {"readiness_view_version": 1, "report_sha256": report_sha256,
             "provenance": "local saved files; hashes identify bytes and do not authenticate origin",
             "scopes": output}
+    if input_policy != "historical_v1":
+        view["input_policy"] = input_policy
+    return view

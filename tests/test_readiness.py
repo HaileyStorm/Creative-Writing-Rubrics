@@ -47,6 +47,30 @@ def test_saved_scorer_readiness_is_distinct_from_gate_and_preserves_report(tmp_p
         assert view["scopes"][0]["scorer_status"] == expected
         assert view["scopes"][1]["reason"] == "source_score_missing"
         assert (report_path.read_bytes(), source.read_bytes()) == before
+        if not sparse:
+            assert main(["workflow-readiness", str(directory), "--input-policy", "unique_keys_finite_v1"]) == 0
+            strict_view = json.loads(capsys.readouterr().out)
+            assert strict_view.pop("input_policy") == "unique_keys_finite_v1"
+            assert strict_view == view
+            ambiguous = before[1].replace(b'"status": "SCORED"', b'"status": "INELIGIBLE", "status": "SCORED"')
+            assert ambiguous != before[1]
+            source.write_bytes(ambiguous)
+            assert workflow_scorer_readiness(directory)["scopes"][0]["scorer_status"] == "SCORED"
+            with pytest.raises(HBQError, match="duplicate mapping key"):
+                workflow_scorer_readiness(directory, input_policy="unique_keys_finite_v1")
+            source.write_bytes(before[1])
+            ambiguous_report = before[0].replace(b'"report_version": 1', b'"report_version": 0, "report_version": 1')
+            assert ambiguous_report != before[0]
+            report_path.write_bytes(ambiguous_report)
+            with pytest.raises(HBQError, match="duplicate mapping key"):
+                workflow_scorer_readiness(directory, input_policy="unique_keys_finite_v1")
+            report_path.write_bytes(before[0])
+            source.write_bytes(before[1][:-1] + b', "nonfinite": NaN}')
+            with pytest.raises(HBQError, match="non-finite"):
+                workflow_scorer_readiness(directory, input_policy="unique_keys_finite_v1")
+            source.write_bytes(before[1])
+            with pytest.raises(HBQError, match="Unsupported saved readiness input policy"):
+                workflow_scorer_readiness(directory, input_policy="unknown")
         report["global_result"].pop("weight_profile", None)
         report["global_result"].pop("confidence_diagnostics", None)
         report_path.write_text(json.dumps(report), encoding="utf-8")

@@ -149,7 +149,7 @@ def _cmd_render_report(args: argparse.Namespace) -> int:
 def _cmd_workflow_readiness(args: argparse.Namespace) -> int:
     from .readiness import workflow_scorer_readiness
 
-    print(json.dumps(workflow_scorer_readiness(args.output_dir), ensure_ascii=False, indent=2))
+    print(json.dumps(workflow_scorer_readiness(args.output_dir, input_policy=args.input_policy), ensure_ascii=False, indent=2))
     return 0
 
 
@@ -818,6 +818,10 @@ def build_parser() -> argparse.ArgumentParser:
         "workflow-readiness", help="show saved scorer readiness separately from control gates"
     )
     readiness.add_argument("output_dir", help="completed long-form workflow directory")
+    readiness.add_argument(
+        "--input-policy", choices=("historical_v1", STRICT_VERDICT_INPUT_POLICY), default="historical_v1",
+        help="opt in to unique keys and finite values in saved report and score JSON",
+    )
     readiness.set_defaults(func=_cmd_workflow_readiness)
 
     batch = subparsers.add_parser(

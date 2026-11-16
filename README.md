@@ -304,6 +304,10 @@ unknown; it does not infer a status from rounded coverage. It checks each
 available score against the report and prints hashes of the files it read, but
 those hashes alone do not establish the files' origin or authenticity. The
 command does not modify the saved workflow or contact a provider.
+For new reads, add `--input-policy unique_keys_finite_v1` to reject duplicate
+JSON keys and nonfinite values in the saved report and score files. The view
+records that opt-in policy; the default retains historical parsing. Parsing
+does not authenticate the files or validate their underlying evidence.
 
 Some scope modules declare context or sampling actions in `modifier_actions`.
 Compilation does not automatically apply those declarations or include them
