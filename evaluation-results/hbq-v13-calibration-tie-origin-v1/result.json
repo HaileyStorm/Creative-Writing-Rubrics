@@ -1,0 +1,33 @@
+{
+  "cohort": {
+    "dimensions": 6,
+    "items": 44,
+    "multi_item_prompt_groups": 10,
+    "prompt_groups": 22,
+    "within_prompt_item_pairs": 40
+  },
+  "counts": {
+    "all_changed_directions": 0,
+    "all_pair_dimension_cells": 240,
+    "calibrated_concordant": 57,
+    "calibrated_discordant": 31,
+    "calibrated_tie": 115,
+    "eligible": 203,
+    "raw_concordant": 57,
+    "raw_discordant": 31,
+    "raw_tie": 115,
+    "reference_ties": 37
+  },
+  "limitations": [
+    "Retrospective TRAIN-only descriptive analysis, not confirmation or population inference.",
+    "Scores from retained responses reproduce saved predictions; this is not fresh admission or a replay of the full historical report.",
+    "Pairs share items, prompts, raters and dimensions; no independence or statistical significance is claimed."
+  ],
+  "new_human_labels": 0,
+  "provider_calls": 0,
+  "source_sha256": {
+    "calibration": "e3900856addc8a4385f0dc578de87ecf88ab921e20a0ab9998bfa653d430caa8",
+    "public_result": "d039289ef0054ad1448bb3d852f505e6362a182ce3adae9610a407d34f912800",
+    "schedule": "2d66a311912e82f5cc1e4bb411e94493a22e6b0761da43ee6d580972a5d589db"
+  }
+}
