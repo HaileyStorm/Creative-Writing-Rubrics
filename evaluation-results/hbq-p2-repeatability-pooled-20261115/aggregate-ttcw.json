@@ -1,0 +1,31 @@
+{
+  "accepted_banks": 9,
+  "cross_arm_matching_source_stories": 3,
+  "cycles": 3,
+  "groups": {
+    "0-1": {"agreements": 41, "cohen_kappa_exact": [18, 19], "pairs": 42},
+    "0-2": {"agreements": 42, "cohen_kappa_exact": [1, 1], "pairs": 42},
+    "1-2": {"agreements": 41, "cohen_kappa_exact": [18, 19], "pairs": 42},
+    "pooled": {"agreements": 124, "cohen_kappa_exact": [1741, 1804], "pairs": 126}
+  },
+  "input_projection_sha256": {
+    "parity": "cbf53dfae74be08cfea7aa2ae6401e79aa8512588b0478884d85aad2ae16ad18",
+    "scores": "7bdf5acefceca48cde78770f5a99b906bf987461665f152ce2f7f7c5bd06ec5a"
+  },
+  "method": "ttcw14_concise_evidence_v1",
+  "score_summary": {
+    "distinct_scores": 4,
+    "exact_ceiling": 0,
+    "exact_floor": 0,
+    "max_absolute_change_exact": [1, 14],
+    "native_range": [0, 1],
+    "near_ceiling_ge_0_9": 0,
+    "near_floor_le_0_1": 0,
+    "paired_score_comparisons": 9,
+    "story_pair_direction_counts": {"at_least_one_tie": 0, "reversal": 0, "same_direction": 9},
+    "unchanged_score_comparisons": 7
+  },
+  "stories": 3,
+  "study": "selected-p2-short-story-ttcw14-repeatability",
+  "tests_per_bank": 14
+}
