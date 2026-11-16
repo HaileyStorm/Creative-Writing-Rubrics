@@ -1,0 +1,54 @@
+{
+  "groups": {
+    "0-1": {
+      "all_four_states": {
+        "agreements": 485,
+        "cohen_kappa_exact": [69518, 75893],
+        "pairs": 510
+      },
+      "excluding_cannot_assess": {
+        "agreements": 483,
+        "cohen_kappa_exact": [68527, 74877],
+        "pairs": 508
+      }
+    },
+    "0-2": {
+      "all_four_states": {
+        "agreements": 484,
+        "cohen_kappa_exact": [34622, 37937],
+        "pairs": 510
+      },
+      "excluding_cannot_assess": {
+        "agreements": 482,
+        "cohen_kappa_exact": [34127, 37429],
+        "pairs": 508
+      }
+    },
+    "1-2": {
+      "all_four_states": {
+        "agreements": 511,
+        "cohen_kappa_exact": [77243, 83384],
+        "pairs": 534
+      },
+      "excluding_cannot_assess": {
+        "agreements": 509,
+        "cohen_kappa_exact": [5443, 5880],
+        "pairs": 532
+      }
+    },
+    "pooled": {
+      "all_four_states": {
+        "agreements": 1480,
+        "cohen_kappa_exact": [647603, 705101],
+        "pairs": 1554
+      },
+      "excluding_cannot_assess": {
+        "agreements": 1474,
+        "cohen_kappa_exact": [638537, 695813],
+        "pairs": 1548
+      }
+    }
+  },
+  "private_projection_sha256": "3a9da5d6b53e519111087b8a44ffd799b0091aac60416a7f7da1dc952b6bc999",
+  "study": "selected-p2-short-story-hbq-repeatability-kappa"
+}
