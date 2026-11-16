@@ -190,7 +190,14 @@ The caller must establish provenance, eligibility and consistent score direction
 The function excludes missing or tied references from its denominator, assigns
 half credit to observed score ties and allows each unresolved score pair 0–1
 credit. It reports counts and relaxed outer bounds; because pairs share items,
-those extrema need not be jointly attainable. An empty eligible denominator
+those extrema need not be jointly attainable. Float endpoints are rounded
+outward when needed to contain their exact rational values; a mathematically
+zero-width bound may span adjacent floating-point values. The exact numerators
+are recoverable from the reported counts. The default policy is
+`reference_conditioned_pairwise_outer_bounds_v2`; pass the explicit policy
+`reference_conditioned_pairwise_outer_bounds_v1` to reproduce historical
+nearest-float endpoints, which can be slightly inward. Neither policy changes
+the pair counts or the underlying exact rational bounds. An empty eligible denominator
 returns null bounds. These bounds are conditional on available references; they
 are not full-population bounds, confidence intervals, human validation or a
 substitute for reporting missingness and the study's prespecified analysis.

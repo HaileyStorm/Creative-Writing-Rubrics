@@ -5,7 +5,7 @@ from itertools import product
 import pytest
 
 from hbqrs.core import HBQError
-from hbqrs.pairwise_bounds import pairwise_agreement_bounds
+from hbqrs.pairwise_bounds import POLICY_V1, POLICY_V2, pairwise_agreement_bounds
 
 
 def test_bounds_contain_actual_completions_and_preserve_exact_references():
@@ -23,8 +23,9 @@ def test_bounds_contain_actual_completions_and_preserve_exact_references():
         completed = deepcopy(rows)
         completed[2]['score'] = score
         exact = pairwise_agreement_bounds(completed, within_groups=True)
-        assert exact['lower'] == exact['upper']
-        assert bound['lower'] <= exact['lower'] <= bound['upper']
+        value = Fraction(exact['observed_credit_twice'], 2 * exact['eligible_pairs'])
+        assert Fraction.from_float(exact['lower']) <= value <= Fraction.from_float(exact['upper'])
+        assert Fraction.from_float(bound['lower']) <= value <= Fraction.from_float(bound['upper'])
     assert pairwise_agreement_bounds(rows)['missing_reference_pairs'] == 3
     assert rows == before
 
@@ -42,3 +43,27 @@ def test_ties_empty_and_invalid_input():
     rows[1]['id'], rows[1]['reference'] = 'b', float('nan')
     with pytest.raises(HBQError, match='finite'):
         pairwise_agreement_bounds(rows)
+
+
+def test_float_endpoints_do_not_exclude_exact_rational_bounds():
+    def pairs(n, concordant, unresolved=0):
+        return [
+            {'id': f'{i}-{j}', 'group': str(i), 'reference': j,
+             'score': None if i >= n - unresolved and j == 1 else
+                      j if i < concordant else 1 - j}
+            for i in range(n) for j in range(2)
+        ]
+
+    for n, concordant, unresolved in ((5, 2, 0), (3, 1, 0), (5, 2, 1)):
+        result = pairwise_agreement_bounds(pairs(n, concordant, unresolved), within_groups=True)
+        lower = Fraction(concordant, n)
+        upper = Fraction(concordant + unresolved, n)
+        assert Fraction.from_float(result['lower']) <= lower
+        assert Fraction.from_float(result['upper']) >= upper
+        assert 0 <= result['lower'] <= result['upper'] <= 1
+        assert result['policy'] == POLICY_V2
+        historical = pairwise_agreement_bounds(pairs(n, concordant, unresolved), within_groups=True, policy=POLICY_V1)
+        assert historical['policy'] == POLICY_V1
+        assert historical['lower'] == float(lower) and historical['upper'] == float(upper)
+    with pytest.raises(HBQError, match='policy'):
+        pairwise_agreement_bounds([], policy=[])

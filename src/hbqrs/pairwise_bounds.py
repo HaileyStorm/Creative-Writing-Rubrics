@@ -12,21 +12,37 @@ from typing import Any
 
 from .core import HBQError
 
+POLICY_V1 = 'reference_conditioned_pairwise_outer_bounds_v1'
+POLICY_V2 = 'reference_conditioned_pairwise_outer_bounds_v2'
+
 
 def _valid_number(value: Any) -> bool:
     return type(value) in (int, Fraction) or (type(value) is float and math.isfinite(value))
 
 
-def pairwise_agreement_bounds(rows: list[dict[str, Any]], *, within_groups: bool = False) -> dict[str, Any]:
+def _outward_float(value: Fraction, *, lower: bool) -> float:
+    """Convert an exact endpoint without narrowing the represented interval."""
+    rounded = float(value)
+    represented = Fraction.from_float(rounded)
+    if (lower and represented > value) or (not lower and represented < value):
+        return math.nextafter(rounded, -math.inf if lower else math.inf)
+    return rounded
+
+
+def pairwise_agreement_bounds(rows: list[dict[str, Any]], *, within_groups: bool = False,
+                              policy: str = POLICY_V2) -> dict[str, Any]:
     """Bound directional agreement over available, unequal reference pairs.
 
     Each row has unique nonempty string ``id``, nonempty string ``group``, and
     numeric or null ``reference`` and ``score``. Null score means unresolved;
     null reference excludes its pairs. The caller must independently establish
     the provenance, eligibility, scoring direction and missingness of inputs.
+    V2 rounds endpoints outward; V1 retains historical nearest-float rounding.
     """
     if type(rows) is not list or type(within_groups) is not bool:
         raise HBQError('rows must be a list and within_groups must be boolean')
+    if type(policy) is not str or policy not in (POLICY_V1, POLICY_V2):
+        raise HBQError('unsupported pairwise bounds policy')
     ids: set[str] = set()
     for row in rows:
         if type(row) is not dict or set(row) != {'id', 'group', 'reference', 'score'}:
@@ -59,8 +75,14 @@ def pairwise_agreement_bounds(rows: list[dict[str, Any]], *, within_groups: bool
     eligible = (counts['unresolved_score_pairs'] + counts['observed_score_ties'] +
                 counts['observed_concordant'] + counts['observed_discordant'])
     credit_twice = 2 * counts['observed_concordant'] + counts['observed_score_ties']
+    lower_exact = Fraction(credit_twice, 2 * eligible) if eligible else None
+    upper_exact = Fraction(credit_twice + 2 * counts['unresolved_score_pairs'], 2 * eligible) if eligible else None
+    def endpoint(value: Fraction | None, *, lower: bool) -> float | None:
+        if value is None:
+            return None
+        return float(value) if policy == POLICY_V1 else _outward_float(value, lower=lower)
     return {
-        'policy': 'reference_conditioned_pairwise_outer_bounds_v1',
+        'policy': policy,
         'within_groups': within_groups,
         'considered_pairs': counts['considered_pairs'],
         'missing_reference_pairs': counts['missing_reference_pairs'],
@@ -71,6 +93,6 @@ def pairwise_agreement_bounds(rows: list[dict[str, Any]], *, within_groups: bool
         'observed_score_ties': counts['observed_score_ties'],
         'unresolved_score_pairs': counts['unresolved_score_pairs'],
         'observed_credit_twice': credit_twice,
-        'lower': float(Fraction(credit_twice, 2 * eligible)) if eligible else None,
-        'upper': float(Fraction(credit_twice + 2 * counts['unresolved_score_pairs'], 2 * eligible)) if eligible else None,
+        'lower': endpoint(lower_exact, lower=True),
+        'upper': endpoint(upper_exact, lower=False),
     }
