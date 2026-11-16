@@ -1,0 +1,28 @@
+{
+  "all_arm_accepted_requests": 213,
+  "all_arm_planned_requests": 216,
+  "complete_later_cycle_agreements": 511,
+  "complete_later_cycle_pairs": 534,
+  "cycles_per_story": 3,
+  "full_plan_agreement_bounds": {
+    "denominator": 1602,
+    "maximum_agreements": 1528,
+    "minimum_agreements": 1480
+  },
+  "human_targets_read_for_analysis": false,
+  "input_projection_sha256": {
+    "bounds": "9edaa3d4ea2c14b8a2ae3636974baa48ff9714aa8ea044eb3300a13a52551b76",
+    "observed": "f406670bc3391a3074fb48048ae6bc926f9d9908f2fa36aab3d7c46e1ab28c1f",
+    "unstable": "4deedc0cbe93a0b06aa9837713a2749a68568210fffbeff1c481234d97c7e0d1"
+  },
+  "leaves_per_story": 178,
+  "observed_agreements": 1480,
+  "observed_joint_cannot_assess_agreements": 6,
+  "observed_leaf_pairs": 1554,
+  "planned_leaf_pairs": 1602,
+  "provider_calls_for_analysis": 0,
+  "story_count": 3,
+  "study": "selected-p2-short-story-hbq-repeatability",
+  "unobserved_cycle_zero_leaves": 24,
+  "unobserved_leaf_pairs": 48
+}
