@@ -23,6 +23,21 @@ def test_decision_readiness_rejects_unrepresentable_and_overflowing_weights():
             decision_readiness(report)
 
 
+def test_decision_readiness_rejects_structured_gate_and_verdict_values():
+    report = {"bundle_id": "b", "artifact_id": "a", "status": "SCORED",
+              "hard_gate_status": "VALID", "coverage": 1, "domains": [],
+              "penalties": [], "final_score": {"observed": 50, "lower": 50, "upper": 50}}
+    for invalid in ({}, []):
+        report["hard_gate_status"] = invalid
+        with pytest.raises(HBQError, match="hard_gate_status"):
+            decision_readiness(report)
+        report["hard_gate_status"] = "VALID"
+        report["domains"] = [{"questions": [{"weight": 1, "verdict": invalid}]}]
+        with pytest.raises(HBQError, match="verdict"):
+            decision_readiness(report)
+        report["domains"] = []
+
+
 def test_saved_scorer_readiness_is_distinct_from_gate_and_preserves_report(tmp_path, capsys):
     root = book_root()
     modules = load_modules(root / "registry/all_modules.json")

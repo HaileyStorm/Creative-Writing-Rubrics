@@ -51,7 +51,7 @@ def _assessment(groups: Sequence[Mapping[str, Any]], name: str) -> dict[str, Any
         for question in _rows(group.get("questions"), f"{name}.questions"):
             weight = _number(question.get("weight"), f"{name}.question.weight")
             state = question.get("verdict")
-            if state not in _STATES:
+            if not isinstance(state, str) or state not in _STATES:
                 raise HBQError(f"{name}.question.verdict is unsupported")
             if state == "NOT_APPLICABLE":
                 continue
@@ -88,7 +88,7 @@ def decision_readiness(report: Mapping[str, Any], *, threshold: float | None = N
         if not isinstance(report.get(name), str) or not report[name]:
             raise HBQError(f"score report requires {name}")
     gate = report.get("hard_gate_status")
-    if gate not in {"VALID", "INVALID", "UNRESOLVED"}:
+    if not isinstance(gate, str) or gate not in {"VALID", "INVALID", "UNRESOLVED"}:
         raise HBQError("score report requires a supported hard_gate_status")
     coverage = _number(report.get("coverage"), "coverage", high=1)
     domains = _rows(report.get("domains"), "domains")
