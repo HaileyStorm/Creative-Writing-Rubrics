@@ -1,0 +1,37 @@
+{
+  "distinct_pairs": 89,
+  "limits": [
+    "All numbers are algebraically derived from the already-public aggregate, not new human data.",
+    "The same ballots are reused for reversed orders; passages, groups and assessors are dependent.",
+    "Strata contain different availability-selected items and cannot identify a causal effect or method winner.",
+    "The majority-rule quantity is an in-sample arithmetic maximum for binary decisions on those same ballots, not an external reliability or population ceiling.",
+    "No new provider call, scoring, admission, human label, validation, confirmation or promotion."
+  ],
+  "orders": 93,
+  "reversed_order_pairs": 4,
+  "source": "evaluation-results/hbq-lamp-stopped-development-20261020/results.json",
+  "source_sha256": "6258147e5bbb4e4ffea5b1ae681e47af3ac50c43c49118d41fd854c634c85b1d",
+  "state": "RETROSPECTIVE_PUBLIC_AGGREGATE_RECONSTRUCTION",
+  "strata": [
+    {
+      "distinct_pairs": 66,
+      "human_votes": "unanimous",
+      "individual_ballot_order_denominator": 210,
+      "majority_order_denominator": 70,
+      "model_individual_half_credit": 91.5,
+      "model_majority_half_credit": 30.5,
+      "orders": 70,
+      "same_ballot_majority_rule_credit": 210
+    },
+    {
+      "distinct_pairs": 23,
+      "human_votes": "two_to_one_split",
+      "individual_ballot_order_denominator": 69,
+      "majority_order_denominator": 23,
+      "model_individual_half_credit": 37.0,
+      "model_majority_half_credit": 14.0,
+      "orders": 23,
+      "same_ballot_majority_rule_credit": 46
+    }
+  ]
+}
