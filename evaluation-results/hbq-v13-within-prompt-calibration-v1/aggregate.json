@@ -1,0 +1,35 @@
+{
+  "calibrated_direction_agreement_half_for_prediction_ties": 0.5640394088669951,
+  "cohort": {
+    "dimensions": 6,
+    "multi_item_groups": 10,
+    "pair_dimension_cells": 240,
+    "planned_works": 44,
+    "prompt_groups": 22,
+    "within_prompt_work_pairs": 40
+  },
+  "constant_baseline_direction_agreement_half_for_prediction_ties": 0.5,
+  "counts": {
+    "concordant": 57,
+    "discordant": 31,
+    "prediction_tie": 115,
+    "reference_tie": 37
+  },
+  "eligible_reference_nontied_pair_dimension_cells": 203,
+  "equal_multi_item_group_mean_agreement": 0.6104048382173383,
+  "groups_with_nontied_reference_cells": 10,
+  "limits": [
+    "Post-result TRAIN analysis of saved held-out predictions; not confirmation or a preselected estimand.",
+    "Target-only baselines are constant within each prompt and dimension, so their pair predictions tie.",
+    "Pair/dimension cells share stories, prompts, dimensions, raters and overlapping training folds.",
+    "Human reference ties are excluded from directional accuracy and prediction ties get half credit.",
+    "These ranks do not establish human validation, practical utility, population generalization or improvement."
+  ],
+  "new_human_labels": 0,
+  "provider_calls": 0,
+  "source_sha256": {
+    "calibration": "e3900856addc8a4385f0dc578de87ecf88ab921e20a0ab9998bfa653d430caa8",
+    "public_result": "d039289ef0054ad1448bb3d852f505e6362a182ce3adae9610a407d34f912800",
+    "schedule": "2d66a311912e82f5cc1e4bb411e94493a22e6b0761da43ee6d580972a5d589db"
+  }
+}
