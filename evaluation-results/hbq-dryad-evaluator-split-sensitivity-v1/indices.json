@@ -1,0 +1,72 @@
+{
+  "composite_components": {
+    "novelty": [
+      "novel",
+      "original",
+      "rare"
+    ],
+    "usefulness": [
+      "appropriate",
+      "feasible",
+      "publishable"
+    ]
+  },
+  "independent_checks": 12,
+  "limitations": [
+    "Three-axis indices do not validate an HBQ mapping or new target.",
+    "Alternate splits reuse people and stories; ranges are not confidence intervals.",
+    "Story eligibility can change by split; the analysis was chosen after earlier results.",
+    "Confirmation CSV rows are parsed as rows but skipped before rating conversion.",
+    "No human ceiling, cross-population reliability, model alignment, or causal claim."
+  ],
+  "new_provider_calls": 0,
+  "original_and_alternate_splits": 21,
+  "published_agreement_source_sha256": "de21884862ac28dbeba840b28aede1ba38ab9245f9557b11a47ad93d22e730fd",
+  "rows": [
+    {
+      "alternate_max": 0.5777305275570846,
+      "alternate_median": 0.4934353398179828,
+      "alternate_min": 0.41669410032024423,
+      "eligible_stories_max": 176,
+      "eligible_stories_min": 172,
+      "index": "novelty",
+      "original_split": 0.5350425896412765,
+      "partition": "TRAIN"
+    },
+    {
+      "alternate_max": 0.6216304575849435,
+      "alternate_median": 0.5590280946995336,
+      "alternate_min": 0.5119974695076013,
+      "eligible_stories_max": 176,
+      "eligible_stories_min": 172,
+      "index": "usefulness",
+      "original_split": 0.5221240141658477,
+      "partition": "TRAIN"
+    },
+    {
+      "alternate_max": 0.5381526167290999,
+      "alternate_median": 0.4180922607376646,
+      "alternate_min": 0.275861567939966,
+      "eligible_stories_max": 60,
+      "eligible_stories_min": 57,
+      "index": "novelty",
+      "original_split": 0.39819639653122985,
+      "partition": "DEV"
+    },
+    {
+      "alternate_max": 0.5813274788013708,
+      "alternate_median": 0.4475227557390934,
+      "alternate_min": 0.33344913361472994,
+      "eligible_stories_max": 60,
+      "eligible_stories_min": 57,
+      "index": "usefulness",
+      "original_split": 0.5016959065519208,
+      "partition": "DEV"
+    }
+  ],
+  "scope": "post-result TRAIN/DEV evaluator split sensitivity for author-defined human rating indices",
+  "sources": {
+    "split_manifest_sha256": "2e2314b283bc7a3b5653cbd98951ecb85612c0a5f3b4d2a4b31324bc89342521",
+    "v2_sha256": "e391d638f04eac7a9632811922d0c4fed4e95dd6613f07311d8513b9a52e128b"
+  }
+}
