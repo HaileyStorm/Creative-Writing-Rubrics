@@ -14,6 +14,7 @@ from jsonschema import Draft202012Validator
 from . import __version__, runner
 from .core import (
     HBQError,
+    _normalize_verdict_records,
     compile_bundle,
     compiled_questions,
     load_bundles,
@@ -38,6 +39,7 @@ from .longform import segment_longform
 from .longform_runner_v2 import run_longform_judge
 from .weights import make_weight_profile, materialize_weight_profile
 from .batch import run_longform_batch
+from .strict_input import POLICY as STRICT_VERDICT_INPUT_POLICY, load_verdict_input
 
 
 def _load_registry(args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -273,9 +275,14 @@ def _cmd_score(args: argparse.Namespace) -> int:
         _load_weight_profile(args.weight_profile),
     )
     scorer = score_bundle_v1 if args.report_version == 1 else score_bundle_v2
-    verdicts = load_verdicts(
-        args.verdicts, reject_conflicting_compact_ids=args.admission_policy == "strict_import_v2"
-    )
+    input_receipt = None
+    if args.verdict_input_policy == STRICT_VERDICT_INPUT_POLICY:
+        value, input_receipt = load_verdict_input(args.verdicts)
+        verdicts = _normalize_verdict_records(value, reject_conflicting_compact_ids=True)
+    else:
+        verdicts = load_verdicts(
+            args.verdicts, reject_conflicting_compact_ids=args.admission_policy == "strict_import_v2"
+        )
     task_contract = _load_task_contract(args.task_contract)
     admission = validate_import_admission(
         modules, bundle, verdicts, artifact_id=args.artifact_id,
@@ -290,6 +297,8 @@ def _cmd_score(args: argparse.Namespace) -> int:
     )
     if admission is not None:
         report["import_admission"] = admission
+    if input_receipt is not None:
+        report["verdict_input"] = input_receipt
     report["weight_profile"] = weight_audit
     write_data(args.output, report, fmt=args.format)
     return 0
@@ -637,6 +646,11 @@ def build_parser() -> argparse.ArgumentParser:
     score.add_argument("--artifact-id")
     score.add_argument("--task-contract", help="same frozen task contract used during judging")
     score.add_argument("--weight-profile", help="strict scoring-weight profile JSON/YAML")
+    score.add_argument(
+        "--verdict-input-policy", choices=("historical_v1", STRICT_VERDICT_INPUT_POLICY),
+        default="historical_v1",
+        help="opt in to unique keys and finite JSON-compatible verdict-file values",
+    )
     score.add_argument(
         "--admission-policy",
         choices=("historical_permissive_v1", "strict_import_v1", "strict_import_v2"),
