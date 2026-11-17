@@ -22,7 +22,7 @@ def admitted_artifact_id(
     admission: Mapping[str, Any] | None,
 ) -> str | None:
     """Carry a strictly admitted contract identity into the historical scorer."""
-    if (admission is not None and admission.get("policy") == "strict_import_v2"
+    if (admission is not None and admission.get("policy") in {"strict_import_v2", "strict_import_v3"}
             and artifact_id is None and task_contract is not None):
         contract_artifact = task_contract.get("artifact_id")
         if isinstance(contract_artifact, str) and contract_artifact.strip():
@@ -46,15 +46,23 @@ def validate_import_admission(
     """
     if admission_policy == "historical_permissive_v1":
         return None
-    if admission_policy not in {"strict_import_v1", "strict_import_v2"}:
+    if admission_policy not in {"strict_import_v1", "strict_import_v2", "strict_import_v3"}:
         raise core.HBQError(f"Unknown import admission policy: {admission_policy}")
+    contract_schema_bytes = None
+    if admission_policy == "strict_import_v3" and task_contract is not None:
+        contract_schema_bytes = (schema_dir() / "hbq_task_contract.schema.json").read_bytes()
+        contract_schema = json.loads(contract_schema_bytes)
+        error = next(Draft202012Validator(contract_schema).iter_errors(task_contract), None)
+        if error is not None:
+            location = ".".join(map(str, error.absolute_path)) or "contract"
+            raise core.HBQError(f"{admission_policy}: task contract violates schema at {location}")
     compiled = core.compile_bundle(modules, bundle, task_contract=task_contract)
     schema_bytes = (schema_dir() / "hbq_verdict.schema.json").read_bytes()
     validator = Draft202012Validator(json.loads(schema_bytes))
     selected = {row["question"]["id"]: row["question"] for row in core.compiled_questions(compiled)}
     seen: set[str] = set()
     contract_artifact = task_contract.get("artifact_id") if task_contract else None
-    if admission_policy == "strict_import_v2":
+    if admission_policy in {"strict_import_v2", "strict_import_v3"}:
         for name, value in (("artifact_id", artifact_id), ("task contract artifact_id", contract_artifact)):
             if value is not None and (not isinstance(value, str) or not value.strip()):
                 raise core.HBQError(f"{admission_policy}: {name} must be a nonblank string")
@@ -91,15 +99,21 @@ def validate_import_admission(
                 raise core.HBQError(f"{admission_policy}: {qid} requires typed exact_quote or summary evidence")
         if record["verdict"] == "NOT_APPLICABLE" and not record.get("note", "").strip():
             raise core.HBQError(f"{admission_policy}: {qid} lacks an activation-condition reason")
-    if admission_policy == "strict_import_v2" and imported_artifact is None:
+    if admission_policy in {"strict_import_v2", "strict_import_v3"} and imported_artifact is None:
         raise core.HBQError(f"{admission_policy}: an artifact identity is required")
-    return {
+    result = {
         "policy": admission_policy,
         "verdict_schema_sha256": hashlib.sha256(schema_bytes).hexdigest(),
         "validation_scope": "structure_and_declared_evidence_only",
         "supplied_questions": len(seen),
         "omitted_questions": len(selected) - len(seen),
     }
+    if admission_policy == "strict_import_v3":
+        result["validation_scope"] = "task_contract_schema_and_verdict_structure_and_declared_evidence_only"
+        result["task_contract_schema_sha256"] = (
+            hashlib.sha256(contract_schema_bytes).hexdigest() if contract_schema_bytes is not None else None
+        )
+    return result
 
 
 def _weighted_median(values: Sequence[tuple[float, float]]) -> float | None:

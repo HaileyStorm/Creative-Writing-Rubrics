@@ -48,7 +48,7 @@ def completion_envelope(
     """
     if type(max_cases) is not int or not 1 <= max_cases <= MAX_CASES:
         raise ValueError('max_cases must be an integer from 1 through 19683')
-    if admission_policy not in ('strict_import_v1', 'strict_import_v2'):
+    if admission_policy not in ('strict_import_v1', 'strict_import_v2', 'strict_import_v3'):
         raise ValueError('a strict import policy is required')
     if type(artifact_id) is not str or not artifact_id.strip():
         raise ValueError('a nonblank artifact_id is required')
@@ -58,6 +58,10 @@ def completion_envelope(
         raise ValueError('unsupported core implementation for supplemental exclusion')
     before = {'modules': _digest(modules), 'bundle': _digest(bundle), 'verdicts': _digest(verdicts),
               'task_contract': _digest(task_contract), 'artifact_id': _digest(artifact_id)}
+    admission = None
+    if admission_policy == 'strict_import_v3':
+        admission = scoring_v2.validate_import_admission(modules, bundle, verdicts, artifact_id=artifact_id,
+                                                          task_contract=task_contract, admission_policy=admission_policy)
     compiled = core.compile_bundle(modules, bundle, task_contract=task_contract)
     compiled_rows = core.compiled_questions(compiled)
     if any(row['role'] not in ('domain', 'hard_gate', 'penalty', 'supplemental') for row in compiled_rows):
@@ -68,8 +72,9 @@ def completion_envelope(
     ids = [row['question_id'] for row in verdicts]
     if len(selected) != len(set(selected)) or len(ids) != len(set(ids)) or not set(ids) <= set(selected):
         raise ValueError('selected or verdict identities are duplicated or out of scope')
-    admission = scoring_v2.validate_import_admission(modules, bundle, verdicts, artifact_id=artifact_id,
-                                                      task_contract=task_contract, admission_policy=admission_policy)
+    if admission is None:
+        admission = scoring_v2.validate_import_admission(modules, bundle, verdicts, artifact_id=artifact_id,
+                                                          task_contract=task_contract, admission_policy=admission_policy)
     historical = core.score_bundle(modules, bundle, verdicts, artifact_id=artifact_id, task_contract=task_contract)
     positions = [index for index, row in enumerate(verdicts)
                  if row['verdict'] == 'CANNOT_ASSESS' and row['question_id'] in scored]
@@ -144,7 +149,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument('verdicts', type=Path)
     parser.add_argument('--artifact-id', required=True)
     parser.add_argument('--task-contract', type=Path)
-    parser.add_argument('--admission-policy', choices=('strict_import_v1', 'strict_import_v2'), default='strict_import_v1')
+    parser.add_argument('--admission-policy', choices=('strict_import_v1', 'strict_import_v2', 'strict_import_v3'), default='strict_import_v1')
     parser.add_argument('--input-policy', choices=('historical_v1', STRICT_INPUT_POLICY), default='historical_v1',
                         help='structured-file parsing policy for verdicts and any task contract')
     parser.add_argument('--max-cases', type=int, default=MAX_CASES)

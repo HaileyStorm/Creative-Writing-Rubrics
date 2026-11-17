@@ -290,7 +290,7 @@ def _cmd_score(args: argparse.Namespace) -> int:
         verdicts = _normalize_verdict_records(value, reject_conflicting_compact_ids=True)
     else:
         verdicts = load_verdicts(
-            args.verdicts, reject_conflicting_compact_ids=args.admission_policy == "strict_import_v2"
+            args.verdicts, reject_conflicting_compact_ids=args.admission_policy in {"strict_import_v2", "strict_import_v3"}
         )
     contract_loader = (lambda path: read_auxiliary(path, "task_contract")) if (
         args.auxiliary_input_policy == STRICT_VERDICT_INPUT_POLICY
@@ -672,9 +672,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     score.add_argument(
         "--admission-policy",
-        choices=("historical_permissive_v1", "strict_import_v1", "strict_import_v2"),
+        choices=("historical_permissive_v1", "strict_import_v1", "strict_import_v2", "strict_import_v3"),
         default="historical_permissive_v1",
-        help="use strict_import_v2 for new normalized imports; checks structure and declared "
+        help="use strict_import_v3 for new normalized imports; checks task-contract schema, structure and declared "
         "evidence, not quotation grounding; default preserves historical replay",
     )
     score.add_argument(

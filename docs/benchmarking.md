@@ -190,6 +190,12 @@ Under the strict import policies, any supplied task contract must also satisfy
 the shipped task-contract schema; malformed contracts raise an error before a
 readiness decision is returned.
 
+For direct score imports, `strict_import_v3` additionally validates any supplied
+task contract against the shipped schema before compiling it, and records the
+schema hash in the admission receipt. `strict_import_v1` and `strict_import_v2`
+retain their historical verdict-admission behavior for reproducibility. This
+checks structure, not whether evidence or quotations are grounded in the source.
+
 Given `modules`, `bundle` and an original bank `left_verdicts` whose artifact ID
 is `left`, inspect an inclusive threshold (`score >= 40`):
 

@@ -88,7 +88,7 @@ def score_bundle(
     projected, changes = _project(compiled, verdicts)
     candidate = scoring_v2.score_bundle(
         modules, bundle, projected,
-        artifact_id=historical["artifact_id"] if admission_policy == "strict_import_v2" else artifact_id,
+        artifact_id=historical["artifact_id"] if admission_policy in {"strict_import_v2", "strict_import_v3"} else artifact_id,
         task_contract=task_contract, admission_policy="historical_permissive_v1",
     )
     if "import_admission" in historical:
@@ -134,7 +134,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--task-contract", type=Path)
     parser.add_argument("--artifact-id")
     parser.add_argument("--admission-policy", default="strict_import_v1",
-                        choices=("strict_import_v1", "strict_import_v2", "historical_permissive_v1"))
+                        choices=("strict_import_v1", "strict_import_v2", "strict_import_v3", "historical_permissive_v1"))
     parser.add_argument("--input-policy", default="historical_v1",
                         choices=("historical_v1", STRICT_INPUT_POLICY),
                         help="structured-file parsing policy for verdicts and any task contract")
@@ -150,7 +150,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         data, verdicts_sha256 = read_input(args.verdicts)
         verdicts = core._normalize_verdict_records(
-            data, reject_conflicting_compact_ids=args.admission_policy == "strict_import_v2"
+            data, reject_conflicting_compact_ids=args.admission_policy in {"strict_import_v2", "strict_import_v3"}
         )
         contract = None
         inputs = {"verdicts_file_sha256": verdicts_sha256}
