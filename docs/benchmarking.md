@@ -117,6 +117,13 @@ valid fixed gates, distinct question IDs, and no subjective ladder crossing
 domains. Unsupported inputs raise `ValueError`; use the finite enumerator when
 its requirements and limits permit.
 
+The default retains strict v2 admission for historical compatibility. For new
+imports, pass `admission_policy="strict_import_v3"` to validate a supplied task
+contract against the shipped schema before compilation. The result then includes
+the admission policy and, when a contract is supplied, its schema digest. This
+structural check does not establish that declared evidence is grounded in the
+artifact.
+
 The grouped method limits both assignments and assignment-count multiplied by
 the number of selected questions. These are work estimates, not time guarantees.
 Its extrema are fixed-input, scorer-only substitutions; they do not supply

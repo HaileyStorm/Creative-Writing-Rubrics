@@ -24,12 +24,13 @@ def require(value, message):
 def _digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(',', ':'), allow_nan=False).encode('utf-8')).hexdigest()
 
-def grouped_completion_envelope(modules, bundle, verdicts, artifact, contract):
+def grouped_completion_envelope(modules, bundle, verdicts, artifact, contract, *, admission_policy='strict_import_v2'):
     if hashlib.sha256(Path(core.__file__).read_bytes()).hexdigest() != CORE_SHA256:
         raise ValueError('unsupported core implementation')
+    require(admission_policy in ('strict_import_v2', 'strict_import_v3'), 'unsupported admission policy')
     before = _digest((modules, bundle, verdicts, artifact, contract))
-    scoring_v2.validate_import_admission(modules, bundle, verdicts, artifact_id=artifact,
-                                         task_contract=contract, admission_policy='strict_import_v2')
+    admission = scoring_v2.validate_import_admission(modules, bundle, verdicts, artifact_id=artifact,
+                                                      task_contract=contract, admission_policy=admission_policy)
     compiled = core.compile_bundle(modules, bundle, task_contract=contract)
     selected = core.compiled_questions(compiled)
     ids = [r['question']['id'] for r in selected]
@@ -111,9 +112,12 @@ def grouped_completion_envelope(modules, bundle, verdicts, artifact, contract):
         bounds.append(report['final_score']['observed'])
     require(bounds[0] <= bounds[1], 'extrema inverted')
     require(before == _digest((modules, bundle, verdicts, artifact, contract)), 'input mutation detected')
-    return {'policy': 'guarded_grouped_completion_v1', 'core_sha256': CORE_SHA256, 'input_sha256': before,
+    result = {'policy': 'guarded_grouped_completion_v1', 'core_sha256': CORE_SHA256, 'input_sha256': before,
             'historical_status': baseline['status'], 'historical_final_score': baseline['final_score'],
             'lower': bounds[0], 'upper': bounds[1], 'score_unknowns': len(all_unknown),
             'group_assignments_checked': group_work, 'estimated_work_units': estimated * len(selected),
             'maximum_work_units': MAX_WORK_UNITS, 'full_assignments': 3 ** len(all_unknown),
             'fixed_domain_assessment': True, 'fixed_valid_gates': True, 'cross_domain_ladders': False}
+    if admission_policy == 'strict_import_v3':
+        result['admission'] = admission
+    return result
