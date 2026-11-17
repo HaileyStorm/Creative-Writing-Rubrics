@@ -131,6 +131,17 @@ evidence, new judgments, confidence intervals or human-validation claims.
 
 ### Inspect decision readiness
 
+For two completed binary runs with frozen inputs, the optional Python API
+`hbqrs.verified_pair_comparison.compare_verified_binary_runs` first uses the
+offline run verifier on each run. It checks the shared task, context, scoring
+configuration and scope-decision contents before reporting point order; changed
+applicability, reused sessions and incompatible runs are kept separate. It also
+reports the interval comparison, which has a different meaning from point order.
+This version supports task contracts with direct-run scope overrides and requires
+stable, trusted local files. Saved provider and reviewer claims are not
+independently authenticated, and local verification does not establish human
+preference or literary correctness.
+
 Run the optional readiness tool on an existing local v1 or v2 score report:
 
 ```bash
