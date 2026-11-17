@@ -140,8 +140,17 @@ reports the historical interval comparison, which has a different meaning from
 point order. Its `interval_bounds_kind` identifies those historical bounds and
 `interval_completion_envelope_guaranteed` is false: even strictly separated
 historical intervals do not establish an order over every resolved verdict bank.
-The finite completion API described below is separate and does not directly
-compare these artifact-bound dynamic task contracts.
+For separately bound direct-run task contracts, the optional
+`hbqrs.verified_pair_completion.compare_verified_completion_runs` first checks
+the verified pair's shared conditions, then strictly admits and evaluates each
+original verdict bank against its own contract. It returns both finite completion
+receipts and compares their bounds only when both are available; touching bounds
+are inconclusive. The default cap is 243 assignments per bank, adjustable up to
+19,683. Unsupported inputs raise; work-limit and non-scored completion cases
+withhold the result. Completions vary each bank independently with all other
+verdicts fixed, and do not establish shared evidence, human preference or provider
+identity. This requires stable trusted local files, is not an atomic snapshot,
+and supports the same direct-run scope as the verified-pair API.
 This version supports task contracts with direct-run scope overrides and requires
 stable, trusted local files. Saved provider and reviewer claims are not
 independently authenticated, and local verification does not establish human
