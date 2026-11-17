@@ -186,6 +186,9 @@ Use the optional Python API when a decision needs to consider every supported
 resolution of a small number of unassessed or omitted verdicts. Supply the
 original module objects, bundle and verdict records; saved score reports or
 caller-supplied numeric intervals cannot establish this calculation.
+Under the strict import policies, any supplied task contract must also satisfy
+the shipped task-contract schema; malformed contracts raise an error before a
+readiness decision is returned.
 
 Given `modules`, `bundle` and an original bank `left_verdicts` whose artifact ID
 is `left`, inspect an inclusive threshold (`score >= 40`):

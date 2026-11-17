@@ -7,10 +7,14 @@ replacements, confidence, human alignment, promotion or execution authority.
 """
 from __future__ import annotations
 
+import json
 import math
 from typing import Any, Mapping, Sequence
 
+from jsonschema import Draft202012Validator
+
 from . import core, decision_readiness, scoring_completion_envelope
+from .paths import schema_dir
 
 POLICY = "finite_completion_decision_readiness_v1"
 MAX_CASES = scoring_completion_envelope.MAX_CASES
@@ -22,6 +26,12 @@ def _threshold(value: float | None) -> None:
 
 
 def _compute(modules, bundle, verdicts, *, artifact_id, task_contract, admission_policy, max_cases):
+    if task_contract is not None and admission_policy in ("strict_import_v1", "strict_import_v2"):
+        schema = json.loads((schema_dir() / "hbq_task_contract.schema.json").read_bytes())
+        error = next(Draft202012Validator(schema).iter_errors(task_contract), None)
+        if error is not None:
+            location = ".".join(map(str, error.absolute_path)) or "contract"
+            raise core.HBQError(f"Task contract violates its strict schema at {location}: {error.message}")
     envelope = scoring_completion_envelope.completion_envelope(
         modules, bundle, verdicts, artifact_id=artifact_id, task_contract=task_contract,
         admission_policy=admission_policy, max_cases=max_cases)
