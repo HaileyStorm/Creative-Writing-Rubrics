@@ -167,6 +167,8 @@ The runner selects only from the local catalog, checks the bundle against the de
 
 Each scope has one canonical result. The manuscript references its existing chapter result; charts and cards do not rejudge it, and scene diagnostics remain children rather than averages. Parent scopes are judged as parents; smaller scopes locate strengths and problems. Scores and coverage describe the selected criteria and are not automatically comparable across different module selections. A domain with no applicable criteria is shown as not scored, not as 0% coverage; this can occur when a selection omits the domain or its criteria are all not applicable.
 
+Custom evaluator score reports must use numbers, not booleans, for coverage and score intervals. Long-form normalization rejects boolean values in those fields instead of converting them to 0 or 1; missing and null intervals retain their existing meaning.
+
 `--wip` is the explicit shortcut for `--completion-status work_in_progress`. Completion-only whole-work criteria resolve as `NOT_APPLICABLE` rather than failures; evidence that should already exist inside the supplied scope can still be `CANNOT_ASSESS`, and ordinary craft, continuity, applicable requirements, and weighted goals remain active.
 
 For constrained local hardware, `--local-sample-limit N` explicitly switches local coverage to a bounded diagnostic sample (maximum 64). The whole-work pass still receives the complete source, and the report labels the local coverage as sampled. Omit the flag for complete local coverage.

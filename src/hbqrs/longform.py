@@ -602,7 +602,32 @@ def validate_long_form_map(
     return value
 
 
+def _reject_boolean_interval(value: Any, label: str = "Score interval") -> None:
+    if isinstance(value, bool):
+        raise HBQError(f"{label} must not be a boolean")
+    if isinstance(value, Mapping):
+        for key in ("observed", "lower", "upper"):
+            if isinstance(value.get(key), bool):
+                raise HBQError(f"{label}.{key} must be a number, not a boolean")
+
+
+def _reject_boolean_normalized_result(value: Mapping[str, Any]) -> None:
+    # Validate only the known consumed numeric fields. Missing/optional fields,
+    # null intervals and all other historical normalized values stay untouched.
+    if isinstance(value.get("coverage"), bool):
+        raise HBQError("Score result coverage must be a number, not a boolean")
+    _reject_boolean_interval(value.get("score"), "Score result interval")
+    domains = value.get("domains", ())
+    if isinstance(domains, Sequence) and not isinstance(domains, (str, bytes)):
+        for index, domain in enumerate(domains):
+            if isinstance(domain, Mapping):
+                if isinstance(domain.get("coverage"), bool):
+                    raise HBQError(f"Domain {index} coverage must be a number, not a boolean")
+                _reject_boolean_interval(domain.get("score"), f"Domain {index} interval")
+
+
 def _interval(value: Any) -> dict[str, float] | None:
+    _reject_boolean_interval(value)
     if not isinstance(value, Mapping):
         return None
     keys = ("observed", "lower", "upper")
@@ -622,6 +647,7 @@ def normalize_score_result(
     """Reduce a deterministic score report to the reader-facing report shape."""
 
     if "control_state" in score_report and "score" in score_report:
+        _reject_boolean_normalized_result(score_report)
         result = deepcopy(dict(score_report))
         result["scope_id"] = scope_id
         result["label"] = label
@@ -635,7 +661,7 @@ def normalize_score_result(
     if state not in {"VALID", "INVALID", "UNRESOLVED", "PROVISIONAL", "INELIGIBLE"}:
         raise HBQError(f"Score report has unsupported control state: {state!r}")
     coverage = score_report.get("coverage")
-    if not isinstance(coverage, (int, float)) or not 0 <= float(coverage) <= 1:
+    if isinstance(coverage, bool) or not isinstance(coverage, (int, float)) or not 0 <= float(coverage) <= 1:
         raise HBQError("Score report coverage must be a number from 0 to 1")
 
     domains: list[dict[str, Any]] = []
@@ -644,7 +670,7 @@ def normalize_score_result(
             raise HBQError("Score report domains must be objects")
         domain_coverage = domain.get("coverage", 0)
         if domain_coverage is not None and (
-            not isinstance(domain_coverage, (int, float)) or not 0 <= float(domain_coverage) <= 1
+            isinstance(domain_coverage, bool) or not isinstance(domain_coverage, (int, float)) or not 0 <= float(domain_coverage) <= 1
         ):
             raise HBQError("Domain coverage must be null or a number from 0 to 1")
         domain_score = _interval(domain.get("score"))
