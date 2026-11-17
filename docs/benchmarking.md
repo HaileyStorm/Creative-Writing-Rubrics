@@ -180,6 +180,76 @@ The [stopped Sol/TTCW development comparison](../evaluation-results/hbq-sol-ttcw
 
 The [retained LAMP ordinal development comparison](../evaluation-results/hbq-lamp-stopped-development-20261020/README.md) uses human preferences within passage triplets. It reports the lack of shared HBQ/comparator pairs and distinguishes order consistency from agreement with humans.
 
+### Inspect completion-aware decision readiness
+
+Use the optional Python API when a decision needs to consider every supported
+resolution of a small number of unassessed or omitted verdicts. Supply the
+original module objects, bundle and verdict records; saved score reports or
+caller-supplied numeric intervals cannot establish this calculation.
+
+Given `modules`, `bundle` and an original bank `left_verdicts` whose artifact ID
+is `left`, inspect an inclusive threshold (`score >= 40`):
+
+```python
+from hbqrs.completion_readiness import readiness
+
+threshold_result = readiness(
+    modules, bundle, left_verdicts,
+    artifact_id="left", threshold=40, max_cases=243,
+)
+print(threshold_result["completion_readiness"]["relation"])
+print(threshold_result["completion_readiness"]["bounds"])
+```
+
+The API recomputes the existing finite completion envelope using `NO`, `YES`
+and `NOT_APPLICABLE` replacements, holding other verdicts and the task contract
+fixed. `ROBUSTLY_MEETS` requires its lower endpoint to meet the threshold;
+`ROBUSTLY_BELOW` requires its upper endpoint to fall below it. Otherwise the
+relation is `UNRESOLVED`. For an invented four-question ladder fixture, the
+historical upper bound is 35, while completion bounds are 25–45: the historical
+threshold-40 result is `ROBUSTLY_BELOW`, but the completion result is
+`UNRESOLVED`. This illustrates a mechanical failure mode, not its prevalence.
+
+With another original bank `right_verdicts` whose artifact ID is `right`, compare
+under the same supplied modules and bundle:
+
+```python
+from hbqrs.completion_readiness import comparison
+
+pair_result = comparison(
+    modules, bundle, left_verdicts, right_verdicts,
+    left_artifact_id="left", right_artifact_id="right", max_cases=243,
+)
+print(pair_result["completion_comparison"]["relation"])
+```
+
+`LEFT_ABOVE` or `RIGHT_ABOVE` requires strict separation of the two completion
+ranges. Overlapping or touching endpoints are `INCONCLUSIVE`. The two banks'
+completions are considered independently; this does not model shared latent
+evidence or establish a preference between authors or models.
+
+The default maximum is 19,683 combinations **per bank**; `max_cases` may lower
+that cap, so a pair may require up to twice the selected budget. This is a work
+bound, not a time guarantee. `UNAVAILABLE` withholds decision bounds when a cap
+is exceeded, any completion is not `SCORED`, or the historical report is not
+`SCORED` or has invalid/unresolved hard gates. Unsupported inputs raise an
+error. Strict import admission checks structure and declared evidence; it does
+not ground references against source text or admit synthetic replacements as
+new judgments.
+
+The output retains `historical_report`, `historical_readiness` and, for pairs,
+`historical_comparison` separately with their existing meanings. Pair comparison
+keeps the existing report-visible compatibility checks, including scoring
+context, weights and applicability. Those checks and shared arguments do not
+authenticate judge, prompt or source conditions. The legacy comparison's frozen
+context digest is a caller attestation; this API accepts no such digest and
+leaves dynamic-task comparisons incomparable when that attestation is required.
+
+These finite, fixed-verdict scorer bounds are not statistical confidence
+intervals, calibrated model uncertainty, human-alignment evidence, promotion
+criteria or authority for unattended acceptance. Historical scoring and runtime
+defaults remain unchanged.
+
 ## Bias controls
 
 For a retrospective or prospectively specified comparison with missing scalar
