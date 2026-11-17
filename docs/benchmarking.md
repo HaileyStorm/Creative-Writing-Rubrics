@@ -136,7 +136,12 @@ For two completed binary runs with frozen inputs, the optional Python API
 offline run verifier on each run. It checks the shared task, context, scoring
 configuration and scope-decision contents before reporting point order; changed
 applicability, reused sessions and incompatible runs are kept separate. It also
-reports the interval comparison, which has a different meaning from point order.
+reports the historical interval comparison, which has a different meaning from
+point order. Its `interval_bounds_kind` identifies those historical bounds and
+`interval_completion_envelope_guaranteed` is false: even strictly separated
+historical intervals do not establish an order over every resolved verdict bank.
+The finite completion API described below is separate and does not directly
+compare these artifact-bound dynamic task contracts.
 This version supports task contracts with direct-run scope overrides and requires
 stable, trusted local files. Saved provider and reviewer claims are not
 independently authenticated, and local verification does not establish human

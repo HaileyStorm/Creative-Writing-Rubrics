@@ -97,7 +97,8 @@ def compare_verified_binary_runs(
     Run verification checks saved response and prompt consistency. It does not
     independently authenticate provider sessions, historical settings, review,
     or a judgment's correctness. This policy supports reviewed direct-run scope
-    overrides only; other scope modes remain unsupported.
+    overrides only; other scope modes remain unsupported. Its interval relation
+    uses historical score bounds, which need not contain every resolved score.
     """
     left, right = _side(left_run, left_frozen), _side(right_run, right_frozen)
     result = {'policy': POLICY, 'left_artifact_id': left['artifact_id'], 'right_artifact_id': right['artifact_id'],
@@ -119,7 +120,9 @@ def compare_verified_binary_runs(
     interval = decision_readiness.interval_comparison(left['report'], right['report'],
                                                        comparison_context_sha256=context_sha)
     result.update(shared_context_sha256=context_sha, interval_relation=interval['relation'],
-                  interval_reason=interval['reason'])
+                  interval_reason=interval['reason'],
+                  interval_bounds_kind='historical_scorer_bounds',
+                  interval_completion_envelope_guaranteed=False)
     if interval['relation'] in ('INELIGIBLE', 'INCOMPARABLE'):
         return dict(result, relation=interval['relation'], reason=interval['reason'])
     if interval['reason'] not in ('strictly_separated_bounds', 'intervals_overlap_or_touch'):

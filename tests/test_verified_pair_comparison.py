@@ -59,6 +59,8 @@ def test_matching_verified_runs_and_tampering(tmp_path):
     assert result['provider_identity_authenticated'] is False
     assert result['human_review_authenticated'] is False
     assert result['context_origin_authenticated'] is False
+    assert result['interval_bounds_kind'] == 'historical_scorer_bounds'
+    assert result['interval_completion_envelope_guaranteed'] is False
     assert len(result['shared_context_sha256']) == 64
     bad = deepcopy(rf)
     bad['execution']['reasoning'] = 'different'
