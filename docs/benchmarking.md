@@ -156,6 +156,15 @@ stable, trusted local files. Saved provider and reviewer claims are not
 independently authenticated, and local verification does not establish human
 preference or literary correctness.
 
+For a saved whole-work `full_judging` binary run, the separate opt-in
+`hbqrs.verified_longform_context.verify_longform_contexts` verifies the binary
+run and reconstructs the map's source/unit identity and deterministic task and
+completion contexts. Its local receipt includes the scope proof and binary
+verification details, including local paths. The check requires stable, trusted
+files and is not an atomic snapshot. It does not establish that map summaries
+are true, authenticate a provider or review, verify the preceding map-generation
+passes, or compare two works. Other long-form scopes remain unsupported.
+
 Run the optional readiness tool on an existing local v1 or v2 score report:
 
 ```bash
