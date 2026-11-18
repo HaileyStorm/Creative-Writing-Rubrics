@@ -78,8 +78,8 @@ def _execution(frozen: Mapping[str, Any]) -> dict[str, Any]:
     return dict(value)
 
 
-def _bound_files(value: Any, *, label: str) -> list[Path]:
-    if not isinstance(value, list) or not value:
+def _bound_files(value: Any, *, label: str, allow_empty: bool = False) -> list[Path]:
+    if not isinstance(value, list) or (not value and not allow_empty):
         raise core.HBQError(f"Frozen {label} bindings are missing")
     return [_bound_file(item, label=label) for item in value]
 
@@ -302,7 +302,7 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
     artifact = _bound_file(frozen.get("artifact"), label="artifact")
     registry = _bound_file(frozen.get("registry"), label="registry")
     bundles = _bound_file(frozen.get("bundles"), label="bundles")
-    context_paths = _bound_files(frozen.get("contexts"), label="context")
+    context_paths = _bound_files(frozen.get("contexts"), label="context", allow_empty=True)
     task_contract = frozen.get("task_contract")
     task_contract_path = _bound_file(task_contract, label="task contract") if task_contract is not None else None
     prompt_paths = _bound_files(frozen.get("prompts"), label="prompt")

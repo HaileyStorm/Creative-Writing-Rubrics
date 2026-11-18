@@ -91,6 +91,47 @@ def test_verifies_a_genuine_complete_v4_run_and_returns_raw_commitments(tmp_path
     assert len(result["commitments"]["prompts"]) == len(result["commitments"]["accepted_response_artifacts"]) == 6
     assert result["commitments"]["rejected_attempts"] == []
     assert "batch_response_schemas" not in result["commitments"]
+    with pytest.raises(core.HBQError):
+        verify_binary_run(run, {**frozen, "contexts": []})
+
+
+def test_verifies_artifact_only_run_without_admitting_missing_bindings(tmp_path: Path, monkeypatch) -> None:
+    real_run_judge = runner.run_judge
+
+    def artifact_only_run(**kwargs):
+        # Reuse the genuine offline constructor, but ask the actual runner to
+        # save a run with no contexts. Do not rewrite its saved commitments.
+        assert kwargs["task_contract_path"] is None
+        kwargs["context_paths"] = ()
+        return real_run_judge(**kwargs)
+
+    def unexpected_provider(*args, **kwargs):
+        pytest.fail("Unexpected provider boundary in an offline fixture")
+
+    monkeypatch.setattr(runner, "run_judge", artifact_only_run)
+    for name in ("_call_openai", "_call_grok", "_call_nous"):
+        monkeypatch.setattr(runner, name, unexpected_provider)
+    # The fixture patches _call_codex while constructing real saved checkpoints.
+    run, frozen = _fixture(
+        tmp_path, task_contract_enabled=False,
+        response_schema_mode="batch_question_ids_v1",
+        response_json_policy=runner.RESPONSE_JSON_FINITE_POLICY,
+    )
+    frozen["contexts"] = []
+    configuration = json.loads((run / "run.json").read_bytes())["configuration"]
+    assert configuration["contexts"] == []
+    assert configuration["task_contract"] is None
+    assert verify_binary_run(run, frozen)["verdict_count"] > 0
+
+    missing_contexts = dict(frozen)
+    del missing_contexts["contexts"]
+    with pytest.raises(core.HBQError, match="Frozen context bindings are missing"):
+        verify_binary_run(run, missing_contexts)
+    for invalid_contexts in (None, "not-a-list", [{}]):
+        with pytest.raises(core.HBQError, match="Frozen context binding"):
+            verify_binary_run(run, {**frozen, "contexts": invalid_contexts})
+    with pytest.raises(core.HBQError, match="Frozen prompt bindings are missing"):
+        verify_binary_run(run, {**frozen, "prompts": []})
 
 
 def test_verifies_a_genuine_complete_v4_run_with_batch_response_schemas(tmp_path: Path) -> None:
