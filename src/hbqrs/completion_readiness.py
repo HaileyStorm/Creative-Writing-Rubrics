@@ -27,7 +27,7 @@ def _threshold(value: float | None) -> None:
 
 def _compute(modules, bundle, verdicts, *, artifact_id, task_contract, admission_policy, max_cases):
     if task_contract is not None and admission_policy in ("strict_import_v1", "strict_import_v2", "strict_import_v3"):
-        schema = json.loads((schema_dir() / "hbq_task_contract.schema.json").read_bytes())
+        schema = json.loads((schema_dir() / core.task_contract_schema_name(task_contract)).read_bytes())
         error = next(Draft202012Validator(schema).iter_errors(task_contract), None)
         if error is not None:
             location = ".".join(map(str, error.absolute_path)) or "contract"

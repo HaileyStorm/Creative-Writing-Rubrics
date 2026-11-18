@@ -18,7 +18,7 @@ from typing import Any, Callable, Mapping, Sequence
 
 from jsonschema import Draft202012Validator
 
-from .core import HBQError, index_bundles, index_modules, load_data
+from .core import HBQError, index_bundles, index_modules, load_data, task_contract_schema_name, route_selection_schema_name
 from .paths import schema_dir
 
 
@@ -379,7 +379,7 @@ def validate_task_contract(
     """Validate a task contract and the non-schema gate-safety invariants."""
 
     value = deepcopy(dict(contract))
-    _validate_schema(value, _schema("hbq_task_contract.schema.json"), "Task contract")
+    _validate_schema(value, _schema(task_contract_schema_name(value)), "Task contract")
     if value["artifact_id"] != artifact_id:
         raise HBQError("Task contract artifact_id does not match the segmented artifact")
     if (
@@ -443,7 +443,8 @@ def validate_route_selection(
     """Validate a model-selected route against the exact local catalog."""
 
     value = deepcopy(dict(selection))
-    route_schema = _schema("hbq_route_selection.schema.json")
+    nested_contract = value.get("task_contract")
+    route_schema = _schema(route_selection_schema_name(nested_contract if isinstance(nested_contract, Mapping) else {}))
     _validate_schema(value, route_schema, "Route selection")
 
     module_by_id = index_modules(modules)

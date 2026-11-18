@@ -328,7 +328,7 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
         raise core.HBQError("Frozen scope compatibility evidence requires a task contract")
     if task is not None:
         errors = sorted(
-            Draft202012Validator(core.load_data(runner.schema_dir() / "hbq_task_contract.schema.json")).iter_errors(task),
+            Draft202012Validator(core.load_data(runner.schema_dir() / core.task_contract_schema_name(task))).iter_errors(task),
             key=lambda error: list(error.path),
         )
         if errors:

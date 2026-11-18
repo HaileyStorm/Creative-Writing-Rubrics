@@ -52,6 +52,34 @@ class HBQError(ValueError):
     """Raised when a registry, bundle, or verdict set is invalid."""
 
 
+def task_contract_version(contract: Mapping[str, Any]) -> int:
+    """Select explicit task semantics, retaining omitted-version legacy callers.
+
+    Strict schema entry points still require ``contract_version``. Numeric
+    JSON representations 1/1.0 and 2/2.0 denote the same version; Booleans and
+    unknown versions are rejected rather than silently compiled as legacy.
+    """
+
+    if not isinstance(contract, Mapping):
+        raise HBQError("Task contract must be an object")
+    version = contract.get("contract_version", 1)
+    if type(version) not in (int, float) or version not in (1, 2):
+        raise HBQError("Unsupported task contract version; expected 1 or 2")
+    return int(version)
+
+
+def task_contract_schema_name(contract: Mapping[str, Any]) -> str:
+    """Choose the strict schema for the selected task semantics."""
+
+    return "hbq_task_contract.v2.schema.json" if task_contract_version(contract) == 2 else "hbq_task_contract.schema.json"
+
+
+def route_selection_schema_name(contract: Mapping[str, Any]) -> str:
+    """Choose a route schema from its nested task contract's semantics."""
+
+    return "hbq_route_selection.v2.schema.json" if task_contract_version(contract) == 2 else "hbq_route_selection.schema.json"
+
+
 def _read_jsonl(path: Path) -> list[Any]:
     """Read a JSON Lines file, ignoring blank lines."""
 
@@ -442,6 +470,7 @@ def compile_bundle(
     profile metadata, evidence requirements, and effective weights.
     """
 
+    contract_version = task_contract_version(task_contract) if task_contract is not None else 1
     _validate_coverage_policy(bundle)
     module_by_id = index_modules(modules)
     bundle_id = str(bundle.get("bundle_id"))
@@ -644,11 +673,20 @@ def compile_bundle(
             if question_type == "hard_gate" and isinstance(verification, Mapping):
                 leaf["verification"] = dict(verification)
                 if verification.get("method") == "absence":
-                    leaf["applies_when"] = (
-                        "The frozen constraint is activated by a contradictory depiction or statement. "
-                        "If the relevant situation never occurs in the evaluated scope, return "
-                        "NOT_APPLICABLE rather than CANNOT_ASSESS."
-                    )
+                    if contract_version == 2:
+                        leaf["applies_when"] = (
+                            "The frozen prohibition applies throughout the evaluated scope. "
+                            "Return YES when the prohibited condition is absent and NO when it is present. "
+                            "Return CANNOT_ASSESS only when the supplied evidence is insufficient to "
+                            "determine whether the condition is present or absent. Absence alone does "
+                            "not justify NOT_APPLICABLE."
+                        )
+                    else:
+                        leaf["applies_when"] = (
+                            "The frozen constraint is activated by a contradictory depiction or statement. "
+                            "If the relevant situation never occurs in the evaluated scope, return "
+                            "NOT_APPLICABLE rather than CANNOT_ASSESS."
+                        )
             return leaf
 
         for item in goals:

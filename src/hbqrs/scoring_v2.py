@@ -50,7 +50,7 @@ def validate_import_admission(
         raise core.HBQError(f"Unknown import admission policy: {admission_policy}")
     contract_schema_bytes = None
     if admission_policy == "strict_import_v3" and task_contract is not None:
-        contract_schema_bytes = (schema_dir() / "hbq_task_contract.schema.json").read_bytes()
+        contract_schema_bytes = (schema_dir() / core.task_contract_schema_name(task_contract)).read_bytes()
         contract_schema = json.loads(contract_schema_bytes)
         error = next(Draft202012Validator(contract_schema).iter_errors(task_contract), None)
         if error is not None:

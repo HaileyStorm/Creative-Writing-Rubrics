@@ -23,6 +23,7 @@ from .core import (
     load_verdicts,
     resolve_bundle,
     score_bundle as score_bundle_v1,
+    task_contract_schema_name,
     validate_registry,
     walk_tree,
     write_data,
@@ -53,7 +54,7 @@ def _load_task_contract(path: str | None, *, loader: Callable[[str], Any] = load
     if not isinstance(value, dict):
         raise HBQError("Task contract must be a JSON or YAML object")
     errors = sorted(
-        Draft202012Validator(load_data(schema_dir() / "hbq_task_contract.schema.json")).iter_errors(value),
+        Draft202012Validator(load_data(schema_dir() / task_contract_schema_name(value))).iter_errors(value),
         key=lambda error: list(error.path),
     )
     if errors:

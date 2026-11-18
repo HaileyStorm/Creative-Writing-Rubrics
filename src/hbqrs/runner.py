@@ -35,6 +35,7 @@ from .core import (
     load_modules,
     resolve_bundle,
     score_bundle,
+    task_contract_schema_name,
 )
 from .paths import prompts_dir, schema_dir
 from .weights import materialize_weight_profile
@@ -3663,7 +3664,7 @@ def run_judge(
         if not isinstance(loaded_contract, dict):
             raise HBQError("Task contract must be a JSON or YAML object")
         contract_errors = sorted(
-            Draft202012Validator(load_data(schema_dir() / "hbq_task_contract.schema.json")).iter_errors(
+            Draft202012Validator(load_data(schema_dir() / task_contract_schema_name(loaded_contract))).iter_errors(
                 loaded_contract
             ),
             key=lambda error: list(error.path),

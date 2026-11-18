@@ -237,6 +237,14 @@ schema hash in the admission receipt. `strict_import_v1` and `strict_import_v2`
 retain their historical verdict-admission behavior for reproducibility. This
 checks structure, not whether evidence or quotations are grounded in the source.
 
+Task contracts may opt into `contract_version: 2` for corrected instructions
+on absence requirements: YES means the prohibited condition is absent, NO means
+it is present, and insufficient evidence remains CANNOT_ASSESS. Version 1
+retains its historical compiled guidance so saved prompts can be verified and
+replayed. The version-specific schema hash is recorded by `strict_import_v3`;
+automatic long-form route generation continues to use version 1. A versioned
+instruction does not by itself verify a judgment or change old results.
+
 Given `modules`, `bundle` and an original bank `left_verdicts` whose artifact ID
 is `left`, inspect an inclusive threshold (`score >= 40`):
 

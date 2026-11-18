@@ -26,7 +26,7 @@ from .strict_input import POLICY as STRICT_INPUT_POLICY, load_structured_input
 POLICY = 'finite_scorer_completion_envelope_v2'
 REPLACEMENTS = ('NO', 'YES', 'NOT_APPLICABLE')
 MAX_CASES = 19683
-CORE_SHA256 = '8c6022efc005f45e40df2ca9e7f8d508c50af6ae7197384b5798773ea968162a'
+CORE_SHA256 = '59c4a5c73d878520e9b3c821d4d5e022261cbf2b9339cf7edb639af8b7bc8377'
 
 
 def _digest(value: Any) -> str:
