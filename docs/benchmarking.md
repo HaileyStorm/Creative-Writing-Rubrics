@@ -311,6 +311,51 @@ intervals, calibrated model uncertainty, human-alignment evidence, promotion
 criteria or authority for unattended acceptance. Historical scoring and runtime
 defaults remain unchanged.
 
+## Validate a supplied complete response bank offline
+
+`hbqrs.response_validation.validate_response_bank` checks raw JSON responses
+against supplied modules, a bundle, artifact/context text and an optional task
+contract. It calls no judge and returns no score.
+
+```python
+from hbqrs.response_validation import validate_response_bank
+
+# Each entry binds one requested batch to its unmodified raw response text.
+# requested_batches must partition the entire compiled bank in runner role order.
+result = validate_response_bank(
+    modules, bundle, requested_batches,
+    artifact_id="example", artifact_text=artifact_text,
+    context_texts=context_texts, task_contract=task_contract,
+)
+print(result["membership_complete"], result["verdict_counts"])
+```
+
+Each batch has exactly `question_ids` (a nonempty list of strings) and
+`response_text` (raw JSON text). Request IDs must cover every compiled question
+once, ordered by hard gates, domains, penalties, then supplements; preserve
+compiled order within each role. Verdicts inside a response may arrive in any
+order and are returned in request order. Use raw text rather than parsed objects
+so duplicate JSON keys remain detectable.
+
+The API requires the existing canonical module, bundle and versioned task
+schemas. It uses finite JSON parsing, the exact batch response schema, the
+runner's evidence normalization without repairs, and `strict_import_v3`.
+Exact quotes must occur contiguously in the supplied artifact or ordinary
+context. References and summaries remain declarations: acceptance does not
+verify their truth, location or sufficiency. Canonical `CANNOT_ASSESS` and
+`NOT_APPLICABLE` values remain visible; complete membership does not imply all
+questions received a binary assessment. NA requires its strict-import activation
+reason; the current wire contract permits a blank CA note.
+
+Malformed supplied data raises `ResponseBankValidationError`, with
+`failure_type` and optional one-based `batch_number`, without echoing supplied
+prose. Runtime/environment errors can still propagate. Successful results have
+status `SEMANTICS_VALIDATED_ONLY`, normalized verdicts, counts and digests of the
+supplied values, raw responses and derived schemas. These digests do not prove
+what a judge received or authenticate provider/native execution, source identity,
+applicability or quality. The API supplies no judge/run identity, repairs or
+promotion decision. Existing scorer and runner entrypoints retain their behavior.
+
 ## Bias controls
 
 For a retrospective or prospectively specified comparison with missing scalar
