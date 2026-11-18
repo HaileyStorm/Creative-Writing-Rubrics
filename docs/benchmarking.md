@@ -244,6 +244,9 @@ retains its historical compiled guidance so saved prompts can be verified and
 replayed. The version-specific schema hash is recorded by `strict_import_v3`;
 automatic long-form route generation continues to use version 1. A versioned
 instruction does not by itself verify a judgment or change old results.
+Low-level historical compilation preserves legacy behavior for other version
+values; schema-validated entrypoints, including `strict_import_v3`, reject
+invalid or missing versions.
 
 Given `modules`, `bundle` and an original bank `left_verdicts` whose artifact ID
 is `left`, inspect an inclusive threshold (`score >= 40`):

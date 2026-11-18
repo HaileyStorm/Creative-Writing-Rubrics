@@ -57,7 +57,7 @@ def task_contract_version(contract: Mapping[str, Any]) -> int:
 
     Strict schema entry points still require ``contract_version``. Numeric
     JSON representations 1/1.0 and 2/2.0 denote the same version; Booleans and
-    unknown versions are rejected rather than silently compiled as legacy.
+    unknown versions are rejected by strict schema-selection entry points.
     """
 
     if not isinstance(contract, Mapping):
@@ -470,7 +470,10 @@ def compile_bundle(
     profile metadata, evidence requirements, and effective weights.
     """
 
-    contract_version = task_contract_version(task_contract) if task_contract is not None else 1
+    # Low-level compilation historically accepted arbitrary version fields.
+    # Only explicit numeric v2 opts in; strict entry points validate separately.
+    version = task_contract.get("contract_version") if task_contract is not None else None
+    contract_version = 2 if type(version) in (int, float) and version == 2 else 1
     _validate_coverage_policy(bundle)
     module_by_id = index_modules(modules)
     bundle_id = str(bundle.get("bundle_id"))

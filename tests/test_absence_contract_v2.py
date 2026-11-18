@@ -49,9 +49,12 @@ def test_v2_absence_and_legacy_schema_receipt(modules, bundles):
 
 
 @pytest.mark.parametrize('version', [True, False, None, '2', 0, 3, 2.5, float('nan')])
-def test_unknown_semantics_fail_closed(modules, bundles, version):
+def test_invalid_version_preserves_permissive_compile_but_fails_strict(modules, bundles, version):
+    bundle = core.resolve_bundle(bundles, 'prose.short_story')
+    assert gate(modules, bundle, contract(version)) == gate(modules, bundle, contract(1))
     with pytest.raises(core.HBQError, match='Unsupported task contract version'):
-        core.compile_bundle(modules, core.resolve_bundle(bundles, 'prose.short_story'), task_contract=contract(version))
+        scoring_v2.validate_import_admission(modules, bundle, [], artifact_id='synthetic',
+                                             task_contract=contract(version), admission_policy='strict_import_v3')
 
 
 def test_numeric_v2_and_route_schema():
