@@ -400,6 +400,10 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
     expected_count = (len(questions) + execution["batch_size"] - 1) // execution["batch_size"]
     if len(checkpoint_paths) != expected_count:
         raise core.HBQError("Run checkpoint count does not match the complete frozen question set")
+    # Match the runner's byte-preserving UTF-8-sig decoding: Path.read_text()
+    # performs universal-newline conversion and can change judged content.
+    artifact_text = runner._read_text_record(artifact)["text"]
+    context_texts = [runner._read_text_record(path)["text"] for path in context_paths]
     prompt_commitments: list[dict[str, Any]] = []
     for batch, checkpoint in enumerate(checkpoint_paths, start=1):
         record = _json(checkpoint)
@@ -411,11 +415,11 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
             prompt = gzip.decompress(prompt_path.read_bytes()).decode("utf-8")
         except (OSError, UnicodeDecodeError) as exc:
             raise core.HBQError(f"Cannot read exact frozen batch prompt: {prompt_path.name}") from exc
-        expected_prompt = runner._render_prompt(binary_prompt=binary_prompt, artifact={"name": artifact.name, "text": artifact.read_text(encoding="utf-8")}, contexts=[{"name": path.name, "text": path.read_text(encoding="utf-8")} for path in context_paths], bundle_id=execution["bundle_id"], artifact_id=execution["artifact_id"], questions=batch_questions, task_contract_context=(runner._task_contract_judge_context(task) if task is not None and prompt_rendering_version == runner.PROMPT_RENDERING_VERSION else None), prompt_rendering_version=prompt_rendering_version)
+        expected_prompt = runner._render_prompt(binary_prompt=binary_prompt, artifact={"name": artifact.name, "text": artifact_text}, contexts=[{"name": path.name, "text": text} for path, text in zip(context_paths, context_texts)], bundle_id=execution["bundle_id"], artifact_id=execution["artifact_id"], questions=batch_questions, task_contract_context=(runner._task_contract_judge_context(task) if task is not None and prompt_rendering_version == runner.PROMPT_RENDERING_VERSION else None), prompt_rendering_version=prompt_rendering_version)
         if record.get("batch") != batch or record.get("question_ids") != expected_ids or prompt != expected_prompt:
             raise core.HBQError("Checkpoint does not bind the exact frozen batch slice and prompt bytes")
         prompt_commitments.append(_relative_commitment(directory, prompt_path))
-    verdicts, checkpoint_count, chain_head = runner._load_checkpoints(directory, artifact_text=artifact.read_text(encoding="utf-8"), context_texts=[path.read_text(encoding="utf-8") for path in context_paths], batch_attempts=execution["batch_attempts"], normalization_policy=runner.EVIDENCE_NORMALIZATION_POLICY, response_json_policy=execution.get("response_json_policy", runner.RESPONSE_JSON_LEGACY_POLICY))
+    verdicts, checkpoint_count, chain_head = runner._load_checkpoints(directory, artifact_text=artifact_text, context_texts=context_texts, batch_attempts=execution["batch_attempts"], normalization_policy=runner.EVIDENCE_NORMALIZATION_POLICY, response_json_policy=execution.get("response_json_policy", runner.RESPONSE_JSON_LEGACY_POLICY))
     persisted = core.load_verdicts(directory / "verdicts.jsonl")
     if verdicts != persisted:
         raise core.HBQError("Checkpoint verdicts do not match verdicts.jsonl")

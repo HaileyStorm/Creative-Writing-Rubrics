@@ -3,6 +3,7 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+from unittest.mock import patch
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +14,7 @@ from hbqrs.longform import resolve_local_bundle_plan, segment_longform
 from hbqrs.paths import bundles_path, registry_path
 from hbqrs.run_verify import verify_binary_run
 from _run_verify_fixture import build_fixture as _fixture, write_json as _write
+import _run_verify_fixture
 
 
 def _rewrite_configuration(run: Path, mutate) -> None:
@@ -369,6 +371,32 @@ def test_terminal_v5_verifier_accepts_manual_reconcile_without_provider_session(
     result = verify_binary_run(run, frozen)
     assert result["rejected_attempt_count"] == 1
     assert result["attempt_lifecycle_count"] == 7
+
+
+def test_verifies_crlf_artifact_and_context_without_newline_translation(tmp_path: Path) -> None:
+    run, frozen = _fixture(tmp_path, artifact_text="The lantern\r\nflickered.",
+                           context_text="Write a lantern story.\r\nKeep it short.",
+                           response_schema_mode="batch_question_ids_v1")
+    assert b"\r\n" in Path(frozen["artifact"]["path"]).read_bytes()
+    assert b"\r\n" in Path(frozen["contexts"][0]["path"]).read_bytes()
+    assert verify_binary_run(run, frozen)["verdict_count"] == 179
+
+
+def test_verifies_multiline_exact_quote(tmp_path: Path) -> None:
+    class FixtureJSON:
+        def __getattr__(self, name):
+            return getattr(json, name)
+        def dumps(self, value, **kwargs):
+            if isinstance(value, dict) and set(value) == {"verdicts"}:
+                source = (tmp_path / "inputs-fixture-story/source.md").read_bytes().decode("utf-8-sig")
+                for verdict in value["verdicts"]:
+                    verdict["evidence"][0]["exact_quote"] = source
+            return json.dumps(value, **kwargs)
+    with patch.object(_run_verify_fixture, "json", FixtureJSON()):
+        run, frozen = _fixture(tmp_path, artifact_text="The lantern\nshone.",
+                               response_schema_mode="batch_question_ids_v1")
+    assert "\n" in Path(frozen["artifact"]["path"]).read_bytes().decode("utf-8")
+    assert verify_binary_run(run, frozen)["verdict_count"] == 179
 
 
 def test_replays_a_genuine_v2_longform_scope_proof(tmp_path: Path) -> None:
