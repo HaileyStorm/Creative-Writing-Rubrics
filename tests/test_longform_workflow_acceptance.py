@@ -138,7 +138,8 @@ def test_generated_workflow_preserves_scoped_goals_absence_and_multiline_quotes(
         "score_v2_schema": binding(schema_dir() / "hbq_score_report.v2.schema.json"), "weight_profile": None,
         "execution": {"artifact_id": artifact_id, "bundle_id": "prose.synthetic", "batch_size": 32,
                       "batch_attempts": 1, "strict_ai": False, "provider": "codex", "model": "gpt-5.6-sol",
-                      "reasoning": "high", "codex_bin": "codex", "response_json_policy": runner.RESPONSE_JSON_FINITE_POLICY},
+                      "reasoning": "high", "codex_bin": "codex", "response_json_policy": runner.RESPONSE_JSON_FINITE_POLICY,
+                      "selector_policy": "exact_selector_ids_v1"},
         "provider": {"provider": "openai", "model": "gpt-5.6-sol", "reasoning_effort": "high"},
     }
     persist_v2_descendant(output_dir=global_run, registry=registry, bundles=bundles,

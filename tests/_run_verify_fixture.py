@@ -121,6 +121,7 @@ def build_fixture(
             raise ValueError("Unsupported opt-in verifier fixture configuration")
         frozen["execution"]["response_schema_mode"] = response_schema_mode
         frozen["execution"]["response_json_policy"] = response_json_policy or runner.RESPONSE_JSON_FINITE_POLICY
+        frozen["execution"]["selector_policy"] = "exact_selector_ids_v1"
         calls = 0
 
         def fake_codex(*, response_schema: Path, **_kwargs: Any) -> tuple[str, dict[str, Any]]:
