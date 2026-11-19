@@ -10,7 +10,7 @@ import subprocess
 
 import pytest
 
-from hbqrs import longform, longform_runner, runner
+from hbqrs import core, longform, longform_runner, runner
 from hbqrs.paths import prompts_dir, schema_dir
 from hbqrs.runner_v2 import persist_v2_descendant
 from hbqrs.verified_longform_context import verify_longform_contexts
@@ -19,10 +19,12 @@ from test_longform import TEXT, _contract, _map, _route
 from test_longform_runner import _catalog, _questions
 
 
-def test_generated_workflow_preserves_scoped_goals_absence_and_multiline_quotes(tmp_path, monkeypatch):
+@pytest.mark.parametrize("source_bom", [False, True], ids=["utf8", "utf8-bom"])
+def test_generated_workflow_preserves_scoped_goals_absence_and_multiline_quotes(tmp_path, monkeypatch, source_bom):
     registry, bundles = _catalog(tmp_path)
     artifact = tmp_path / "story.txt"
-    artifact.write_bytes(TEXT.encode("utf-8"))
+    source_bytes = (b"\xef\xbb\xbf" if source_bom else b"") + TEXT.encode("utf-8")
+    artifact.write_bytes(source_bytes)
     artifact_id = "synthetic-story"
     segmentation = longform.segment_longform(TEXT, artifact_id=artifact_id)
     first_unit = next(unit["unit_id"] for unit in segmentation["units"] if unit["local_evaluation"]["eligible"])
@@ -149,3 +151,18 @@ def test_generated_workflow_preserves_scoped_goals_absence_and_multiline_quotes(
     assert any("\n" in item["exact_quote"] for row in verdicts for item in row["evidence"] if item.get("exact_quote"))
     assert verified["provider_identity_authenticated"] is False
     assert verified["map_truth_established"] is False
+
+    # Decode consistently with ingestion while retaining the raw source identity.
+    source = run / ".private/inputs/artifact.txt"
+    assert source.read_bytes() == source_bytes
+    plan = json.loads((run / "plan.json").read_bytes())
+    assert plan["source_artifact"] == {**binding(source), "path": ".private/inputs/artifact.txt"}
+    assert verified["source_sha256"] == binding(artifact)["sha256"]
+
+    # Toggling only the BOM keeps decoded text identical, but must break the
+    # frozen raw-byte commitment. This must not become a normalized-text hash.
+    tampered = source_bytes[3:] if source_bom else b"\xef\xbb\xbf" + source_bytes
+    assert tampered != source_bytes and tampered.decode("utf-8-sig") == TEXT
+    source.write_bytes(tampered)
+    with pytest.raises(core.HBQError, match="source artifact commitment drifted"):
+        verify_longform_contexts(global_run, frozen)

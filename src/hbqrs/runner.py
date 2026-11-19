@@ -1766,7 +1766,7 @@ def _longform_plan_scope(
     try:
         source_path.relative_to(route_plan_path.parent.resolve())
         source_bytes = source_path.read_bytes()
-        source_text = source_bytes.decode("utf-8")
+        source_text = source_bytes.decode("utf-8-sig")
     except (ValueError, OSError, UnicodeError) as exc:
         raise HBQError("Long-form scope proof persisted source artifact is unavailable") from exc
     if source_record.get("bytes") != len(source_bytes) or source_record.get("sha256") != _sha256_bytes(source_bytes):

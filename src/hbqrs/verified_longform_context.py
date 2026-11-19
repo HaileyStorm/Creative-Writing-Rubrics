@@ -54,7 +54,7 @@ def verify_longform_contexts(run_dir, frozen):
     source_binding = plan['source_artifact']
     if source_binding['path'] != '.private/inputs/artifact.txt' or len(raw) != source_binding['bytes'] or sha(raw) != source_binding['sha256']:
         raise core.HBQError('Persisted source differs')
-    segmentation = longform.segment_longform(raw.decode('utf-8'), artifact_id=plan['artifact_id'])
+    segmentation = longform.segment_longform(raw.decode('utf-8-sig'), artifact_id=plan['artifact_id'])
     map_bytes, task_bytes, completion_bytes = [p.read_bytes() for p in contexts[-3:]]
     if [sha(x) for x in (map_bytes, task_bytes, completion_bytes)] != [v['sha256'] for v in generated]:
         raise core.HBQError('Generated contexts changed')
