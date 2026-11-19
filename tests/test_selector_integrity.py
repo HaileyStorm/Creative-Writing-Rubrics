@@ -1,4 +1,5 @@
 """Real runner admission and historical replay with invented, offline inputs."""
+import hashlib
 import json
 import socket
 import subprocess
@@ -71,3 +72,17 @@ def test_runner_rejects_selector_typos_before_provider_and_preserves_historical_
     with pytest.raises(core.HBQError, match="selector policy changed"):
         runner.run_judge(**options, resume=True, selector_policy=EXACT)
     assert manifest_path.read_bytes() == frozen_manifest
+
+    # Model an old manifest whose configuration predates selector policies.
+    legacy = json.loads(frozen_manifest)
+    del legacy["configuration"]["selector_policy"]
+    legacy["config_sha256"] = hashlib.sha256(runner._json_bytes(legacy["configuration"])).hexdigest()
+    manifest_path.write_text(json.dumps(legacy), encoding="utf-8")
+    unmarked = manifest_path.read_bytes()
+    runner.run_judge(**options, resume=True)
+    runner.run_judge(**options, resume=True, selector_policy=HISTORICAL)
+    assert manifest_path.read_bytes() == unmarked
+    assert calls == [[question_id]]
+    with pytest.raises(core.HBQError, match="selector policy changed"):
+        runner.run_judge(**options, resume=True, selector_policy=EXACT)
+    assert manifest_path.read_bytes() == unmarked
