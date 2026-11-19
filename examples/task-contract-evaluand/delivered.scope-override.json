@@ -1,0 +1,13 @@
+{
+  "artifact_id": "invented-synopsis",
+  "artifact_kind": "film_synopsis",
+  "bundle_id": "prose.short_story",
+  "compatibility_mode": "reviewed_override",
+  "contract_id": "invented_synopsis_delivered_v1",
+  "decision_id": "invented_render_fixture_delivered_v1",
+  "declared_scope": "supplied_title_and_synopsis",
+  "format_version": 1,
+  "reason": "Invented render-only fixture for one selected diagnostic question. Not a real bundle-suitability review or authorization to collect judgments.",
+  "reviewer": "Invented render-fixture reviewer; not a real compatibility approval",
+  "task_contract_sha256": "2243554225bc575fe9f452bb1b42be730c41687d9b3a2873d069aec7adbbbf70"
+}

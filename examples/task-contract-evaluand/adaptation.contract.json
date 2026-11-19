@@ -1,0 +1,17 @@
+{
+  "contract_version": 2,
+  "contract_id": "invented_synopsis_adaptation_v1",
+  "artifact_id": "invented-synopsis",
+  "context": {
+    "artifact_kind": "film_synopsis",
+    "declared_scope": "represented_narrative_load",
+    "completion_status": "complete",
+    "background": ["The caller explicitly requests a prospective adaptation-feasibility assessment: whether the cast, timespan, settings and subplot material represented in the supplied synopsis could be controlled at short-story length. The requested object is this represented narrative load, not the synopsis's prose quality or a completed adaptation."],
+    "constraints": ["Only material explicitly represented in the synopsis is available. No unseen screenplay, scenes or performance may be assumed. Potential scope feasibility does not establish the artistic execution of any future adaptation."],
+    "audience": []
+  },
+  "preferences": [],
+  "priorities": [],
+  "weighted_goals": [],
+  "binding_requirements": []
+}

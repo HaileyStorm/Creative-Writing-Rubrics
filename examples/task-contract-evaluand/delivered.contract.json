@@ -1,0 +1,17 @@
+{
+  "contract_version": 2,
+  "contract_id": "invented_synopsis_delivered_v1",
+  "artifact_id": "invented-synopsis",
+  "context": {
+    "artifact_kind": "film_synopsis",
+    "declared_scope": "supplied_title_and_synopsis",
+    "completion_status": "complete",
+    "background": ["The requested evaluation object is the supplied title and synopsis as their own textual artifact. The caller has not requested a short-story adaptation or an assessment of an unseen completed film."],
+    "constraints": ["Only the supplied synopsis is available; its descriptions are not evidence that a screenplay, acted scene or completed adaptation has been executed."],
+    "audience": []
+  },
+  "preferences": [],
+  "priorities": [],
+  "weighted_goals": [],
+  "binding_requirements": []
+}
