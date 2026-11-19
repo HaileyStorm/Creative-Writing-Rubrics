@@ -335,7 +335,10 @@ def materialize_weight_profile(
             )
             for record in domain_overrides
         }
-        total = math.fsum(relative.values())
+        try:
+            total = math.fsum(relative.values())
+        except OverflowError as exc:
+            raise HBQError("Domain weights must have a finite total") from exc
         if total <= 0:
             raise HBQError("Domain weights must have a positive total")
         ordered_domains = list(domains.items())
@@ -458,4 +461,7 @@ def materialize_weight_profile(
             }
         )
 
+    # Validate multiplied weights and aggregate masses through the same compiler
+    # that consumes these objects before returning a materialized profile.
+    compile_bundle(transformed_modules, transformed_bundle)
     return transformed_modules, transformed_bundle, audit
