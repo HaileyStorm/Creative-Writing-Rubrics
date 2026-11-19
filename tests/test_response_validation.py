@@ -149,6 +149,38 @@ class ResponseBankValidationTests(unittest.TestCase):
             with self.assertRaisesRegex(AttributeError, "invented_internal_bug"):
                 self.validate(batches)
 
+    def test_exact_selector_ids_reject_false_complete_banks(self):
+        for field in ("include_question_ids", "include_group_ids"):
+            with self.subTest(field=field):
+                bundle = deepcopy(self.bundle)
+                found = None
+                for domain in bundle["domains"]:
+                    for component in domain["components"]:
+                        module = next(m for m in self.modules if m["module_id"] == component["module_id"])
+                        for leaf, ancestors, _ in core.select_leaves(module, component):
+                            if field == "include_question_ids" or ancestors:
+                                found = component, leaf["id"] if field == "include_question_ids" else ancestors[-1]
+                                break
+                        if found is not None:
+                            break
+                    if found is not None:
+                        break
+                self.assertIsNotNone(found)
+                component, known = found
+                component[field] = [known, "invented.selector.typo"]
+                with patch.object(self, "bundle", bundle):
+                    batches = self.batches()
+                    with patch.object(runner, "_parse_model_json", side_effect=AssertionError("Selector must reject before response parsing")):
+                        self.reject("BANK_DEFINITION_OR_TASK", lambda: self.validate(batches))
+                    historical = validate_response_bank(
+                        self.modules, bundle, batches, artifact_id="invented-artifact",
+                        artifact_text=self.artifact, context_texts=self.contexts, task_contract=self.task,
+                        selector_policy="historical_permissive_v1",
+                    )
+                    self.assertTrue(historical["membership_complete"])
+                    self.assertEqual(historical["policy"], "supplied_complete_response_bank_v1")
+                    self.assertNotIn("selector_policy", historical)
+
 
 if __name__ == "__main__":
     unittest.main()

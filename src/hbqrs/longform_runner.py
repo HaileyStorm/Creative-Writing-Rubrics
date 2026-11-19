@@ -926,6 +926,7 @@ def _run_binary_scope(
     upgrade_legacy_normalization: bool,
     attempt_lifecycle_policy: str | None,
     response_json_policy: str = RESPONSE_JSON_LEGACY_POLICY,
+    selector_policy: str | None = None,
     longform_route_plan_path: Path | None = None,
 ) -> dict[str, Any]:
     subresume = resume and (output_dir / "run.json").is_file()
@@ -982,6 +983,7 @@ def _run_binary_scope(
         upgrade_legacy_normalization=upgrade_legacy_normalization,
         attempt_lifecycle_policy=attempt_lifecycle_policy,
         response_json_policy=response_json_policy,
+        selector_policy=selector_policy,
     )
     if summary.get("score") is None or not (output_dir / "score.json").is_file():
         raise HBQError(f"Long-form {label} pass did not produce a complete score report")
@@ -1041,6 +1043,7 @@ def run_longform_judge(
     allow_unattested_reasoning: bool = False,
     upgrade_legacy_normalization: bool = False,
     attempt_lifecycle_policy: str | None = None,
+    selector_policy: str | None = None,
 ) -> dict[str, Any]:
     """Run and persist route, map, global/local judging, synthesis, and rendering.
 
@@ -1110,6 +1113,17 @@ def run_longform_judge(
     bundles_record = _read_text_record(bundles_path)
     modules = load_modules(registry_path)
     available_bundles = load_bundles(bundles_path)
+    from .selector_integrity import resolve_selector_policy, admit_bundle_selectors
+    selector_workflow_path = Path(output_dir).resolve() / "workflow.json"
+    selector_prior_configuration = None
+    if selector_workflow_path.is_file():
+        selector_prior = load_data(selector_workflow_path)
+        selector_prior_configuration = selector_prior.get("configuration") if isinstance(selector_prior, Mapping) else None
+        if not isinstance(selector_prior_configuration, Mapping):
+            raise HBQError("Cannot resume: long-form workflow configuration is malformed")
+    selector_policy, record_selector_policy = resolve_selector_policy(selector_policy, selector_prior_configuration)
+    for selector_bundle in available_bundles:
+        admit_bundle_selectors(modules, selector_bundle, selector_policy)
     artifact_id = artifact_id or source_path.stem
     segmentation = segment_longform(source["text"], artifact_id=artifact_id)
     eligible_unit_ids = [
@@ -1409,6 +1423,8 @@ def run_longform_judge(
         "codex_bin": codex_bin if provider == "codex" else None,
         "strict_ai": strict_ai,
     }
+    if record_selector_policy:
+        configuration["selector_policy"] = selector_policy
     if response_json_policy != RESPONSE_JSON_LEGACY_POLICY:
         configuration["response_json_policy"] = response_json_policy
     if attempt_lifecycle_policy is not None:
@@ -1687,6 +1703,8 @@ def run_longform_judge(
     runtime_bundles = [global_bundle]
     if local_bundle["bundle_id"] != global_bundle["bundle_id"]:
         runtime_bundles.append(local_bundle)
+    for selector_bundle in runtime_bundles:
+        admit_bundle_selectors(modules, selector_bundle, selector_policy)
     runtime_bundles_path = private / "catalog" / "bundles.json"
     _write_or_verify(runtime_bundles_path, _json_bytes(runtime_bundles))
 
@@ -1759,6 +1777,7 @@ def run_longform_judge(
             upgrade_legacy_normalization=upgrade_legacy_normalization,
             attempt_lifecycle_policy=attempt_lifecycle_policy,
             response_json_policy=response_json_policy,
+            selector_policy=selector_policy,
         )
 
     def evaluate_local(unit_id: str) -> dict[str, Any]:
@@ -1817,6 +1836,7 @@ def run_longform_judge(
             upgrade_legacy_normalization=upgrade_legacy_normalization,
             attempt_lifecycle_policy=attempt_lifecycle_policy,
             response_json_policy=response_json_policy,
+            selector_policy=selector_policy,
         )
 
     if binary_workers == 1:

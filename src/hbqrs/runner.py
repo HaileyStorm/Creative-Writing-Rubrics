@@ -3568,6 +3568,7 @@ def run_judge(
     response_schema_mode: str | None = None,
     codex_receipt_policy: str | None = None,
     response_json_policy: str | None = None,
+    selector_policy: str | None = None,
 ) -> dict[str, Any]:
     """Judge one artifact against one bundle, checkpointing every batch.
 
@@ -3698,6 +3699,12 @@ def run_judge(
         if not isinstance(loaded_manifest, Mapping):
             raise HBQError("Cannot resume: run manifest is malformed")
         prior_manifest = loaded_manifest
+    from .selector_integrity import resolve_selector_policy, admit_bundle_selectors
+    if prior_manifest is not None and not isinstance(prior_manifest.get("configuration"), Mapping):
+        raise HBQError("Cannot resume: selector configuration is malformed")
+    selector_policy, record_selector_policy = resolve_selector_policy(
+        selector_policy, prior_manifest.get("configuration") if prior_manifest is not None else None)
+    admit_bundle_selectors(modules, bundle, selector_policy)
     requested_response_json_policy = response_json_policy
     if requested_response_json_policy is not None and (
         not isinstance(requested_response_json_policy, str)
@@ -3860,6 +3867,8 @@ def run_judge(
         "questions_sha256": _sha256_bytes(_json_bytes(_question_payload(questions))),
         "compiled_bundle_sha256": _sha256_bytes(_json_bytes(compiled)),
     }
+    if record_selector_policy:
+        configuration["selector_policy"] = selector_policy
     if response_json_policy != RESPONSE_JSON_LEGACY_POLICY:
         configuration["response_json_policy"] = response_json_policy
     if response_schema_mode is not None:

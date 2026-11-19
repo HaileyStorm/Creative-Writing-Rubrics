@@ -337,6 +337,19 @@ compiled order within each role. Verdicts inside a response may arrive in any
 order and are returned in request order. Use raw text rather than parsed objects
 so duplicate JSON keys remain detectable.
 
+New runs, CLI validation and compilation, and this API reject unknown question
+or group selector IDs by default (`exact_selector_ids_v1`). The lower-level
+historical core remains permissive. Existing runs retain their recorded policy;
+older runs without a policy resume with `historical_permissive_v1`. Explicit
+historical mode preserves that behavior and must not be described as strict
+selector validation. Native runs pinned to older runtime bytes require their
+original runtime; this policy does not migrate those receipts.
+
+Offline validation now emits a `supplied_complete_response_bank_v2` receipt
+whose input digest includes the selector policy. To reproduce a prior v1 receipt
+and digest, pass `selector_policy="historical_permissive_v1"` explicitly. That
+option also retains historical permissive selector handling.
+
 The API requires the existing canonical module, bundle and versioned task
 schemas. It uses finite JSON parsing, the exact batch response schema, the
 runner's evidence normalization without repairs, and `strict_import_v3`.
@@ -354,7 +367,7 @@ status `SEMANTICS_VALIDATED_ONLY`, normalized verdicts, counts and digests of th
 supplied values, raw responses and derived schemas. These digests do not prove
 what a judge received or authenticate provider/native execution, source identity,
 applicability or quality. The API supplies no judge/run identity, repairs or
-promotion decision. Existing scorer and runner entrypoints retain their behavior.
+promotion decision. Scoring behavior is unchanged.
 
 ## Bias controls
 

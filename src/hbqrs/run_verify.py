@@ -58,7 +58,7 @@ def _manifest_record(path: Path) -> dict[str, Any]:
 def _execution(frozen: Mapping[str, Any]) -> dict[str, Any]:
     value = frozen.get("execution")
     required = {"artifact_id", "bundle_id", "batch_size", "batch_attempts", "strict_ai", "provider", "model", "reasoning", "codex_bin"}
-    optional = {"attempt_lifecycle_policy", "response_schema_mode", "response_json_policy"}
+    optional = {"attempt_lifecycle_policy", "response_schema_mode", "response_json_policy", "selector_policy"}
     if not isinstance(value, Mapping) or not required <= set(value) or not set(value) <= required | optional:
         raise core.HBQError("Frozen execution contract is malformed")
     if not isinstance(value["artifact_id"], str) or not value["artifact_id"] or not isinstance(value["bundle_id"], str) or not value["bundle_id"]:
@@ -75,6 +75,10 @@ def _execution(frozen: Mapping[str, Any]) -> dict[str, Any]:
         raise core.HBQError("Frozen response schema mode is malformed")
     if "response_json_policy" in value and value["response_json_policy"] not in (runner.RESPONSE_JSON_UNIQUE_KEYS_POLICY, runner.RESPONSE_JSON_FINITE_POLICY):
         raise core.HBQError("Frozen response JSON policy is malformed")
+    if "selector_policy" in value:
+        from .selector_integrity import POLICIES
+        if not isinstance(value["selector_policy"], str) or value["selector_policy"] not in POLICIES:
+            raise core.HBQError("Frozen selector policy is malformed")
     return dict(value)
 
 
@@ -149,6 +153,8 @@ def _configuration(
     }
     if "attempt_lifecycle_policy" in execution:
         configuration["attempt_lifecycle_policy"] = execution["attempt_lifecycle_policy"]
+    if "selector_policy" in execution:
+        configuration["selector_policy"] = execution["selector_policy"]
     if "response_json_policy" in execution:
         configuration["response_json_policy"] = execution["response_json_policy"]
     if "response_schema_mode" in execution:
@@ -314,6 +320,14 @@ def verify_binary_run(run_dir: str | Path, frozen: Mapping[str, Any]) -> dict[st
         raise core.HBQError("Frozen provider expectation diverges from the Codex execution contract")
     modules = core.load_modules(registry)
     bundle = core.resolve_bundle(core.load_bundles(bundles), execution["bundle_id"])
+    from .selector_integrity import admit_bundle_selectors, HISTORICAL, resolve_selector_policy
+    recorded_configuration = manifest.get("configuration")
+    if not isinstance(recorded_configuration, Mapping):
+        raise core.HBQError("Run manifest configuration is malformed")
+    recorded_selector_policy, _ = resolve_selector_policy(None, recorded_configuration)
+    if recorded_selector_policy != execution.get("selector_policy", HISTORICAL):
+        raise core.HBQError("Frozen selector policy differs from recorded execution")
+    admit_bundle_selectors(modules, bundle, recorded_selector_policy)
     frozen_weight_profile = frozen.get("weight_profile")
     materialized_modules, materialized_bundle, weight_audit = materialize_weight_profile(
         modules, bundle, frozen_weight_profile

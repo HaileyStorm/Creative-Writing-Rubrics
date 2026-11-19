@@ -15,6 +15,7 @@ from jsonschema import Draft202012Validator
 
 from hbqrs import core, runner, scoring_v2
 from hbqrs.strict_input import _check_tree
+from hbqrs.selector_integrity import EXACT, admit_bundle_selectors, resolve_selector_policy
 
 __all__ = ["ResponseBankValidationError", "validate_response_bank"]
 
@@ -60,6 +61,7 @@ def validate_response_bank(
     artifact_text: str,
     context_texts: Sequence[str] = (),
     task_contract: Mapping[str, Any] | None = None,
+    selector_policy: str | None = None,
 ) -> dict[str, Any]:
     """Validate raw JSON batches covering every compiled question exactly once.
 
@@ -68,7 +70,12 @@ def validate_response_bank(
     Flattened request IDs must equal the complete role-ordered compiled bank;
     response verdict order may differ and is normalized to request order.
 
-    The new API always uses finite/unique-key JSON parsing, strict_import_v3,
+    New calls default to exact_selector_ids_v1 admission and a versioned v2
+    receipt whose supplied-input digest binds that selector policy. Explicit
+    historical_permissive_v1 preserves the original v1 receipt and digest.
+    Selector admission is checked before response JSON parsing.
+
+    The API always uses finite/unique-key JSON parsing, strict_import_v3,
     typed evidence and exact contiguous quote matching against artifact/context.
     Supplied modules and bundle must satisfy their existing canonical schemas,
     including recursive group/child shapes, before compilation.
@@ -90,9 +97,15 @@ def validate_response_bank(
             or type(artifact_text) is not str or any(type(text) is not str for text in context_texts)
             or task_contract is not None and type(task_contract) is not dict):
         _reject("INPUT_DATA")
+    try:
+        resolved_selector_policy, _ = resolve_selector_policy(selector_policy)
+    except core.HBQError:
+        _reject("SELECTOR_POLICY")
     source = _snapshot({"modules": list(modules), "bundle": bundle, "batches": list(batches),
                         "artifact_id": artifact_id, "artifact_text": artifact_text,
                         "context_texts": list(context_texts), "task_contract": task_contract})
+    if resolved_selector_policy == EXACT:
+        source["selector_policy"] = resolved_selector_policy
     try:
         input_digest = _digest(_canonical(source))
         source_bindings = {"artifact_sha256": _digest(source["artifact_text"].encode("utf-8")),
@@ -110,6 +123,7 @@ def validate_response_bank(
             or not Draft202012Validator(bundle_schema).is_valid(bundle)):
         _reject("BANK_DEFINITION_OR_TASK")
     try:
+        admit_bundle_selectors(modules, bundle, resolved_selector_policy)
         # Validate any selected versioned task schema before its compilation.
         scoring_v2.validate_import_admission(modules, bundle, [], artifact_id=artifact_id,
             task_contract=task, admission_policy="strict_import_v3")
@@ -178,10 +192,14 @@ def validate_response_bank(
     counts = Counter({verdict: 0 for verdict in ("YES", "NO", "NOT_APPLICABLE", "CANNOT_ASSESS")})
     counts.update(row["verdict"] for row in normalized)
     clean = [{key: value for key, value in row.items() if key not in {"judge_id", "run_id"}} for row in normalized]
-    return {"policy": "supplied_complete_response_bank_v1", "status": "SEMANTICS_VALIDATED_ONLY",
+    result = {"policy": "supplied_complete_response_bank_v1", "status": "SEMANTICS_VALIDATED_ONLY",
         "membership_complete": True, "question_count": len(expected), "batch_count": len(batches),
         "artifact_id": artifact_id, "bundle_id": bundle["bundle_id"], "verdict_counts": dict(counts),
         "all_binary_assessed": counts["NOT_APPLICABLE"] == counts["CANNOT_ASSESS"] == 0,
         "normalized_verdicts": clean, "import_admission": admission,
         "supplied_inputs_sha256": input_digest, "supplied_source_bindings": source_bindings, "batches": receipts,
         "native_provenance": None, "quality_verified": False, "score": None, "repairs": []}
+    if resolved_selector_policy == EXACT:
+        result["policy"] = "supplied_complete_response_bank_v2"
+        result["selector_policy"] = resolved_selector_policy
+    return result

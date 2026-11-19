@@ -29,6 +29,7 @@ from .core import (
     write_data,
 )
 from .scoring_v2 import admitted_artifact_id, score_bundle as score_bundle_v2, validate_import_admission
+from .selector_integrity import EXACT, HISTORICAL, POLICIES, admit_bundle_selectors, selector_integrity_errors
 from .pack import pack_book
 from .paths import book_root, bundles_path, prompts_dir, registry_path, schema_dir
 from .runner_v2 import run_judge
@@ -236,6 +237,8 @@ def _cmd_validate(args: argparse.Namespace) -> int:
         module_schema=module_schema,
         bundle_schema=bundle_schema,
     )
+    if args.selector_policy == EXACT:
+        errors.extend(selector_integrity_errors(modules, bundles))
     try:
         question_count = sum(1 for module in modules for _ in walk_tree(module.get("tree", [])))
     except HBQError:
@@ -254,9 +257,11 @@ def _cmd_validate(args: argparse.Namespace) -> int:
 
 def _cmd_compile(args: argparse.Namespace) -> int:
     modules, bundles = _load_registry(args)
+    source_bundle = resolve_bundle(bundles, args.bundle_id)
+    admit_bundle_selectors(modules, source_bundle, args.selector_policy)
     modules, bundle, _ = materialize_weight_profile(
         modules,
-        resolve_bundle(bundles, args.bundle_id),
+        source_bundle,
         _load_weight_profile(args.weight_profile),
     )
     packet = compile_bundle(
@@ -537,6 +542,7 @@ def _cmd_judge(args: argparse.Namespace) -> int:
         allow_unattested_reasoning=args.allow_unattested_reasoning,
         upgrade_legacy_normalization=args.upgrade_legacy_normalization,
         attempt_lifecycle_policy=args.attempt_lifecycle_policy,
+        selector_policy=args.selector_policy,
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
@@ -605,6 +611,7 @@ def _cmd_longform(args: argparse.Namespace) -> int:
         allow_unattested_reasoning=args.allow_unattested_reasoning,
         upgrade_legacy_normalization=args.upgrade_legacy_normalization,
         attempt_lifecycle_policy=args.attempt_lifecycle_policy,
+        selector_policy=args.selector_policy,
     )
     report_path = Path(args.output_dir) / "report.json"
     if args.html_report and report_path.is_file():
@@ -645,6 +652,7 @@ def build_parser() -> argparse.ArgumentParser:
     validate.add_argument("--bundle-schema", default=str(schema_dir() / "hbq_bundle.schema.json"))
     validate.add_argument("-o", "--output")
     validate.add_argument("--format", choices=["json", "yaml"], default="json")
+    validate.add_argument("--selector-policy", choices=POLICIES, default=EXACT)
     validate.set_defaults(func=_cmd_validate)
 
     compile_parser = subparsers.add_parser("compile", help="compile one bundle into a flat judge packet")
@@ -653,6 +661,7 @@ def build_parser() -> argparse.ArgumentParser:
     compile_parser.add_argument("--weight-profile", help="strict scoring-weight profile JSON/YAML")
     compile_parser.add_argument("-o", "--output")
     compile_parser.add_argument("--format", choices=["json", "yaml"], default="json")
+    compile_parser.add_argument("--selector-policy", choices=POLICIES, default=EXACT)
     compile_parser.set_defaults(func=_cmd_compile)
 
     score = subparsers.add_parser("score", help="aggregate verdicts under one bundle")
@@ -855,6 +864,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="reviewed v1 JSON compatibility decision bound to this task contract and bundle",
     )
     judge.add_argument("--weight-profile", help="strict scoring-weight profile JSON/YAML")
+    judge.add_argument("--selector-policy", choices=POLICIES, default=None, help="new runs default to exact IDs; resume preserves the recorded policy")
     judge.add_argument("--question-id", action="append", default=[], help="limit to a selected leaf; repeatable")
     judge.add_argument("--batch-size", type=int, default=12)
     judge.add_argument("--response-schema-mode", choices=["batch_question_ids_v1"], help="opt in to an exact per-batch question-ID response schema")
@@ -1025,6 +1035,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     longform.add_argument("--allow-remote", action="store_true")
     longform.add_argument("--resume", action="store_true")
+    longform.add_argument("--selector-policy", choices=POLICIES, default=None, help="new workflows default to exact IDs; resume preserves the recorded policy")
     longform.add_argument(
         "--upgrade-legacy-normalization",
         action="store_true",

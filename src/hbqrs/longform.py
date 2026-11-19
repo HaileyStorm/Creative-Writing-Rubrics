@@ -1677,6 +1677,7 @@ def run_longform_workflow(
     local_sample_limit: int | None = None,
     local_bundle_id: str | None = None,
     hierarchical_score_profile: Mapping[str, Any] | None = None,
+    selector_policy: str | None = None,
 ) -> dict[str, Any]:
     """Run the complete transport-neutral long-form workflow.
 
@@ -1699,6 +1700,10 @@ def run_longform_workflow(
     ``local_sample_limit``.
     """
 
+    from .selector_integrity import resolve_selector_policy, admit_bundle_selectors
+    selector_policy, _ = resolve_selector_policy(selector_policy)
+    for selector_bundle in bundles:
+        admit_bundle_selectors(modules, selector_bundle, selector_policy)
     segmentation = segment_longform(text, artifact_id=artifact_id)
     routed_sample = sample_text if sample_text is not None else _default_route_sample(text)
     route_request = make_route_request(
