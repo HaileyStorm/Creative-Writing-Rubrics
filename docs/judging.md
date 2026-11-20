@@ -65,6 +65,11 @@ duplicate keys or non-finite values. When preparing a frozen
 execution contract for `verify_binary_run`, include the same
 `response_json_policy` in its `execution` object for a new run. Verification
 rejects a mismatch between the frozen contract and the run configuration.
+Also copy the run's recorded `selector_policy` into that object exactly. New
+runs normally record `exact_selector_ids_v1`. For a genuinely older run whose
+configuration has no selector policy, leave the frozen field absent: the
+verifier interprets that absence as historical permissive selection. An absent
+field does not match a new run that records the exact policy.
 Neither the manifest nor this check authenticates a provider response by itself.
 New long-form workflows bind the same policy across route, map, synthesis and
 binary judging passes. A prior workflow keeps its recorded policy, including

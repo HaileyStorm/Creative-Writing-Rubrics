@@ -344,6 +344,8 @@ older runs without a policy resume with `historical_permissive_v1`. Explicit
 historical mode preserves that behavior and must not be described as strict
 selector validation. Native runs pinned to older runtime bytes require their
 original runtime; this policy does not migrate those receipts.
+For the frozen execution contract required by independent run verification,
+copy the recorded policy as described in [Judging](judging.md).
 
 Offline validation now emits a `supplied_complete_response_bank_v2` receipt
 whose input digest includes the selector policy. To reproduce a prior v1 receipt
