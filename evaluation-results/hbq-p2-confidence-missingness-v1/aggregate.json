@@ -1,0 +1,62 @@
+{
+  "bounds": "relaxed per-horizon allocation; exact rational difference in flip rates",
+  "higher_confidence_bin": "[0.9,1]",
+  "lower_confidence_bin": "[0.75,0.9)",
+  "missing_first_cycle_states": 24,
+  "new_human_labels": 0,
+  "new_model_or_provider_calls": 0,
+  "planned_pairs_per_horizon": 534,
+  "results": [
+    {
+      "high_bin": {
+        "binary_pairs": 332,
+        "flips": 5
+      },
+      "low_bin": {
+        "binary_pairs": 126,
+        "flips": 18
+      },
+      "observed_low_minus_high": {
+        "denominator": 2324,
+        "numerator": 297
+      },
+      "relaxed_lower_bound": {
+        "denominator": 2492,
+        "numerator": 153
+      },
+      "relaxed_upper_bound": {
+        "denominator": 8300,
+        "numerator": 2199
+      },
+      "repeat_cycle": 1
+    },
+    {
+      "high_bin": {
+        "binary_pairs": 332,
+        "flips": 8
+      },
+      "low_bin": {
+        "binary_pairs": 126,
+        "flips": 16
+      },
+      "observed_low_minus_high": {
+        "denominator": 5229,
+        "numerator": 538
+      },
+      "relaxed_lower_bound": {
+        "denominator": 5607,
+        "numerator": 208
+      },
+      "relaxed_upper_bound": {
+        "denominator": 1245,
+        "numerator": 302
+      },
+      "repeat_cycle": 2
+    }
+  ],
+  "same_missing_states_across_horizons": true,
+  "schema": "p2-confidence-missingness-v1",
+  "source_aggregate_sha256": "8fb7c1a4ad3327b6bdee7958df8ad46ed39780f4bd4c88fa315d6d531732d522",
+  "source_to_aggregate_independent_recount_established": false,
+  "stories": 3
+}
