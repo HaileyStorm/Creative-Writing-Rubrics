@@ -3785,6 +3785,21 @@ def run_judge(
         compiled_questions(compiled),
         key=lambda item: role_order.get(str(item.get("role")), 99),
     )
+    if prior_manifest is None:
+        # A verdict identifies a question, not its compiled role. Reject fresh
+        # ambiguous banks before filtering, writing a manifest or dispatching.
+        # Existing runs retain their recorded compilation and resume semantics.
+        seen_ids: set[str] = set()
+        duplicate_ids: set[str] = set()
+        for item in questions:
+            question_id = str(item["question"]["id"])
+            if question_id in seen_ids:
+                duplicate_ids.add(question_id)
+            seen_ids.add(question_id)
+        if duplicate_ids:
+            raise HBQError(
+                "Compiled bundle has duplicate question IDs: " + ", ".join(sorted(duplicate_ids))
+            )
     available_ids = {str(item["question"]["id"]) for item in questions}
     if question_ids:
         requested = list(dict.fromkeys(question_ids))
