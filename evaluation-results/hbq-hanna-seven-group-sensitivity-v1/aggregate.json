@@ -1,0 +1,35 @@
+{
+  "comparisons": {
+    "baseline_to_descendant": {
+      "equal_error": 1,
+      "groups": 7,
+      "higher_error": 2,
+      "leave_one_group_out_mean_change_max": "-0.126852",
+      "leave_one_group_out_mean_change_min": "-0.252778",
+      "lower_error": 4,
+      "mean_change": "-0.180159"
+    },
+    "baseline_to_parent": {
+      "equal_error": 0,
+      "groups": 7,
+      "higher_error": 2,
+      "leave_one_group_out_mean_change_max": "-0.037037",
+      "leave_one_group_out_mean_change_min": "-0.150926",
+      "lower_error": 5,
+      "mean_change": "-0.093651"
+    },
+    "parent_to_descendant": {
+      "equal_error": 0,
+      "groups": 7,
+      "higher_error": 3,
+      "leave_one_group_out_mean_change_max": "-0.053704",
+      "leave_one_group_out_mean_change_min": "-0.112037",
+      "lower_error": 4,
+      "mean_change": "-0.086508"
+    }
+  },
+  "direction": "right_minus_left_lower_is_better",
+  "schema": "hanna-seven-group-sensitivity-v1",
+  "source_commit": "16a3a725a7fcfea8adb6ca90d370ca2d8f46de8d",
+  "source_sha256": "34441a265fbf4d654b2de4e89acfcc4b436029f0ff8c7cca47c9759ffc922fa3"
+}
