@@ -1,0 +1,59 @@
+{
+  "historical_unresolved_reference": 54,
+  "limitations": [
+    "Validates a published withdrawal declaration and its public result-byte relationship.",
+    "Does not replay the private collector or independently reproduce the reported input-fidelity findings.",
+    "Does not verify the withdrawal's cited historical Git commit; current public bytes are hash-bound.",
+    "Leaves private locators and historical census dispositions unresolved; the reference count is unchanged.",
+    "Does not confer native authenticity, runtime, promotion or full research completion authority."
+  ],
+  "new_leaf_admissions": 0,
+  "new_native_admissions": 0,
+  "new_votes": 0,
+  "policy": "public_census_withdrawal_relationship_v1",
+  "private_locators_resolved": 0,
+  "provider_calls": 0,
+  "registry_mutated": false,
+  "relationships": [
+    {
+      "package": "hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1",
+      "relationship": "public_withdrawal_record_validated"
+    },
+    {
+      "audit_package": "hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1",
+      "package": "hbq-human-alignment-optimizer-v8-desc17-generalization-grok-result-v1",
+      "relationship": "semantic_use_withdrawn_by_public_audit"
+    }
+  ],
+  "sources": [
+    {
+      "path": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-generalization-grok-result-v1/publication-manifest.json",
+      "sha256": "8f9a0043aa479209079ce802fb4fea91e5be0ee7618354b23a610ace6058f81f"
+    },
+    {
+      "path": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-generalization-grok-result-v1/result.json",
+      "sha256": "efe6d5a9a505784e0e5281014a212546fc68cacb786cc548d2b287138eff9260"
+    },
+    {
+      "path": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1/README.md",
+      "sha256": "f6b497745a9d355ebc7cf43f3f4153b1e5c11b22ec90b98e0237f7a01842f9a5"
+    },
+    {
+      "path": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1/audit.py",
+      "sha256": "40383ffc99631e9d6c6d4ef8b8a0369364a0adaa8849282f9d4161abd1cb48b6"
+    },
+    {
+      "path": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1/public-result.json",
+      "sha256": "915ffabdcc0abb01ac6b68bf752899dfe7d3bbd846c57df9502e61df0e19e1f5"
+    },
+    {
+      "path": "evaluation-results/hbq-human-alignment-optimizer-v8-desc17-input-fidelity-audit-v1/study-contract.json",
+      "sha256": "315b8626e0f37e2b859946e34f1ed388156bfd8b402cc2be89b00b6c050b8fe5"
+    }
+  ],
+  "unresolved_count_recomputed": false,
+  "withdrawn_uses": [
+    "desc17_semantic_conclusion",
+    "desc17_generalization"
+  ]
+}
