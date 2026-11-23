@@ -1,0 +1,29 @@
+{
+  "automatic_header_columns": 11,
+  "automatic_table_git_blob_sha1": "1ac5ecbc5db1f5488a5b16d4d7950b9afd97e1b0",
+  "combined_table_git_blob_sha1": "a196f9124590f9dbf144ed86746045b80713b22a",
+  "direct_evaluator_header_columns": 6,
+  "direct_evaluator_header_equals_automatic_table": false,
+  "evaluator_git_blob_sha1": "6faaa6160648477905d87eb87a5b1cdb21b95aa6",
+  "historical_execution_or_content_join_attested": false,
+  "individual_ratings_or_poem_contents_decoded": false,
+  "poem_tree_git_sha1": "9348556886c5365dec644e54a3ff5f1a3f834325",
+  "prior_aggregate_schema": "edupo-metadata-qualification-v1",
+  "prior_implementation_sha256": "dbc8a5a31859744f301e6d455cd209a93ce5a883ceefb8b3857806e5e78cc71c",
+  "schema": "edupo-source-group-v1",
+  "source_group_metadata": {
+    "ccv_tagged_rows": 20,
+    "source_group_count": 5,
+    "source_group_sizes_sorted": [
+      20,
+      20,
+      20,
+      20,
+      20
+    ],
+    "table_parent_count": 1,
+    "table_paths_ending_in_tree_path": 0,
+    "table_to_tree_parent_mappings": 1,
+    "tree_paths_ending_in_table_path": 0
+  }
+}
