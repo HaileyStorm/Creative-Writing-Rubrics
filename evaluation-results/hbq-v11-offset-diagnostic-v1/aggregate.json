@@ -1,0 +1,48 @@
+{
+  "definition": "baseline + 1, clipped to [1,5]; unclipped and fixed-3 shown separately",
+  "results": {
+    "grok": {
+      "baseline_below_reference_scale_count": 0,
+      "clipped_dimension_count": 0,
+      "dimensions": 6,
+      "groups": 4,
+      "mae": {
+        "baseline": "1.041667",
+        "child20": "0.708333",
+        "fixed_three": "0.763889",
+        "shifted_clipped": "0.569444",
+        "shifted_unclipped": "0.569444"
+      },
+      "shifted_vs_child_group_counts": {
+        "equal": 1,
+        "higher": 1,
+        "lower": 2
+      }
+    },
+    "sol": {
+      "baseline_below_reference_scale_count": 11,
+      "clipped_dimension_count": 1,
+      "dimensions": 6,
+      "groups": 4,
+      "mae": {
+        "baseline": "1.338889",
+        "child20": "1.125000",
+        "fixed_three": "0.763889",
+        "shifted_clipped": "0.791667",
+        "shifted_unclipped": "0.808333"
+      },
+      "shifted_vs_child_group_counts": {
+        "equal": 0,
+        "higher": 1,
+        "lower": 3
+      }
+    }
+  },
+  "schema": "v11_fixed_offset_diagnostic_v1",
+  "selection": "post-hoc, not a trained mapping or frozen comparator",
+  "source_commit": "f28270f6bd0971baa33504c7c682c8da7bce74c3",
+  "source_sha256": {
+    "grok": "6366de64754c365c4d91a9117d8c174f771ad50062ef342f11996cddfa78c58e",
+    "sol": "eef0c259a86a4a9fb5e465bfa03fa93bc4e862ad1bdd15abe0a71ebc2efaaa82"
+  }
+}
