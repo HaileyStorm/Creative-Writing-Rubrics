@@ -1,0 +1,30 @@
+{
+  "file_suffix_counts": {
+    "(none)": 1,
+    ".base64": 1,
+    ".csv": 1,
+    ".json": 861,
+    ".jsonl": 20,
+    ".md": 517,
+    ".patch": 1,
+    ".png": 7,
+    ".ps1": 1,
+    ".py": 910,
+    ".sha256": 1,
+    ".svg": 8,
+    ".txt": 3
+  },
+  "limitations": [
+    "Git tree inventory only; no verdict, request, leaf or provider status inferred.",
+    "Untracked, ignored, private, deleted, external and later files are excluded.",
+    "Shared Git blob identity is not evidence of independent judgments."
+  ],
+  "manifest_sha256": "24127b327346cd8e8cf97f5a65fe383aa63f6c3c945ca46b007063e44e0608bf",
+  "path_count": 2332,
+  "result_directory_count": 455,
+  "schema": "tracked-public-evaluation-artifact-census-v1",
+  "scope": "tracked files under evaluation-results at source commit",
+  "source_commit": "989d75434c82d157e33913823c63a486467dd236",
+  "total_file_bytes_counting_each_path": 37934438,
+  "unique_git_blob_count": 2294
+}
