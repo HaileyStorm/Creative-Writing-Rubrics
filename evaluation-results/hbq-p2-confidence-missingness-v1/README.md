@@ -28,10 +28,15 @@ confidence intervals or probabilities. They do not establish calibration,
 human alignment, causation, a confidence threshold, or population reliability.
 A retained worklog entry reports that a separate-method source recount finished
 and matched the aggregate's counts; it used the same reviewed input guard. A
-later entry also describes a recount as running, and its relationship to the
-completed recount is unclear. The original terminal evidence has not been
-independently rechecked for this report. These calculations authenticate the
-aggregate's bytes and arithmetic, not its native admission or model identity.
+separate read-only review confirmed that the saved aggregate and that entry
+both name 204 accepted packets, 1,578 leaf outcomes and input-inventory SHA-256
+`76070192abe1bf62a24940786f066039c6f60ff868ee97a9efb25ed6401bac4b`.
+This corroborates the association but does not authenticate the recount's
+execution. A later entry describes a recount as running without identifying
+an attempt, so its relationship to the completed recount is unclear. The
+original terminal evidence has not been independently recovered. These
+calculations authenticate the aggregate's bytes and arithmetic, not its native
+admission or model identity.
 
 `python analyze.py <private-retained-aggregate.json>` prints the output in
 `aggregate.json` after checking its source hash. The source stays private; no
