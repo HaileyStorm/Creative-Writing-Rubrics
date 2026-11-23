@@ -344,6 +344,23 @@ older runs without a policy resume with `historical_permissive_v1`. Explicit
 historical mode preserves that behavior and must not be described as strict
 selector validation. Native runs pinned to older runtime bytes require their
 original runtime; this policy does not migrate those receipts.
+Within a component, nonempty `include_question_ids` and `include_group_ids`
+are intersected: a question must satisfy both filters. The default exact-ID
+policy checks that each name exists in the owning module; it does not promise
+that every listed question survives the group filter. Offline `membership_complete`
+also refers to the compiled bank, not to every question named before filtering.
+
+For custom bundles that require every explicitly named question to be included,
+opt in to `exact_selector_coverage_v2`. It rejects a question excluded by that
+component's group filter before judging or offline response parsing. It keeps
+group-only expansion, empty filters and intersection semantics unchanged. New
+runs may select it through `--selector-policy` and the offline API through
+`selector_policy`; the default remains `exact_selector_ids_v1`. This policy
+records a distinct `supplied_complete_response_bank_v3` receipt and input digest.
+Existing runs retain their original policy and cannot be upgraded on resume.
+It checks declared selector coverage, not native provenance, correctness or
+whether the chosen questions are sufficient for the intended evaluation.
+
 For the frozen execution contract required by independent run verification,
 copy the recorded policy as described in [Judging](judging.md).
 

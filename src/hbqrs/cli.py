@@ -29,7 +29,7 @@ from .core import (
     write_data,
 )
 from .scoring_v2 import admitted_artifact_id, score_bundle as score_bundle_v2, validate_import_admission
-from .selector_integrity import EXACT, HISTORICAL, POLICIES, admit_bundle_selectors, selector_integrity_errors
+from .selector_integrity import COVERAGE, EXACT, HISTORICAL, POLICIES, admit_bundle_selectors, selector_integrity_errors
 from .pack import pack_book
 from .paths import book_root, bundles_path, prompts_dir, registry_path, schema_dir
 from .runner_v2 import run_judge
@@ -237,8 +237,8 @@ def _cmd_validate(args: argparse.Namespace) -> int:
         module_schema=module_schema,
         bundle_schema=bundle_schema,
     )
-    if args.selector_policy == EXACT:
-        errors.extend(selector_integrity_errors(modules, bundles))
+    if args.selector_policy != HISTORICAL:
+        errors.extend(selector_integrity_errors(modules, bundles, require_coverage=args.selector_policy == COVERAGE))
     try:
         question_count = sum(1 for module in modules for _ in walk_tree(module.get("tree", [])))
     except HBQError:

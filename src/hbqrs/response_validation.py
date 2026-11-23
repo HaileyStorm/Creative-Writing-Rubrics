@@ -15,7 +15,7 @@ from jsonschema import Draft202012Validator
 
 from hbqrs import core, runner, scoring_v2
 from hbqrs.strict_input import _check_tree
-from hbqrs.selector_integrity import EXACT, admit_bundle_selectors, resolve_selector_policy
+from hbqrs.selector_integrity import COVERAGE, HISTORICAL, admit_bundle_selectors, resolve_selector_policy
 
 __all__ = ["ResponseBankValidationError", "validate_response_bank"]
 
@@ -73,7 +73,9 @@ def validate_response_bank(
     New calls default to exact_selector_ids_v1 admission and a versioned v2
     receipt whose supplied-input digest binds that selector policy. Explicit
     historical_permissive_v1 preserves the original v1 receipt and digest.
-    Selector admission is checked before response JSON parsing.
+    Opt-in exact_selector_coverage_v2 also rejects explicit questions removed
+    by a component group filter and emits a distinct v3 receipt. Selector
+    admission is checked before response JSON parsing.
 
     The API always uses finite/unique-key JSON parsing, strict_import_v3,
     typed evidence and exact contiguous quote matching against artifact/context.
@@ -104,7 +106,7 @@ def validate_response_bank(
     source = _snapshot({"modules": list(modules), "bundle": bundle, "batches": list(batches),
                         "artifact_id": artifact_id, "artifact_text": artifact_text,
                         "context_texts": list(context_texts), "task_contract": task_contract})
-    if resolved_selector_policy == EXACT:
+    if resolved_selector_policy != HISTORICAL:
         source["selector_policy"] = resolved_selector_policy
     try:
         input_digest = _digest(_canonical(source))
@@ -199,7 +201,8 @@ def validate_response_bank(
         "normalized_verdicts": clean, "import_admission": admission,
         "supplied_inputs_sha256": input_digest, "supplied_source_bindings": source_bindings, "batches": receipts,
         "native_provenance": None, "quality_verified": False, "score": None, "repairs": []}
-    if resolved_selector_policy == EXACT:
-        result["policy"] = "supplied_complete_response_bank_v2"
+    if resolved_selector_policy != HISTORICAL:
+        result["policy"] = ("supplied_complete_response_bank_v3" if resolved_selector_policy == COVERAGE
+                            else "supplied_complete_response_bank_v2")
         result["selector_policy"] = resolved_selector_policy
     return result

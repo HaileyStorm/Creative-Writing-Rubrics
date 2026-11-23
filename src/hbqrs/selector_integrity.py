@@ -6,7 +6,8 @@ from . import core
 
 HISTORICAL = 'historical_permissive_v1'
 EXACT = 'exact_selector_ids_v1'
-POLICIES = (HISTORICAL, EXACT)
+COVERAGE = 'exact_selector_coverage_v2'
+POLICIES = (HISTORICAL, EXACT, COVERAGE)
 
 
 def resolve_selector_policy(requested: str | None, prior_configuration: Mapping[str, Any] | None = None) -> tuple[str, bool]:
@@ -30,7 +31,7 @@ def resolve_selector_policy(requested: str | None, prior_configuration: Mapping[
     return policy, recorded
 
 
-def _bundle_errors(module_by_id: Mapping[str, Any], bundle: Mapping[str, Any]) -> list[str]:
+def _bundle_errors(module_by_id: Mapping[str, Any], bundle: Mapping[str, Any], *, require_coverage: bool = False) -> list[str]:
     errors = []
     for domain in bundle.get('domains', []):
         for component in domain.get('components', []):
@@ -67,22 +68,34 @@ def _bundle_errors(module_by_id: Mapping[str, Any], bundle: Mapping[str, Any]) -
                 missing = set(values) - known
                 if missing:
                     errors.append(f"{label}: unknown {field}: {', '.join(sorted(missing))}")
+            explicit = component.get('include_question_ids')
+            groups = component.get('include_group_ids')
+            if (require_coverage and isinstance(explicit, list) and explicit
+                    and all(isinstance(qid, str) and qid for qid in explicit)
+                    and set(explicit) <= question_ids and isinstance(groups, list) and groups
+                    and all(isinstance(gid, str) and gid for gid in groups)
+                    and set(groups) <= group_ids):
+                selected = {leaf['id'] for leaf, _, _ in core.select_leaves(module, component)}
+                filtered = set(explicit) - selected
+                if filtered:
+                    errors.append(f"{label}: explicit questions excluded by group filter: {', '.join(sorted(filtered))}")
     return errors
 
 
-def selector_integrity_errors(modules: Sequence[dict[str, Any]], bundles: Sequence[Mapping[str, Any]]) -> list[str]:
+def selector_integrity_errors(modules: Sequence[dict[str, Any]], bundles: Sequence[Mapping[str, Any]], *,
+                              require_coverage: bool = False) -> list[str]:
     try:
         module_by_id = core.index_modules(modules)
     except core.HBQError as exc:
         return [f'Exact selector admission requires a unique module index: {exc}']
-    return [error for bundle in bundles for error in _bundle_errors(module_by_id, bundle)]
+    return [error for bundle in bundles for error in _bundle_errors(module_by_id, bundle, require_coverage=require_coverage)]
 
 
 def admit_bundle_selectors(modules: Sequence[dict[str, Any]], bundle: Mapping[str, Any], policy: str) -> None:
     if policy not in POLICIES:
         raise core.HBQError('Unsupported selector policy')
-    if policy == EXACT:
-        errors = selector_integrity_errors(modules, [bundle])
+    if policy in (EXACT, COVERAGE):
+        errors = selector_integrity_errors(modules, [bundle], require_coverage=policy == COVERAGE)
         if errors:
             raise core.HBQError('; '.join(errors))
 
