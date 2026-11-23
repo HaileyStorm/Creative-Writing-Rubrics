@@ -26,9 +26,12 @@ The pattern is descriptive and was examined after the data were available.
 The stories, leaves and cycles are dependent; these are logical bounds, not
 confidence intervals or probabilities. They do not establish calibration,
 human alignment, causation, a confidence threshold, or population reliability.
-The original aggregate's independent source-level recount remains unresolved;
-these calculations authenticate its bytes and arithmetic, not its provenance,
-native admission, model identity, or source-to-aggregate derivation.
+A retained worklog entry reports that a separate-method source recount finished
+and matched the aggregate's counts; it used the same reviewed input guard. A
+later entry also describes a recount as running, and its relationship to the
+completed recount is unclear. The original terminal evidence has not been
+independently rechecked for this report. These calculations authenticate the
+aggregate's bytes and arithmetic, not its native admission or model identity.
 
 `python analyze.py <private-retained-aggregate.json>` prints the output in
 `aggregate.json` after checking its source hash. The source stays private; no
