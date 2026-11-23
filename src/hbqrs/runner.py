@@ -39,7 +39,7 @@ from .core import (
 )
 from .paths import prompts_dir, schema_dir
 from .weights import materialize_weight_profile
-from . import codex_receipts
+from . import codex_receipts, codex_receipts_v2
 
 
 MAX_RESPONSE_BYTES = 16 * 1024 * 1024
@@ -533,6 +533,14 @@ def _codex_reported_settings(stderr: str) -> dict[str, str]:
     return reported
 
 
+def _codex_receipt_reader(policy: str):
+    if policy == codex_receipts.POLICY:
+        return codex_receipts
+    if policy == codex_receipts_v2.POLICY:
+        return codex_receipts_v2
+    raise HBQError("Unknown Codex receipt policy")
+
+
 def _call_codex(
     *,
     executable: str,
@@ -548,9 +556,8 @@ def _call_codex(
     capture_jsonl_events: bool = False,
     codex_receipt_policy: str | None = None,
 ) -> tuple[str, dict[str, Any]]:
-    if codex_receipt_policy not in {None, codex_receipts.POLICY}:
-        raise HBQError("Unknown Codex receipt policy")
-    native_receipt = codex_receipt_policy == codex_receipts.POLICY
+    receipt_reader = _codex_receipt_reader(codex_receipt_policy) if codex_receipt_policy is not None else None
+    native_receipt = receipt_reader is not None
     if native_receipt:
         if not os.environ.get("CODEX_HOME"):
             raise HBQError("Native Codex receipt policy requires an explicit CODEX_HOME")
@@ -786,7 +793,7 @@ def _call_codex(
         )
     if native_receipt:
         try:
-            receipt, artifacts = codex_receipts.capture(
+            receipt, artifacts = receipt_reader.capture(
                 output_dir, f"batch-{batch_number:04d}.attempt-{attempt_number:04d}",
                 events_path=events_path, message_path=message_path, prompt=prompt,
                 model=model, reasoning=reasoning, codex_home=receipt_home,
@@ -808,7 +815,9 @@ def _call_codex(
             ) from exc
         return message_path.read_text(encoding="utf-8"), {
             "command": [executable, *arguments[:-1], "<prompt-via-stdin>"],
-            "receipt_policy": codex_receipt_policy, "reported": receipt["reported"],
+            "receipt_policy": codex_receipt_policy,
+            "reported": (receipt["v1_projection"]["reported"] if receipt_reader is codex_receipts_v2
+                         else receipt["reported"]),
             "provider_artifacts": artifacts,
         }
     reported = _codex_reported_settings(stderr)
@@ -3438,7 +3447,7 @@ def _load_checkpoints(
                     raise HBQError(f"Response checkpoint {path.name} effective prompt is not bound")
                 if codex_receipt_policy is not None:
                     try:
-                        codex_receipts.verify(
+                        _codex_receipt_reader(codex_receipt_policy).verify(
                             output_dir, record.get("provider", {}), prompt=effective_prompt,
                             model=str(codex_model), reasoning=str(codex_reasoning),
                             final_raw=artifact_bytes,
@@ -3582,24 +3591,27 @@ def run_judge(
     reasoning_attested boolean. tool_free must be True, and reasoning_attested
     must be True unless explicitly waived; the caller verifies that evidence.
     Optional provider_artifacts bind local evidence files for checkpoint replay.
-    codex_native_rollout_v1 instead admits one JSON-captured Codex turn from its
-    exact own persisted rollout under an explicit CODEX_HOME. It pins this
-    collector and receipt reader, preserves private evidence, and never resends
-    missing or conflicting receipts. These receipts attest native execution
-    settings; backend model identity and physical contacts remain unproven.
+    The explicitly selected Codex native receipt policies admit one
+    JSON-captured turn from its exact own persisted rollout under an explicit
+    CODEX_HOME. They pin this collector and the selected reader, preserve
+    private evidence, and never resend missing or conflicting receipts. V2
+    additionally rejects ambiguous JSON and binds both reader implementations.
+    These receipts do not establish native source authenticity, the complete
+    enabled tool inventory, pre-dispatch disablement, backend model identity or
+    physical contacts.
     """
 
     if provider not in {"openai", "codex", "grok", "nous"}:
         raise HBQError("provider must be 'openai', 'codex', 'grok', or 'nous'")
     codex_binding = None
     if codex_receipt_policy is not None:
-        if (codex_receipt_policy != codex_receipts.POLICY or provider != "codex"
+        if (codex_receipt_policy not in {codex_receipts.POLICY, codex_receipts_v2.POLICY} or provider != "codex"
                 or batch_attempts != 1 or attempt_lifecycle_policy != ATTEMPT_LIFECYCLE_POLICY
                 or response_schema_mode != "batch_question_ids_v1"):
             raise HBQError("Native Codex receipt policy requires codex, one attempt, terminal_sidecar_v1 and batch_question_ids_v1")
         if not os.environ.get("CODEX_HOME"):
             raise HBQError("Native Codex receipt policy requires an explicit CODEX_HOME")
-        codex_binding = {**codex_receipts.binding(), "policy_sha256": _sha256_bytes(Path(__file__).read_bytes()),
+        codex_binding = {**_codex_receipt_reader(codex_receipt_policy).binding(), "policy_sha256": _sha256_bytes(Path(__file__).read_bytes()),
                          "codex_home_sha256": _sha256_bytes(
             str(Path(os.environ["CODEX_HOME"]).resolve()).encode("utf-8"))}
     if response_schema_mode not in {None, "batch_question_ids_v1"}:
