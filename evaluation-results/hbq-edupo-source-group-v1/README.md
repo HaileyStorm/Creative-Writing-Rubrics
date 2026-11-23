@@ -26,6 +26,18 @@ explain the difference; this check does not determine what was run or imply
 that the scores are wrong. This is relevant before claiming that saved model
 scores, prompts and source bytes are fully bound.
 
+An [earlier evaluator](https://github.com/ufal/edupo/blob/3db3f2d43719320917e5d957d63828d40204b060/evaluation/evaluate_poems.py)
+at the commit that added the table explicitly prints the same eleven-column
+header as `automatic.tsv`. That script loops over files numbered 51–100, not
+the entire 100-poem set. The shared header and commit establish a compatible
+source version, but do not establish which script was executed, how the full
+table was assembled, or what text the judges actually received.
+
+During this follow-up, a commit-inspection response unexpectedly exposed
+individual poem texts and rating rows to the CWR research task. The full
+EduPo cohort and its annotations must therefore be treated as exposed for this
+task, rather than as an unseen confirmation set.
+
 Run `python scope.py --combined <all5.tsv> --tree <recursive-tree.json>
 --automatic <automatic.tsv> --evaluator <evaluate_poems.py>` to reproduce the
 aggregate. The code checks the original Git blob and tree hashes, reuses the
