@@ -27,6 +27,24 @@ only 100 poems and are not independent observations. Differences between the
 pooled and within-group descriptions do not establish a causal source effect,
 and the analysis was chosen after the data were exposed.
 
+The pooled within-source values also conceal variation among the five groups.
+The following tau-b values come directly from the same saved aggregate; each
+group has 20 poems and 190 within-group pairs.
+
+| Dimension | ccv | chatgpt | tm16_40000 | tm16_7500 | tm4 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Semantics | -0.133 | 0.242 | 0.199 | 0.346 | 0.377 |
+| Syntax | 0.049 | -0.092 | 0.046 | 0.038 | 0.172 |
+| Rhyming | -0.011 | 0.156 | 0.419 | -0.043 | 0.410 |
+| Metre | 0.227 | 0.071 | 0.493 | 0.265 | 0.290 |
+
+These are descriptive results for named source groups, not independent trials
+or estimates of performance on all poems of those types. Negative values in
+small groups do not by themselves establish a reliable disagreement effect.
+The same poems contribute to many pairs, and the reported rater composition
+differs by dimension. The labels above are the source table's group labels;
+their use does not independently authenticate the poem-to-rating mapping.
+
 For the four dimensions, respectively, 22, 23, 31 and 2 of the 100 human
 values equal the stated 0–10 scale maximum; zero model values equal the stated
 normalized maximum of 1. These are exact endpoints, not near-ceiling rates or
