@@ -39,7 +39,7 @@ from .core import (
 )
 from .paths import prompts_dir, schema_dir
 from .weights import materialize_weight_profile
-from . import codex_receipts, codex_receipts_v2
+from . import codex_receipts, codex_receipts_v2, codex_receipts_v3
 
 
 MAX_RESPONSE_BYTES = 16 * 1024 * 1024
@@ -538,6 +538,8 @@ def _codex_receipt_reader(policy: str):
         return codex_receipts
     if policy == codex_receipts_v2.POLICY:
         return codex_receipts_v2
+    if policy == codex_receipts_v3.POLICY:
+        return codex_receipts_v3
     raise HBQError("Unknown Codex receipt policy")
 
 
@@ -816,7 +818,9 @@ def _call_codex(
         return message_path.read_text(encoding="utf-8"), {
             "command": [executable, *arguments[:-1], "<prompt-via-stdin>"],
             "receipt_policy": codex_receipt_policy,
-            "reported": (receipt["v1_projection"]["reported"] if receipt_reader is codex_receipts_v2
+            "reported": (receipt["v2_projection"]["v1_projection"]["reported"]
+                         if receipt_reader is codex_receipts_v3 else
+                         receipt["v1_projection"]["reported"] if receipt_reader is codex_receipts_v2
                          else receipt["reported"]),
             "provider_artifacts": artifacts,
         }
@@ -3596,6 +3600,7 @@ def run_judge(
     CODEX_HOME. They pin this collector and the selected reader, preserve
     private evidence, and never resend missing or conflicting receipts. V2
     additionally rejects ambiguous JSON and binds both reader implementations.
+    V3 also rejects unclassifiable rollout item events.
     These receipts do not establish native source authenticity, the complete
     enabled tool inventory, pre-dispatch disablement, backend model identity or
     physical contacts.
@@ -3605,7 +3610,7 @@ def run_judge(
         raise HBQError("provider must be 'openai', 'codex', 'grok', or 'nous'")
     codex_binding = None
     if codex_receipt_policy is not None:
-        if (codex_receipt_policy not in {codex_receipts.POLICY, codex_receipts_v2.POLICY} or provider != "codex"
+        if (codex_receipt_policy not in {codex_receipts.POLICY, codex_receipts_v2.POLICY, codex_receipts_v3.POLICY} or provider != "codex"
                 or batch_attempts != 1 or attempt_lifecycle_policy != ATTEMPT_LIFECYCLE_POLICY
                 or response_schema_mode != "batch_question_ids_v1"):
             raise HBQError("Native Codex receipt policy requires codex, one attempt, terminal_sidecar_v1 and batch_question_ids_v1")

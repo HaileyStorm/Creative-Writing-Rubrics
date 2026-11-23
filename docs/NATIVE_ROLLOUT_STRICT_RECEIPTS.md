@@ -28,3 +28,21 @@ identity, certify the complete enabled tool inventory, or prove tools were
 disabled before dispatch. Actual collection still needs an independently
 supported launch-bound native attestation and the existing capacity, ownership,
 and no-resend controls; successful syntax checks do not supply those gates.
+
+## Classified rollout items
+
+The separate opt-in `codex_native_rollout_classified_items_v3` policy retains
+the v2 JSON checks and rejects a rollout `item_started` or `item_completed`
+event unless its `item` is an object with one of the supported non-tool item
+types. It also rejects `item_updated`, whose rollout format has not been
+qualified here. An incomplete event is unclassifiable; it is not evidence that
+a tool was used. Events remain retained; if the rollout was reached and
+copied, it is retained as well. The existing nonretryable/no-resend rule
+applies on rejection.
+
+This new policy binds the v1, v2, v3 and runner source hashes for new runs.
+V1 and v2 receipts retain their original meaning and must use their original
+pinned implementations for replay; do not relabel or migrate them. No
+historical occurrence of the incomplete event is established. Even v3 does
+not authenticate a receipt, prove its event stream is complete, establish the
+effective tool inventory or account, or attest pre-dispatch tool settings.
