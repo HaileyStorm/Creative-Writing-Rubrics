@@ -1,0 +1,83 @@
+{
+  "dataset_rights_or_unused_status_established": false,
+  "decimal_syntax_presence_pairs": [
+    {
+      "both_decimal_syntax": 100,
+      "left": "ChatGPT-Semantics",
+      "left_decimal_syntax": 100,
+      "presence_mismatches": 0,
+      "right": "Human-Semantics",
+      "right_decimal_syntax": 100
+    },
+    {
+      "both_decimal_syntax": 100,
+      "left": "ChatGPT-Syntax",
+      "left_decimal_syntax": 100,
+      "presence_mismatches": 0,
+      "right": "Human-Syntax",
+      "right_decimal_syntax": 100
+    },
+    {
+      "both_decimal_syntax": 100,
+      "left": "ChatGPT-Rhyming",
+      "left_decimal_syntax": 100,
+      "presence_mismatches": 0,
+      "right": "Human-Rhyming",
+      "right_decimal_syntax": 100
+    },
+    {
+      "both_decimal_syntax": 100,
+      "left": "ChatGPT-Metre",
+      "left_decimal_syntax": 100,
+      "presence_mismatches": 0,
+      "right": "Human-Metre",
+      "right_decimal_syntax": 100
+    },
+    {
+      "both_decimal_syntax": 100,
+      "left": "ChatGPT-Semantics",
+      "left_decimal_syntax": 100,
+      "presence_mismatches": 0,
+      "right": "Human-Overall-Imp",
+      "right_decimal_syntax": 100
+    },
+    {
+      "both_decimal_syntax": 100,
+      "left": "ChatGPT-Syntax",
+      "left_decimal_syntax": 100,
+      "presence_mismatches": 0,
+      "right": "Human-Overall-Imp",
+      "right_decimal_syntax": 100
+    },
+    {
+      "both_decimal_syntax": 100,
+      "left": "ChatGPT-Rhyming",
+      "left_decimal_syntax": 100,
+      "presence_mismatches": 0,
+      "right": "Human-Overall-Imp",
+      "right_decimal_syntax": 100
+    },
+    {
+      "both_decimal_syntax": 100,
+      "left": "ChatGPT-Metre",
+      "left_decimal_syntax": 100,
+      "presence_mismatches": 0,
+      "right": "Human-Overall-Imp",
+      "right_decimal_syntax": 100
+    }
+  ],
+  "exact_evaluation_relative_path_matches": 0,
+  "one_to_one_basename_matches": 100,
+  "poem_contents_opened": false,
+  "poem_tree_git_sha1": "9348556886c5365dec644e54a3ff5f1a3f834325",
+  "schema": "edupo-metadata-qualification-v1",
+  "scores_decoded": false,
+  "source_receipts_or_run_attested": false,
+  "table_git_blob_sha1": "a196f9124590f9dbf144ed86746045b80713b22a",
+  "table_rows": 100,
+  "table_sha256": "f438b60c4fe1ad6aee1eba09400b10387cc55ea889720a7e36a40ba443572eb2",
+  "tree_files": 100,
+  "unique_table_basenames": 100,
+  "unique_table_keys": 100,
+  "unique_tree_basenames": 100
+}
