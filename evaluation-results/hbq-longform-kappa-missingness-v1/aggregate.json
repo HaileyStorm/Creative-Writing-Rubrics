@@ -1,0 +1,15 @@
+{
+  "assumption": "both labels of every missing pair vary freely; this relaxes known one-sided observations",
+  "margin_pairs_evaluated": 938961,
+  "missing_pairs": 16,
+  "not": "confidence interval, imputation, human validity, controlled runtime, or new judgments",
+  "observed_kappa": "4657/5630",
+  "observed_pairs": 139,
+  "planned_pairs": 155,
+  "relaxed_maximum_kappa": "8979/10064",
+  "relaxed_minimum_kappa": "199/354",
+  "schema": "longform_kappa_missingness_v1",
+  "source_commit": "e33e2ad50706447c66982db73b1edc3c2411b277",
+  "source_sha256": "16202540248a1dfd06f0188cf89c4d4ce4275b8c95d37497469ba867073ae8c7",
+  "undefined_margin_pairs": 0
+}
