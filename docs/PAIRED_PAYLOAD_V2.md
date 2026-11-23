@@ -7,6 +7,8 @@ descriptor, and requires all non-artifact descriptor fields to match. It emits
 two canonical JSON task bodies with the same instruction and swapped texts, plus
 an ordinary v1 paired-comparison commitment to their exact bytes. Identity
 controls are based on identical supplied text under that common context.
+Context matching uses the canonical JSON representation, so values such as
+`true`, `1`, and `1.0` do not silently compare equal.
 
 Supply two independently generated opaque 128-bit hexadecimal request IDs and
 keep the AB/BA mapping private from the evaluator. Distinct IDs make the two

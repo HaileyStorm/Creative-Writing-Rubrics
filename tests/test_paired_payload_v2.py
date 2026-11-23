@@ -17,11 +17,11 @@ def h(value: str) -> str:
 CONTROLS = {'seed': {'state': 'unsupported', 'value': None},
             'temperature': {'state': 'unsupported', 'value': None}}
 
-def source(text: str, label: str, context: str = 'context'):
+def source(text: str, label: str, context: str = 'context', setting: object = 'fixture'):
     address = content_address(artifact_sha256=h(text), context_sha256=[h(context)],
         compiled_bundle_sha256=h('bundle'), question_sha256=h('question'),
         prompt_sha256=h('prompt'), response_schema_sha256=h('schema'),
-        judge_stack={'provider': 'fixture'}, provider='codex', model='fixture',
+        judge_stack={'provider': setting}, provider='codex', model='fixture',
         reasoning='high', deterministic_control_support=CONTROLS)
     fresh = fresh_replicate_receipt(replicate_group_id=label, replicate_index=1,
         content_address_sha256=address['content_address_sha256'], run_config_sha256=h('run'),
@@ -66,4 +66,12 @@ def test_rejects_unbound_text_descriptors_receipts_and_nonces():
     x = args(); x['ba_nonce'] = x['ab_nonce']; cases.append(x)
     for x in cases:
         with pytest.raises(RepeatabilityContractError):
+            build_paired_payloads(**x)
+
+def test_json_distinct_context_values_are_not_treated_as_equal():
+    for a, b in [(True, 1), (1, 1.0)]:
+        x = args()
+        x['address_a'], x['reuse_a'] = source(x['artifact_a'], 'typed-a', setting=a)
+        x['address_b'], x['reuse_b'] = source(x['artifact_b'], 'typed-b', setting=b)
+        with pytest.raises(RepeatabilityContractError, match='different evaluation contexts'):
             build_paired_payloads(**x)

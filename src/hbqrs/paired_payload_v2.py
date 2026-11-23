@@ -14,6 +14,7 @@ from typing import Any
 from .repeatability import (
     DerivedReuseReceipt,
     RepeatabilityContractError,
+    canonical_json_sha256,
     content_address,
     paired_comparison_commitment,
 )
@@ -63,7 +64,9 @@ def build_paired_payloads(
             raise RepeatabilityContractError('artifact text does not match its address')
     def shared(address: dict[str, Any]) -> dict[str, Any]:
         return {k: v for k, v in address.items() if k not in {'artifact_sha256', 'content_address_sha256'}}
-    if shared(first) != shared(second):
+    # Python equates JSON-distinct values such as True and 1. Compare the
+    # canonical representation used by the original address instead.
+    if canonical_json_sha256(shared(first)) != canonical_json_sha256(shared(second)):
         raise RepeatabilityContractError('source addresses have different evaluation contexts')
     if not isinstance(reuse_a, DerivedReuseReceipt) or not isinstance(reuse_b, DerivedReuseReceipt):
         raise RepeatabilityContractError('source reuse receipts are required')
